@@ -66,13 +66,36 @@ myList.set(3,'Hari');
 integer totalListLength = myList.size();
 system.debug('Total List length : ' + totalListLength);
 
+// check if any item exits inside list
+if(myList.contains('Rishabh')){
+    system.debug('Yes, Rishabh is exist');
+}
+if(myList.contains('Pankaj')){
+    system.debug('Yes, Pankaj is exist');
+} else {
+  system.debug('Pankaj is not exist inside the list');          
+}
+
 // for each loop
 for(string name: myList){
     system.debug('Person Name : ' + name);
 }
+
+// check if myList empty
+if(myList.isEmpty()){
+    system.debug('myList is empty');
+} else {
+    system.debug('myList is not empty and it contain '+myList.size()+' items');
+}
+// clear list
+myList.clear();
+if(myList.isEmpty()){
+    system.debug('myList is empty');
+}
+
 ```
 **Output**
-<img width="1432" alt="Screenshot 2024-04-02 at 4 41 05 PM" src="https://github.com/therishabh/salesforce-dev/assets/7955435/05abfc42-f3c9-44f1-bd63-abfa8e72d202">
+<img width="1362" alt="Screenshot 2024-04-02 at 4 52 38 PM" src="https://github.com/therishabh/salesforce-dev/assets/7955435/ab821b66-d603-4afd-8c47-e0d3c7915aa8">
 
 - What is the difference between Add Vs Set function in List collection ?
   A. Set is used for replace any value while Add is used for add new value at the end of the list we don't need to pass index number in Add.
