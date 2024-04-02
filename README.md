@@ -48,4 +48,25 @@ Integer i = myList.get(0);                    // Retrieves the element at index 
 myList.set(0, 1);                             // Adds the integer 1 to the list at index 0
 myList.remove(0)                              // Remove element of 0 index
 myList.clear();                               // Removes all elements from the list
+integer myListLength = myList.size();         // How many items in the list
+```
+
+- What is the difference between Add Vs Set function in List collection ?
+  A. Set is used for replace any value while Add is used for add new value at the end of the list we don't need to pass index number in Add.
+
+### Set Collection
+Set is an unordered collection. It is a unique set of values that do not have any duplicates. If you want no duplicates in your collection, then you should opt for this collection.
+
+**The following are the key features of a set collection in Salesforce:**
+
+- Any data types, such as primitive data types and sObjects, are allowed in a set collection.
+- A set collection does not have an index.
+- A set collection does not contain any duplicates or null values.
+- Set collections are not widely used in Salesforce Apex.
+- Sets can hold collections that are nested inside of one another.
+- You have to use the set keyword followed by the primitive data type name within <> characters to declare a set collection.
+
+**The syntax for a set is as follows:**
+```apex
+Set<datatype> setName = new Set<datatype>();
 ```
