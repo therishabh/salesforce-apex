@@ -51,6 +51,29 @@ myList.clear();                               // Removes all elements from the l
 integer myListLength = myList.size();         // How many items in the list
 ```
 
+```apex
+List<String> myList = new List<String>();
+myList.add('Harry');
+myList.add('Ram');
+myList.add('Shyam');
+myList.add('Rishabh');
+myList.add('Madhav');
+myList.add('Shikha');
+system.debug('Collection list : '+myList);
+myList.remove(2);
+myList.set(3,'Hari');
+
+integer totalListLength = myList.size();
+system.debug('Total List length : ' + totalListLength);
+
+// for each loop
+for(string name: myList){
+    system.debug('Person Name : ' + name);
+}
+```
+**Output**
+<img width="1432" alt="Screenshot 2024-04-02 at 4 41 05 PM" src="https://github.com/therishabh/salesforce-dev/assets/7955435/05abfc42-f3c9-44f1-bd63-abfa8e72d202">
+
 - What is the difference between Add Vs Set function in List collection ?
   A. Set is used for replace any value while Add is used for add new value at the end of the list we don't need to pass index number in Add.
 
