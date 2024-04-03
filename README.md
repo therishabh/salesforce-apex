@@ -131,3 +131,41 @@ Map is a key-value pair that contains each value’s unique key. It is used when
 ```apex
 Map<String, String> country_currencies = new Map<String, String>();
 ```
+
+## Function
+
+### Important points related to functions
+1.Functions where they will have return value = non void functions
+2.Functions where they will NOT have return value = void functions
+3.Functions where they will expect some parameters/data from us = functions with parameters
+4. Functions where they will NOT expect any parameters from us = functions WITHOUT parameters
+
+Q. Why we need class in salesforce programming ?
+
+Q. Why we need object when we already have class ?
+
+Q. Can we use standard and custom function in programming ?
+
+Q. Why we need void keyword in function ?
+
+Q. What else I can write if I don't want to use void keyword ?
+
+Q. Can I keep the blank option instead of void I don't want to raise anything so is that possible ?
+
+Q. What is function parameter and why we need that function parameter why we need that ?
+
+Q. I don't want to use function parameter can I keep it blank ?
+
+
+**Current Moral:**
+Class = Variables + Functions
+
+Variables are for Data storage.
+
+Functions are for performing some Activity | Action.
+
+Problem: Class wont have any memory, so we cant do anything!
+
+Solution : **Object**
+
+
