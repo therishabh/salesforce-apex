@@ -116,3 +116,18 @@ Set is an unordered collection. It is a unique set of values that do not have an
 ```apex
 Set<datatype> setName = new Set<datatype>();
 ```
+
+### Map Collection
+Map is a key-value pair that contains each value’s unique key. It is used when something needs to be located quickly.
+
+**The following are the key features of a map collection in Salesforce:**
+
+- Any data type can be used for both the key and the value in a map collection.
+- In a map collection, the null value can be stored in a map key.
+- The keys of type string are case-sensitive in a map collection.
+- You have to use the map keyword followed by the key and value data types enclosed in <> to declare a map collection.
+
+**The syntax for a map is as follows:**
+```apex
+Map<String, String> country_currencies = new Map<String, String>();
+```
