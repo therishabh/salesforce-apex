@@ -211,9 +211,16 @@ ClassName.FunctionName(Parameter);
 // To execute the function
 AppleMobileClass.CallAPerson(9970629222);
 ```
-
-
-
 SUCCESS !!! NO NEED OF OBJECT !!!
+
+Moral 1:\
+By using static, we get special/global storage.
+
+Moral 2:\
+So now by using word "static",
+
+we can give memory to the class as well, this is the famous style of writing program in Salesforce industry. \
+
+(which style is famous? of not using Object / instance style)
 
 
