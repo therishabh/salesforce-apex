@@ -158,7 +158,7 @@ Q. What is function parameter and why we need that function parameter why we nee
 Q. I don't want to use function parameter can I keep it blank ?
 
 
-**Current Moral:**
+**Current Moral:** \
 Class = Variables + Functions
 
 Variables are for Data storage.
@@ -168,5 +168,11 @@ Functions are for performing some Activity | Action.
 Problem: Class wont have any memory, so we cant do anything!
 
 Solution : **Object**
+
+**Very Important Current Moral:** \
+Class = Variables + Functions (No Memory) \
+Object = Variables + Functions + MEMORY \
+Integer, Double, String, Boolean = primitive data type AKA system defined data type \
+collection or apex class or object = user defined data type
 
 
