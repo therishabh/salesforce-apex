@@ -135,10 +135,11 @@ Map<String, String> country_currencies = new Map<String, String>();
 ## Function
 
 ### Important points related to functions
-1.Functions where they will have return value = non void functions
-2.Functions where they will NOT have return value = void functions
-3.Functions where they will expect some parameters/data from us = functions with parameters
-4. Functions where they will NOT expect any parameters from us = functions WITHOUT parameters
+
+- Functions where they will have return value = non void functions
+- Functions where they will NOT have return value = void functions
+- Functions where they will expect some parameters/data from us = functions with parameters
+- Functions where they will NOT expect any parameters from us = functions WITHOUT parameters
 
 Q. Why we need class in salesforce programming ?
 
