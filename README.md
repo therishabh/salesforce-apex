@@ -184,15 +184,15 @@ Problem: Class wont have any memory, so we cant do anything!
 Solution : **Object**
 
 **Very Important Current Moral:** \
-- Class = Variables + Functions (No Memory) \
-- Object = Variables + Functions + MEMORY \
-- Integer, Double, String, Boolean = primitive data type AKA system defined data type \
-- collection or apex class or object = user defined data type \
+- Class = Variables + Functions (No Memory)
+- Object = Variables + Functions + MEMORY
+- Integer, Double, String, Boolean = primitive data type AKA system defined data type
+- collection or apex class or object = user defined data type
 - Whenever is user defined datatype then new keyword is required.
 
 ### Static Keyword
 
-**See this example, how to bypass Object with the help of static keyword:** \
+**See this example, how to bypass Object with the help of static keyword:**
 
 ```apex
 public class AppleMobileClass (
