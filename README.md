@@ -132,7 +132,21 @@ Map is a key-value pair that contains each value’s unique key. It is used when
 Map<String, String> country_currencies = new Map<String, String>();
 ```
 
-## Function
+## OOPS Concept
+
+Q. What is a Class? \
+- A class is a user-defined layout or blueprint of an object that describes what a specific kind of object will look like. A class description consists of two things:
+      1) Attributes or member variables
+      2) Implementations of behavior or member functions.
+- So in object-oriented terminology: A class is a blueprint that defines the variables and the methods common to all objects of a certain kind. It helps us to bind data and methods together, making the code reusable, unlike procedural language.
+
+Q. What is an Object? \
+- An object is a single instance of a class, which contains data and methods working on that data. So an object consists of three things:
+
+**Special Notes**
+- When a class is defined, no memory is allocated, but memory is allocated when an object is created.
+- We can create many objects from the same class type.
+
 
 ### Important points related to functions
 
@@ -170,9 +184,36 @@ Problem: Class wont have any memory, so we cant do anything!
 Solution : **Object**
 
 **Very Important Current Moral:** \
-Class = Variables + Functions (No Memory) \
-Object = Variables + Functions + MEMORY \
-Integer, Double, String, Boolean = primitive data type AKA system defined data type \
-collection or apex class or object = user defined data type
+- Class = Variables + Functions (No Memory) \
+- Object = Variables + Functions + MEMORY \
+- Integer, Double, String, Boolean = primitive data type AKA system defined data type \
+- collection or apex class or object = user defined data type \
+- Whenever is user defined datatype then new keyword is required.
+
+### Static Keyword
+
+**See this example, how to bypass Object with the help of static keyword:** \
+
+```apex
+public class AppleMobileClass (
+
+    //variable declaration
+    private static integer DurationOfCall;
+
+    public static void CallAPerson(integer NumToCall) {
+        // code to video call a person
+    }
+}
+
+// Syntax to execute
+ClassName.FunctionName(Parameter);
+
+// To execute the function
+AppleMobileClass.CallAPerson(9970629222);
+```
+
+
+
+SUCCESS !!! NO NEED OF OBJECT !!!
 
 
