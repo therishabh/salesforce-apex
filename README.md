@@ -223,4 +223,32 @@ we can give memory to the class as well, this is the famous style of writing pro
 
 (which style is famous? of not using Object / instance style)
 
+### Access Specifier
+
+- Private
+- Public
+- Protect
+- Global
+
+```apex
+public class APEXClassForCalculator {
+
+    private static integer VarSum;
+    private static integer VarMultiplication;
+    
+    // function for addition
+    public static integer add(integer a, integer b){
+        VarSum = a + b;
+        return VarSum;
+    }
+    
+    // function for multiplication
+    public static void multiply(integer a, integer b){
+        system.debug(a * b);
+    }
+}
+
+
+APEXClassForCalculator.multiply(3,6);
+```
 
