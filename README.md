@@ -304,3 +304,16 @@ All triggers define implicit variables that allow developer to access run-time c
 - **isAfter:** Returns true if the trigger was fired after all records were saved.
 - **isUndelete:** Returns true if the trigger was fired after a record is recovered from Recycle Bin.
 - **size:** The total number of records in a trigger invocation, both old and new
+- **new:**
+    - Returns a list of new versions of sObject records.
+    - This sObject list is available in Insert, Update and Undelete triggers, and the records can only be modified in before trigger.
+- **newMap:**
+    - A Map of ids to the new versions of sObject records.
+    - Available in after insert, before update, after update, after undelete triggers.
+- **old:**
+    - Returns a list of old versions of sObject records.
+    - Available in before update, after update, before delete, after delete triggers.
+- **oldMap:**
+    - A map of ids to the old versions of sObject records.
+    - Available in before update, after update, before delete, after delete triggers.
+      
