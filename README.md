@@ -334,7 +334,7 @@ trigger AccountTrigger on Account (before insert) {
 }
 ```
 ```apex
-// For the best practice we have to write code Trigger Handler separately in apex class for complete logic part.
+// For the best practice we need to write business logic in Apex class as Trigger Handler separately.
 
 // Trigger
 trigger AccountTrigger on Account (before insert) {
