@@ -355,8 +355,9 @@ public class AccountTriggerHandler {
 }
 ```
 ```apex
-// File Name : AccountTrigger.apxt
+// Question : Create related Opportunity when Account is created.
 
+// File Name : AccountTrigger.apxt
 trigger AccountTrigger on Account (before insert, after insert) {
     if(Trigger.isInsert){
         if(Trigger.isBefore){
@@ -371,7 +372,6 @@ trigger AccountTrigger on Account (before insert, after insert) {
 
 
 // File Name : AccountTriggerHandler.apxc
-
 public class AccountTriggerHandler {
     public static void updateDescription(List<Account> accList){
         for(Account acc: accList){
