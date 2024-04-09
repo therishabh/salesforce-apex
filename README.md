@@ -97,6 +97,8 @@ if(myList.isEmpty()){
 **Output**
 <img width="1362" alt="Screenshot 2024-04-02 at 4 52 38 PM" src="https://github.com/therishabh/salesforce-dev/assets/7955435/ab821b66-d603-4afd-8c47-e0d3c7915aa8">
 
+List of all methods available in List : https://developer.salesforce.com/docs/atlas.en-us.apexref.meta/apexref/apex_methods_system_list.htm#apex_System_List_methods
+
 - What is the difference between Add Vs Set function in List collection ?
   A. Set is used for replace any value while Add is used for add new value at the end of the list we don't need to pass index number in Add.
 
@@ -251,4 +253,19 @@ public class APEXClassForCalculator {
 
 APEXClassForCalculator.multiply(3,6);
 ```
+## Trigger
+
+#### Introduction
+• Triggers are initiated when a record is inserted, updated, deleted and undeleted.
+• Use triggers to do operations that cannot be done by point and click tools provided in Salesforce.
+• We can do things using triggers that we can do through Apex, including execution SOQL and DML or calling custom methods.
+• Triggers can be created for both Standard and Custom objects.
+• We can perform custom operations before or after events to records.
+• By default triggers are active as you create them.
+
+#### Types of Triggers
+• Before Triggers
+    It is used to update or validate record values before saved to database.
+• After Triggers
+    It is used to access field values that are set by the system such as Ids, and to make changes in the related/other records. The records that fire the after trigger are read-only.
 
