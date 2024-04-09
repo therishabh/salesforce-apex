@@ -256,16 +256,16 @@ APEXClassForCalculator.multiply(3,6);
 ## Trigger
 
 #### Introduction
-• Triggers are initiated when a record is inserted, updated, deleted and undeleted.
-• Use triggers to do operations that cannot be done by point and click tools provided in Salesforce.
-• We can do things using triggers that we can do through Apex, including execution SOQL and DML or calling custom methods.
-• Triggers can be created for both Standard and Custom objects.
-• We can perform custom operations before or after events to records.
-• By default triggers are active as you create them.
+- Triggers are initiated when a record is inserted, updated, deleted and undeleted.
+- Use triggers to do operations that cannot be done by point and click tools provided in Salesforce.
+- We can do things using triggers that we can do through Apex, including execution SOQL and DML or calling custom methods.
+- Triggers can be created for both Standard and Custom objects.
+- We can perform custom operations before or after events to records.
+- By default triggers are active as you create them.
 
 #### Types of Triggers
-• Before Triggers
-    It is used to update or validate record values before saved to database.
-• After Triggers
-    It is used to access field values that are set by the system such as Ids, and to make changes in the related/other records. The records that fire the after trigger are read-only.
+- Before Triggers
+  - It is used to update or validate record values before saved to database.
+- After Triggers
+    - It is used to access field values that are set by the system such as Ids, and to make changes in the related/other records. The records that fire the after trigger are read-only.
 
