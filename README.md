@@ -293,3 +293,14 @@ trigger AccountTrigger on Account (before insert) {
     System.debug('Trigger before insert event');
 }
 ```
+
+#### Trigger Context Variables
+All triggers define implicit variables that allow developer to access run-time context. These variables are contained in the System. Trigger class.
+- **isExecuting:** Returns true if the current context of Apex code is a trigger, not a VF page, a web service, or an executeanonymous) API call.
+- **isinsert:** Returns true if trigger was fired due to an insert operation, from the Salesforce UI, Apex or API.
+- **isUpdate:** Returns true if trigger was fired due to an update operation, from the Salesforce Ul, Apex or API.
+- **isDelete:** Returns true if trigger was fired due to a delete operation, from the Salesforce Ul, Apex or API.
+- **isBefore:** Returns true if the trigger was fired before any record was saved.
+- **isAfter:** Returns true if the trigger was fired after all records were saved.
+- **isUndelete:** Returns true if the trigger was fired after a record is recovered from Recycle Bin.
+- **size:** The total number of records in a trigger invocation, both old and new
