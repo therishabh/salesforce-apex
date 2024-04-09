@@ -415,3 +415,34 @@ public class AccountTriggerHandler {
     }
 }
 ```
+
+```apex
+/*
+Question :
+Before Update
+    - If account phone is updated then put update message in description.
+*/
+
+// File Name : AccountTrigger.apxt
+trigger AccountTrigger on Account (before update) {
+    if(Trigger.isUpdate){
+        if(Trigger.isBefore){
+            AccountTriggerHandler.updatePhoneDesc(Trigger.new, Trigger.oldMap);
+        }
+    }
+}
+
+
+// File Name : AccountTriggerHandler.apxc
+public class AccountTriggerHandler {
+    public static void updatePhoneDesc(List<Account> accList, Map<ID, Account> accOldMap){
+        //execute a loop on update account list
+        for(Account acc: accList){
+            if(acc.Phone != accOldMap.get(acc.Id).Phone){
+                acc.Description = 'Phone number has been change. Old Value is : '+ accOldMap.get(acc.Id).Phone + ' New Value is : ' + acc.Phone;
+            }
+        }
+    }
+}
+
+```
