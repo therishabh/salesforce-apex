@@ -354,3 +354,57 @@ public class AccountTriggerHandler {
     }
 }
 ```
+```apex
+// File Name : AccountTrigger.apxt
+
+trigger AccountTrigger on Account (before insert, after insert) {
+    if(Trigger.isInsert){
+        if(Trigger.isBefore){
+            AccountTriggerHandler.populateRating(Trigger.new);
+        } else if(Trigger.isAfter){
+            // Trigger.new will be read only in After insert.
+            AccountTriggerHandler.createOpportunity(Trigger.new);
+        }
+    }
+}
+
+
+
+// File Name : AccountTriggerHandler.apxc
+
+public class AccountTriggerHandler {
+    public static void updateDescription(List<Account> accList){
+        for(Account acc: accList){
+            acc.Description = 'Account has been created. !!Trigger!!';
+        }
+    }
+    
+    public static void populateRating(List<Account> accList){
+        for(Account acc: accList){
+            if(acc.Industry == 'Media'){
+                acc.Rating = 'Hot';
+            }
+        }
+    }
+    
+    public static void createOpportunity(List<Account> accList){
+        List <Opportunity> oppList = new List<Opportunity>();
+        
+        for(Account acc: accList){
+            if(acc.Active__c == 'Yes'){
+                Opportunity opp = new Opportunity();
+                opp.AccountId = acc.Id;
+                opp.Name = acc.Name + ' Opportunity';
+                opp.CloseDate = System.today();
+                opp.StageName = 'Qualification';
+                opp.Description = 'Opportunity has been created Through !!Account Trigger!!';
+                oppList.add(opp);
+            }
+        }
+        if(!oppList.isEmpty()){
+            insert oppList;
+        }
+        
+    }
+}
+```
