@@ -262,6 +262,8 @@ APEXClassForCalculator.multiply(3,6);
 - Triggers can be created for both Standard and Custom objects.
 - We can perform custom operations before or after events to records.
 - By default triggers are active as you create them.
+- _Trigger class will execute automatically based on trigger event what you have definded in Trigger class._
+- Trigger file extension is **apxt** while Apex class file extension is **apxc**
 
 #### Types of Triggers
 - Before Triggers
@@ -280,19 +282,6 @@ APEXClassForCalculator.multiply(3,6);
 - after update
 - after delete
 - after undelete
-
-#### Syntax
-```apex
-trigger TriggerName on ObjectName (trigger_events) {
-    //code_block
-}
-```
-#### Examples
-```apex
-trigger AccountTrigger on Account (before insert) {
-    System.debug('Trigger before insert event');
-}
-```
 
 #### Trigger Context Variables
 All triggers define implicit variables that allow developer to access run-time context. These variables are contained in the System. Trigger class.
@@ -317,3 +306,51 @@ All triggers define implicit variables that allow developer to access run-time c
     - A map of ids to the old versions of sObject records.
     - Available in before update, after update, before delete, after delete triggers.
       
+#### Trigger Context Variable Comparison 
+<img width="1211" alt="Screenshot 2024-04-09 at 1 30 13 PM" src="https://github.com/therishabh/salesforce-dev/assets/7955435/29eadfad-6a82-4a8a-82a2-f80f9f3ef6b2">
+
+#### Syntax
+```apex
+trigger TriggerName on ObjectName (trigger_events) {
+    //code_block
+}
+```
+#### Examples
+```apex
+trigger AccountTrigger on Account (before insert) {
+    System.debug('Trigger before insert event');
+}
+```
+```apex
+trigger AccountTrigger on Account (before insert) {
+    if(Trigger.isInsert){
+        if(Trigger.isBefore){
+            // Trigger.new is a sObject List
+            for(Account acc: Trigger.new){
+                acc.description = 'Account has been created';
+            }
+        }
+    }
+}
+```
+```apex
+// For the best practice we have to write code Trigger Handler separately in apex class for complete logic part.
+
+// Trigger
+trigger AccountTrigger on Account (before insert) {
+    if(Trigger.isInsert){
+        if(Trigger.isBefore){
+            AccountTriggerHandler.updateDescription(Trigger.new);
+        }
+    }
+}
+
+// Trigger Handler (Apex Class)
+public class AccountTriggerHandler {
+    public static void updateDescription(List<Account> accList){
+        for(Account acc: accList){
+            acc.Description = 'Account has been created. !!Trigger!!';
+        }
+    }
+}
+```
