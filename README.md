@@ -355,7 +355,14 @@ public class AccountTriggerHandler {
 }
 ```
 ```apex
-// Question : Create related Opportunity when Account is created.
+/*
+Question :
+Before Insert
+    - If Account Industry is not null and having value as 'Media' then populate Rating as Hot.
+
+After Insert
+    - Create related Opportunity when Account is created.
+*/
 
 // File Name : AccountTrigger.apxt
 trigger AccountTrigger on Account (before insert, after insert) {
