@@ -269,3 +269,27 @@ APEXClassForCalculator.multiply(3,6);
 - After Triggers
     - It is used to access field values that are set by the system such as Ids, and to make changes in the related/other records. The records that fire the after trigger are read-only.
 
+#### Trigger order of Execution
+<img width="875" alt="Screenshot 2024-04-09 at 12 57 35 PM" src="https://github.com/therishabh/salesforce-dev/assets/7955435/d158fd8c-25e0-4846-89d0-2a3813b33797">
+
+#### Trigger Events
+- before insert
+- before update
+- before delete
+- after insert
+- after update
+- after delete
+- after undelete
+
+#### Syntax
+```apex
+trigger TriggerName on ObjectName (trigger_events) {
+    //code_block
+}
+```
+#### Examples
+```apex
+trigger AccountTrigger on Account (before insert) {
+    System.debug('Trigger before insert event');
+}
+```
