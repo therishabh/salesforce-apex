@@ -490,3 +490,51 @@ public class AccountTriggerHandler {
     }
 }
 ```
+
+```apex
+/*
+Question:
+Before Delete
+    - Account record cannot be deleted if active is Yes.
+    - Use Custom Label to show Error Message.
+    - Apply a check that only System Administrator profile user can delete an account.
+*/
+
+// File Name : AccountTrigger.apxt
+trigger AccountTrigger on Account (before delete) {
+    if(Trigger.isInsert){
+        if(Trigger.isBefore){
+            // we'll pass null as oldMap here because for insert field we don't have oldMap value.
+            AccountTriggerHandler.populateRating(Trigger.new, null);
+        }
+    }
+
+    if(Trigger.isUpdate){
+        if(Trigger.isBefore){
+            AccountTriggerHandler.populateRating(Trigger.new, Trigger.oldMap);
+        }
+    }
+}
+
+
+// File Name : AccountTriggerHandler.apxc
+public class AccountTriggerHandler {
+    public static void populateRating(List<Account> accList, Map<Id, Account> accOldMap){
+        for(Account acc: accList){
+            // here i am checking if this is insert operation with accOldMap == null
+            // and further check for Industry value should not be null and it should be Media then execute 
+            if((accOldMap == null && acc.Industry != null && acc.Industry == 'Media')){
+                acc.Rating = 'Hot';
+                acc.Description = 'Rating updated with Hot on Insert !!AccountTrigger!!';
+            }
+            // here i am checking if user touched or changed Industry field and select Media
+            // with code `accOldMap.get(acc.Id).Industry` we we get old value of Industry field.
+            else if(accOldMap.get(acc.Id).Industry != acc.Industry && acc.Industry == 'Media'){
+                acc.Rating = 'Hot';
+                acc.Description = acc.Description || '' + ' \n Rating updated with Hot on Update !!AccountTrigger!!';
+            }
+        }
+    }
+}
+
+```
