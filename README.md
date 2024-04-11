@@ -502,16 +502,9 @@ Before Delete
 
 // File Name : AccountTrigger.apxt
 trigger AccountTrigger on Account (before delete) {
-    if(Trigger.isInsert){
-        if(Trigger.isBefore){
-            // we'll pass null as oldMap here because for insert field we don't have oldMap value.
-            AccountTriggerHandler.populateRating(Trigger.new, null);
-        }
-    }
-
-    if(Trigger.isUpdate){
-        if(Trigger.isBefore){
-            AccountTriggerHandler.populateRating(Trigger.new, Trigger.oldMap);
+    if(Trigger.isBefore){
+        if(Trigger.isDelete){
+            AccountTriggerHandler.preventDelete(Trigger.old);
         }
     }
 }
@@ -519,22 +512,68 @@ trigger AccountTrigger on Account (before delete) {
 
 // File Name : AccountTriggerHandler.apxc
 public class AccountTriggerHandler {
-    public static void populateRating(List<Account> accList, Map<Id, Account> accOldMap){
+    public static void preventDelete(List<Account> accList){
+        
+        profile p = [SELECT Id FROM Profile WHERE Name = 'System Administrator'];
+        
         for(Account acc: accList){
-            // here i am checking if this is insert operation with accOldMap == null
-            // and further check for Industry value should not be null and it should be Media then execute 
-            if((accOldMap == null && acc.Industry != null && acc.Industry == 'Media')){
-                acc.Rating = 'Hot';
-                acc.Description = 'Rating updated with Hot on Insert !!AccountTrigger!!';
-            }
-            // here i am checking if user touched or changed Industry field and select Media
-            // with code `accOldMap.get(acc.Id).Industry` we we get old value of Industry field.
-            else if(accOldMap.get(acc.Id).Industry != acc.Industry && acc.Industry == 'Media'){
-                acc.Rating = 'Hot';
-                acc.Description = acc.Description || '' + ' \n Rating updated with Hot on Update !!AccountTrigger!!';
+            // here userInfo.getProfileId() we will get logged-in user Id
+            if(userInfo.getProfileId() != p.Id || acc.Active__c == 'Yes'){
+                acc.addError(Label.Prevent_Account_Deletion );
             }
         }
     }
 }
 
+```
+
+```apex
+/*
+Question:
+After Delete
+    - When a contact record is deleted then update 'Total Contact Count' field on related Account.
+After Undelete
+    - When a contact record is undeleted then update 'Total Contact Count' field on related Account.
+*/
+
+// File Name : ContactTrigger.apxt
+trigger ContactTrigger on Contact (after insert, after delete, after undelete) {
+    if(Trigger.isAfter){
+        if(Trigger.isInsert){
+            ContactTriggerHandler.updateContactCount(Trigger.new);
+        }   
+        
+        if(Trigger.isDelete){
+            ContactTriggerHandler.updateContactCount(Trigger.old);
+        }
+        
+        if(Trigger.isUndelete){
+            ContactTriggerHandler.updateContactCount(Trigger.new);
+        }
+    }
+}
+
+// File Name :
+public class ContactTriggerHandler {
+    
+    public static void updateContactCount(List<Contact> conList){
+        List<Account> accList = new List<Account>();
+        Set<Id> accIdSet = new Set<Id>();
+        
+        for(Contact con: conList){
+            if(con.AccountId != null){
+                accIdSet.add(con.AccountId);
+            }
+        }
+        
+        for(Account acc: [SELECT Id, (SELECT Id FROM Contacts) FROM Account WHERE Id IN: accIdSet]){
+            acc.Contact_Count__c = acc.Contacts.size();
+            accList.add(acc);
+        }
+        
+        if(!accList.isEmpty()){
+            update accList;
+        }
+    }
+}
 ```
