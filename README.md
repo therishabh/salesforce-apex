@@ -577,3 +577,17 @@ public class ContactTriggerHandler {
     }
 }
 ```
+
+## Asynchronous Processing Basics
+- An asynchronous process executes a task in the background.
+- User doesn't have to wait for the task to finish.
+- Use Asynchronous Apex for:
+    - Callouts to external systems
+    - Operations that require higher limits
+    - Code that needs to run at a certain time.
+
+
+
+Attempt | #1 | #2 | #3 | #4 | #5 | #6 | #7 | #8 | #9 | #10 | #11
+--- | --- | --- | --- |--- |--- |--- |--- |--- |--- |--- |---
+Seconds | 301 | 283 | 290 | 286 | 289 | 285 | 287 | 287 | 272 | 276 | 269
