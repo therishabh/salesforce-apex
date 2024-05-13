@@ -1,20 +1,17 @@
 # Salesforce development
 
-- Programming world:
-+
-=
-<=
-{
-)
-Integer
-String
-Class
-Trigger
-If
-Else 
-etc ....
-
-
+**Programming world:** </br>
+= </br>
+<= </br>
+{ </br>
+) </br>
+Integer </br>
+String </br>
+Class </br>
+Trigger </br>
+If </br>
+Else  </br>
+etc .... </br>
 
 ## Collections
 - There are 3 types of collections.
@@ -585,9 +582,16 @@ public class ContactTriggerHandler {
     - Callouts to external systems
     - Operations that require higher limits
     - Code that needs to run at a certain time.
+      
+**Benefits of Asynchronous Processing**
+- Use efficiency
+- Scalability
+- Higher Limits
 
-
-
-Attempt | #1 | #2 | #3 | #4 | #5 | #6 | #7 | #8 | #9 | #10 | #11
---- | --- | --- | --- |--- |--- |--- |--- |--- |--- |--- |---
-Seconds | 301 | 283 | 290 | 286 | 289 | 285 | 287 | 287 | 272 | 276 | 269
+**Types of Asynchronous Processing**
+Туре | Overview | Common Scenarios
+--- | --- | ---
+Future Methods | Run in their own thread, and do not start until resources are available | Web service callout.
+Batch Apex | Run large jobs that would exceed normal processing limits | Data cleansing or archiving of records
+Queueable Apex | Similar to future methods, but provide additional job chaining and allow more complex data types to be used. | Performing sequential processing operations with external Web Services.
+Scheduled Apex |  Schedule Apex to run at a specified time. | Daily or weekly tasks.
