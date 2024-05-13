@@ -595,3 +595,9 @@ Future Methods | Run in their own thread, and do not start until resources are a
 Batch Apex | Run large jobs that would exceed normal processing limits | Data cleansing or archiving of records
 Queueable Apex | Similar to future methods, but provide additional job chaining and allow more complex data types to be used. | Performing sequential processing operations with external Web Services.
 Scheduled Apex |  Schedule Apex to run at a specified time. | Daily or weekly tasks.
+
+**Governor & Execution Limits**
+- Asynchronous apex provides higher governor and execution limits.
+- Number of SOQL is doubled from 100 to 200.
+- Total heap size and maximum CPU time are similarly larger for asynchronous calls.
+- As you get higher limits with async, also those governor limits are independent of the limits in the synchronous request that queued the async request initially.
