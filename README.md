@@ -575,6 +575,27 @@ public class ContactTriggerHandler {
 }
 ```
 
+## DML (Data Manipulation Language)
+- DML is used to insert, update, delete & undelete records.
+- Use upsert to either insert or update a record.
+- Always perform DML in Bulk.
+- Handle Exceptions.
+
+**Insert Records**
+- Insert only one record.
+- Fetch Id just after insertion of record.
+- Insert records in bulk using List.
+- Governor limits check :
+    - Inserting two records separately
+    - Insert two records through a List.
+- Insert related records. First insert Account then Contact.
+  
+> Note: Check newly created records in Org.
+
+
+## SOQL Cheat Sheet
+https://www.apexhours.com/soql-cheat-sheet/
+
 ## Asynchronous Processing Basics
 - An asynchronous process executes a task in the background.
 - User doesn't have to wait for the task to finish.
