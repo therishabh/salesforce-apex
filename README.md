@@ -594,6 +594,21 @@ public class ContactTriggerHandler {
   
 > Note: Check newly created records in Org.
 
+```java
+public class DMLDemo {
+    public static void insertDemo(){
+        List<Account> accList = new List<Account>();
+        for(integer i = 1; i <= 5; i++){
+            Account acc = new Account();
+        	acc.Name = 'Test DML 2000' + i;
+            accList.add(acc);
+        }
+        insert accList;
+        system.debug('Account Id : '+ accList);
+    }
+}
+```
+
 
 ## SOQL Cheat Sheet
 https://www.apexhours.com/soql-cheat-sheet/
