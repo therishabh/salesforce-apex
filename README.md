@@ -609,6 +609,11 @@ public class DMLDemo {
 }
 ```
 
+**Update Records**
+- Query existing records and display their values.
+- Then update the record and do Update DML.
+- Check updated records in Org.
+
 
 ## SOQL Cheat Sheet
 https://www.apexhours.com/soql-cheat-sheet/
@@ -639,3 +644,85 @@ Scheduled Apex |  Schedule Apex to run at a specified time. | Daily or weekly ta
 - Number of SOQL is doubled from 100 to 200.
 - Total heap size and maximum CPU time are similarly larger for asynchronous calls.
 - As you get higher limits with async, also those governor limits are independent of the limits in the synchronous request that queued the async request initially.
+
+https://developer.salesforce.com/docs/atlas.en-us.salesforce_app_limits_cheatsheet.meta/salesforce_app_limits_cheatsheet/salesforce_app_limits_platform_apexgov.htm
+
+**How Async Processing Works?** </br>
+- Enqueue
+- Persistence
+- Dequeue
+
+### Future Method in apex
+- Future Apex runs process in a separate thread, at a later time when system resources become available.
+- Use @future annotation to create future methods.
+- In Synchronous processing, all method calls are made from the same thread and no additional processing can occur until the process is complete.
+- Whereas in future method, methods runs asynchronously in its own thread.
+- This unblocks users from performing other operations.
+- Provides higher governor & execution limits for processing.
+
+**Syntax**
+```js
+global class FutureClass
+{
+    @future
+    public static void myFutureMethod()
+    {   
+         // Perform some operations
+    }
+}
+```
+
+**Example**
+```js
+public class AccountCalculator {
+	@future
+    public static void countContacts(List<Id> accIds){
+        List<Account> accList = [SELECT Id, Count_Number_of_Contacts__c 
+                                 (SELECT Id FROM Contacts) 
+                                 FROM Account 
+                                 WHERE Id IN :accIds];
+        for(Account acc:accList){
+            acc.Count_Number_of_Contacts__c = acc.Contacts.size();
+        }
+        
+        if(!accList.isEmpty()){
+            update accList;
+        }
+        
+    }
+}
+```
+
+execute code
+```js
+List<Account> accList = [SELECT Id FROM 
+                        Account LIMIT 10];
+List<Id> accIds = new List<Id>();
+for(Account acc: accList){
+    accIds.add(acc.Id);
+}
+
+AccountCalculator.countContacts(accIds);
+```
+
+**Things to Remember**
+• It can happen that future methods are running in different order as they are called.
+• You cannot call a future method from another.
+• There is a limit of 50 future calls per Apex invocation. There is an additional limit on the number of calls in a 24-hour period.
+
+
+### Scheduled Apex
+- You can run Apex classes at a specified time.
+- Run Maintenance tasks on Daily or Weekly basis.
+- Implements Schedulable interface in Apex class.
+
+**Syntax**
+```java
+global class SomeClass implements Schedulable {
+    global void execute(SchedulableContext ctx) {
+    // write some code
+    }
+}
+```
+
+
