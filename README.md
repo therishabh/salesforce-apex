@@ -762,12 +762,12 @@ public class CreateAccountAndUser {
 ```js
 public class ContactBatch implements Database.Batchable<sobject> {
     public Database.QueryLocator start(Database.BatchableContext BC){
-        return Database• getQueryLocator (query);
+        return Database.getQueryLocator(query);
     }
     
     public void execute(Database.BatchableContext BC, List<sobject> scope){
         for (sobject s : scopel{
-            s.put (Field,Value);
+            s.put(Field,Value);
         }
         update scope;
     }
@@ -779,9 +779,29 @@ public class ContactBatch implements Database.Batchable<sobject> {
 ```
 
 **Example**
+```js
+public class ContactBatch implements Database.Batchable<sobject> {
+    public Database.QueryLocator start(Database.BatchableContext BC){
+        return Database.getQueryLocator('SELECT Id FROM Contact');
+    }
+    
+    public void execute(Database.BatchableContext BC, List<Contact> contactList){
+        for (Contact con: contactList{
+            con.Status__c = 'Active'
+        }
+        update scope;
+    }
 
-
-
+    public void finish(Database.Batchablecontext BC){
+        system.debug('operation performed successfully.')
+    ｝
+}
+```
+**Execute Window**
+```
+ContactBatch con = new ContactBatch();
+Database.executeBatch(con, 10);
+```
 
 ### Scheduled Apex
 - You can run Apex classes at a specified time.
