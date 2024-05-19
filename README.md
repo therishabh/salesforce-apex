@@ -12,6 +12,9 @@
 6. [DML (Data Manipulation Language)](#dml-data-manipulation-language)
 7. [SOQL Cheat Sheet](#soql-cheat-sheet)
 8. [Asynchronous Processing Basics](#asynchronous-processing-basics)
+   - [Future Method in apex](#future-method-in-apex)
+   - [Batch Apex](#batch-apex)
+   - 
 
 ------
 
@@ -726,6 +729,59 @@ public class CreateAccountAndUser {
 • It can happen that future methods are running in different order as they are called.
 • You cannot call a future method from another.
 • There is a limit of 50 future calls per Apex invocation. There is an additional limit on the number of calls in a 24-hour period.
+
+### Batch Apex
+1) When you are dealing with big data(millions of records) that can exceed normal processing limits then you use Batch there.
+2) Batch is most advanced in Asynchronous Apex.
+3) In Batch Apex, you can process records asynchronously in batches.
+4) Default batch size is 200.
+5) Maximum Batch size is 2000.
+6) Implements Database.Batchable interface.
+7) If you are using Database. QueryLocator it can retrieves 50 million records from Database while Database. Query retrieves 50 k records.
+
+**Database.Batchable interface gives three methods -**
+**1. start (one time run) -** This method collects all the records or objects to be passed to **execute** method for further processing.
+**2. execute (running depends on number of jobs) -** 
+    - This method executes the functionality or run the process.
+    - execute method takes Database.BatchableContext(collects the records or object).
+    - A list of object (List‹sobject>).
+**3. finish(one time run) -** Used to execute post processing operations. (eg : sending an email).
+
+**Advantages/Features of Batch Apex:**
+- In finish method you can invoke another batch.
+- When 1 record in a batch fails, that whole batch will be rolled back, but other batches will not be affected.
+- Batch apex can make callouts to external systems by using Database.AllowsCallouts interface.
+- You can track the state of batch execution by using Database.stateful interface.
+- You can schedule batch apex class by implementing Schedulable interface.
+
+**Disadvantages of Batch Apex:**
+• You cannot call future method from Batch class.
+• Only one batch Apex job's start method can run at a time in an org.
+
+**Syntax**
+```js
+public class ContactBatch implements Database.Batchable<sobject> {
+    public Database.QueryLocator start(Database.BatchableContext BC){
+        return Database• getQueryLocator (query);
+    }
+    
+    public void execute(Database.BatchableContext BC, List<sobject> scope){
+        for (sobject s : scopel{
+            s.put (Field,Value);
+        }
+        update scope;
+    }
+
+    public void finish(Database.Batchablecontext BC){
+        system.debug('operation performed successfully.')
+    ｝
+}
+```
+
+**Example**
+
+
+
 
 ### Scheduled Apex
 - You can run Apex classes at a specified time.
