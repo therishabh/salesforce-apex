@@ -833,6 +833,14 @@ system.debug('Job Id : ' + JobId);
 - You can run Apex classes at a specified time.
 - Run Maintenance tasks on Daily or Weekly basis.
 - Implements Schedulable interface in Apex class.
+- It is also a type of asynchronous apex in which you can schedule your jobs daily & weekly.
+- The Apex scheduler lets you delay execution so that you can run apex classes at a specified time.
+- It schedules a job in future.
+- It's a global class that implements Schedulable Interface.
+- You can schedule it using "CRON Expression" or using "Schedule apex button" in Salesforce Ul.
+- It has only execute method.
+- You can have only 100 active or scheduled jobs concurrently.
+- You can call future method using schedule apex ;@future(callout=true)
 
 **Syntax**
 ```java
