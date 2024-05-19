@@ -14,7 +14,7 @@
 8. [Asynchronous Processing Basics](#asynchronous-processing-basics)
    - [Future Method in apex](#future-method-in-apex)
    - [Batch Apex](#batch-apex)
-   - 
+   - [Queueable Apex](#queueable-apex)
 
 ------
 
@@ -786,21 +786,47 @@ public class ContactBatch implements Database.Batchable<sobject> {
     }
     
     public void execute(Database.BatchableContext BC, List<Contact> contactList){
-        for (Contact con: contactList{
-            con.Status__c = 'Active'
+        for(Contact con: contactList){
+            con.Status__c = 'Active';
         }
-        update scope;
+        update contactList;
     }
 
     public void finish(Database.Batchablecontext BC){
-        system.debug('operation performed successfully.')
-    ｝
+        system.debug('operation performed successfully.');
+    }
 }
 ```
 **Execute Window**
 ```
 ContactBatch con = new ContactBatch();
 Database.executeBatch(con, 10);
+```
+
+### Queueable Apex:
+1) It is also a type of asynchronous apex.
+2) It is similar to future method but provides additional functionality which future method was unable to provide -
+a) We can use non-primitive data type in Queueable apex.
+b) Chaining is possible.
+c) Can Monitor the job because when you submit job by invoking system.enqueueJob method it returns the ID.You can use that ID to monitor.
+
+**Example**
+```js
+public class ContactQueueable implements Queueable {
+    public void execute(QueueableContext context) {
+        List<Contact> conList = [Select id, status__c from Contact];
+        for (Contact con : conList){
+            con.status__c = 'Inactive';
+        }
+        update conList;
+    }
+}
+```
+**Execute Window**
+```
+ContactQueueable con = new ContactQueueable();
+ID JobId = System.enqueueJob(con);
+system.debug('Job Id : ' + JobId);
 ```
 
 ### Scheduled Apex
