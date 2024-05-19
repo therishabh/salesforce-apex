@@ -619,6 +619,9 @@ public class DMLDemo {
 https://www.apexhours.com/soql-cheat-sheet/
 
 ## Asynchronous Processing Basics
+- Asynchronous Apex is used to run processes in a separate thread, at a later time. An asynchronous process is a process or function that executes a task "in the background" without the user having to wait for the task to finish.
+- Synchronous Apex means entire Apex code is executed in one single go. Asynchronous term means not existing or occurring at the same time.
+- We use asynchronous apex mostly when callouts to external systems is required, code needs to be run at some particular time, higher Governor Limits are required for some operation.
 - An asynchronous process executes a task in the background.
 - User doesn't have to wait for the task to finish.
 - Use Asynchronous Apex for:
@@ -627,16 +630,17 @@ https://www.apexhours.com/soql-cheat-sheet/
     - Code that needs to run at a certain time.
       
 **Benefits of Asynchronous Processing**
-- Use efficiency
+- User Efficiency
 - Scalability
-- Higher Limits
+- Higher Governor Limits
+- Can process more number of records
 
 **Types of Asynchronous Processing**
 Туре | Overview | Common Scenarios
 --- | --- | ---
-Future Methods | Run in their own thread, and do not start until resources are available | Web service callout.
-Batch Apex | Run large jobs that would exceed normal processing limits | Data cleansing or archiving of records
-Queueable Apex | Similar to future methods, but provide additional job chaining and allow more complex data types to be used. | Performing sequential processing operations with external Web Services.
+Future Methods | Run in their own thread, and do not start until resources are available </br> <ul><li>Callouts to external Web services</li><li>Operations which can run in their own thread</li><li>To prevent the mixed DML error</li></ul>| Web service callout.
+Batch Apex | Run large jobs that would exceed normal processing limits </br> <ul><li>When processing is required on lots of records</li><li>Jobs that need larger query results</li></ul> | Data cleansing or archiving of records
+Queueable Apex | Similar to future methods, but provide additional job chaining and allow more complex data types to be used. </br> <ul><li>Processing on Non-primitive data types</li><li>Chaining of jobs</li><li>To start a long-running operation and get an ID for it</li></ul> | Performing sequential processing operations with external Web Services.
 Scheduled Apex |  Schedule Apex to run at a specified time. | Daily or weekly tasks.
 
 **Governor & Execution Limits**
@@ -659,6 +663,23 @@ https://developer.salesforce.com/docs/atlas.en-us.salesforce_app_limits_cheatshe
 - Whereas in future method, methods runs asynchronously in its own thread.
 - This unblocks users from performing other operations.
 - Provides higher governor & execution limits for processing.
+- future method never returns anything so we have to use static void keyword when declaring future method.
+- You can perform mixed DML use future method.
+
+**Mixed DML**
+There are two types of objects in Salesforce.
+1) Set Up Objects: Setup objects are the sObjects that affect the user's access to records in the organization. Eg - User, Profile, Permission Set etc.
+
+2) Non Setup Objects : All (Standard and Custom Objects).
+- A mixed DML Operation Error comes when you try to perform DML operations on setup and non-setup objects in a single transaction.
+- This restriction exists because some sObjects affect the user's record access in the org. You must insert or update these types of sObjects in a different transaction to prevent operations from happening with incorrect access-level permissions.
+- For example, you can't update an account and a user role in a single transaction.
+
+**Disadvantages of Future Method :**
+- Chaining is not possible so you cannot call a future from another future or batch apex like it is not guaranteed that method will execute in same order as they called.If you want that go for Queueable.
+- In a single request. You can make only 50 future calls.
+- Cannot Monitor: Method always be used static & void so you cannot return job ID then how can you monitor.
+- You cannot call future method using batch but you can call batch using future method.
 
 **Syntax**
 ```js
@@ -674,42 +695,37 @@ global class FutureClass
 
 **Example**
 ```js
-public class AccountCalculator {
-	@future
-    public static void countContacts(List<Id> accIds){
-        List<Account> accList = [SELECT Id, Count_Number_of_Contacts__c 
-                                 (SELECT Id FROM Contacts) 
-                                 FROM Account 
-                                 WHERE Id IN :accIds];
-        for(Account acc:accList){
-            acc.Count_Number_of_Contacts__c = acc.Contacts.size();
-        }
-        
-        if(!accList.isEmpty()){
-            update accList;
-        }
-        
+public class CreateAccountAndUser {
+    public static void createData(){
+        Account ac = new Account ();
+        ac.name = 'Salesforce Shiksha';
+        insert ac;
+    ｝
+    
+    public static void createuser (){
+        List‹Profile> p = [Select id,name from Profile where name = 'Standard User'];
+        List<UserRole> uRole = [Select id, name from UserRole where name = 'CEO'];
+        User u = new User();
+        u.FirstName = 'Salesforce';
+        u.LastName = 'Shiksha';
+        u.ProfileId = p[0].id;
+        u.UserRoleId = uRole[0].id;
+        u.Alias = 'sshik';
+        u.Email = 'salesforceshiksha676@gmail.com';
+        u.Username = 'salesforceshiksha676@gmail.com';
+        u.emailencodingkey= 'UTF-8';
+        u.languagelocalekey= 'en_US';
+        u.localesidkey='en_US';
+        u.timezonesidkey='America/Los_Angeles'
+        insert u;
     }
 }
-```
-
-execute code
-```js
-List<Account> accList = [SELECT Id FROM 
-                        Account LIMIT 10];
-List<Id> accIds = new List<Id>();
-for(Account acc: accList){
-    accIds.add(acc.Id);
-}
-
-AccountCalculator.countContacts(accIds);
 ```
 
 **Things to Remember**
 • It can happen that future methods are running in different order as they are called.
 • You cannot call a future method from another.
 • There is a limit of 50 future calls per Apex invocation. There is an additional limit on the number of calls in a 24-hour period.
-
 
 ### Scheduled Apex
 - You can run Apex classes at a specified time.
