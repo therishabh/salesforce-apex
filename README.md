@@ -706,12 +706,12 @@ public class CreateAccountAndUser {
     ｝
     
     public static void createuser (){
-        List‹Profile> p = [Select id,name from Profile where name = 'Standard User'];
+        List‹Profile> upro = [Select id,name from Profile where name = 'Standard User'];
         List<UserRole> uRole = [Select id, name from UserRole where name = 'CEO'];
         User u = new User();
         u.FirstName = 'Salesforce';
         u.LastName = 'Shiksha';
-        u.ProfileId = p[0].id;
+        u.ProfileId = upro[0].id;
         u.UserRoleId = uRole[0].id;
         u.Alias = 'sshik';
         u.Email = 'salesforceshiksha676@gmail.com';
@@ -719,7 +719,7 @@ public class CreateAccountAndUser {
         u.emailencodingkey= 'UTF-8';
         u.languagelocalekey= 'en_US';
         u.localesidkey='en_US';
-        u.timezonesidkey='America/Los_Angeles'
+        u.timezonesidkey='America/Los_Angeles';
         insert u;
     }
 }
@@ -739,13 +739,13 @@ public class CreateAccountAndUser {
 6) Implements Database.Batchable interface.
 7) If you are using Database. QueryLocator it can retrieves 50 million records from Database while Database. Query retrieves 50 k records.
 
-**Database.Batchable interface gives three methods -**
-**1. start (one time run) -** This method collects all the records or objects to be passed to **execute** method for further processing.
-**2. execute (running depends on number of jobs) -** 
-    - This method executes the functionality or run the process.
-    - execute method takes Database.BatchableContext(collects the records or object).
-    - A list of object (List‹sobject>).
-**3. finish(one time run) -** Used to execute post processing operations. (eg : sending an email).
+**Database.Batchable interface gives three methods -**</br>
+**1. start (one time run) -** This method collects all the records or objects to be passed to **execute** method for further processing.</br>
+**2. execute (running depends on number of jobs) -** </br>
+    - This method executes the functionality or run the process.</br>
+    - execute method takes Database.BatchableContext(collects the records or object).</br>
+    - A list of object (List‹sobject>).</br>
+**3. finish(one time run) -** Used to execute post processing operations. (eg : sending an email).</br>
 
 **Advantages/Features of Batch Apex:**
 - In finish method you can invoke another batch.
