@@ -15,6 +15,8 @@
    - [Future Method in apex](#future-method-in-apex)
    - [Batch Apex](#batch-apex)
    - [Queueable Apex](#queueable-apex)
+   - [Scheduled Apex](#scheduled-apex)
+9. [Integration in Salesforce](#integration-in-salesforce)
 
 ------
 
@@ -850,5 +852,44 @@ global class SomeClass implements Schedulable {
     }
 }
 ```
+
+### Integration in Salesforce
+**Integration Methods**
+
+Salesforce can be integrated with the other systems by using various methods depending upon the overall business requirement, the commonly used ones are:
+- Via Apex Method
+- Mulesoft, Informatica and other third party ETL Tools
+- Various AppExchange Products
+
+Points to remember before setting up the integration between Salesforce and the other system using any of the above-mentioned methods:
+- Document what and how often information needs to move between systems.
+- Review API limits
+- Identify the type of integration involved: Real-time or batch
+
+#### Webservices
+In Salesforce, web services are a set of APIs that allow users to interact with the Salesforce platform. These APIs define a set of features that are accessible over the web. Web services can be used for a variety of functionalities, including:
+- Data transfers
+- Business process management
+- Creating, retrieving, updating, or deleting records
+- Real-time integration with third-party devices and apps
+
+Apex web services can be used to expose Apex class methods as REST or SOAP web service operations. This allows external applications to integrate with Salesforce to perform operations such as creating, updating, and deleting records.</br>
+The SOAP API and REST API are both considered webservices and APIs in Salesforce. SOAP is a structured protocol, while REST is more flexible and less defined. Both of the API formats use data that both humans and machines can read, and both often use HTTP protocols.
+
+<img width="901" alt="Screenshot 2024-05-21 at 1 38 58 PM" src="https://github.com/therishabh/salesforce-apex/assets/7955435/0c17131e-6f78-441d-87b9-9faf7d4d76e6">
+
+### What is API ?
+API stands for Application Programming Interface and it's simply another way of sending commands to Salesforce, only this time there's no graphical UI to work through, instead developers use the APIs to send commands like View or Save to Salesforce programmatically by writing platform code.
+
+### What is connected app ?
+A connected app is a **framework that enables an external application to integrate with Salesforce using APIs and standard protocols, such as SAML, OAuth, and OpenID Connect**. Connected apps use these protocols to authenticate, authorize, and provide single sign-on (SSO) for external apps.</br>
+Connected Apps help user delegate their access without sharing sensitive credentials or giving full control of their applications to third parties. </br>
+> Note : The maximum number of OAuth 2.0 connected apps that can be registered through the dynamic client registration endpoint is 100
+
+
+
+
+
+
 
 
