@@ -887,18 +887,41 @@ Connected Apps help user delegate their access without sharing sensitive credent
 > Note : The maximum number of OAuth 2.0 connected apps that can be registered through the dynamic client registration endpoint is 100
 
 ### Postman Integration
-- First need to visit setup page in salesforce and search App manager inside setup page, then after click on **New Connected App** button.
+- To begin, navigate to the setup page in Salesforce and locate the "App Manager" within the setup menu. From there, click on the **New Connected App** button to proceed.
 <img width="721" alt="Screenshot 2024-05-21 at 1 58 57 PM" src="https://github.com/therishabh/salesforce-apex/assets/7955435/997b597e-8e24-4593-addf-c167568f07b8">
 
-- Enter all required information then check Enable OAuth Settings checkbox and then after enter callback url, now we have to select OAuth Scopes from list and for now we can select Full access and save that. it will take 10 mins to activate.
+- Enter all required information, then check the "Enable OAuth Settings" checkbox. Next, enter the callback URL. Now, proceed to select OAuth Scopes from the list. For now, you can select "Full access" and save your settings. Activation may take up to 10 minutes.
 ![screencapture-dyninno-dev-ed-develop-lightning-force-lightning-setup-ConnectedApplication-page-2024-05-21-14_02_43](https://github.com/therishabh/salesforce-apex/assets/7955435/0e5e7fad-3676-4237-abe7-5bc84106bc4e)
 
-- After creating your connected app you'll land to your app page and in this we need to click **Manage Consumer Details** button, and it'll first validate your account by verification code send on your email then after give you **Consumer Key** and **Consumer Secret**.
+- After creating your connected app, you'll be directed to your app page. Here, click on the **Manage Consumer Details** button. This action will first validate your account by sending a verification code to your email. After verification, you will receive your **Consumer Key** and **Consumer Secret**.
 <img width="1440" alt="Screenshot 2024-05-21 at 2 06 44 PM" src="https://github.com/therishabh/salesforce-apex/assets/7955435/2f6925df-8f5b-4610-98fb-f74d343cd888">
 <img width="721" alt="Screenshot 2024-05-21 at 2 07 44 PM" src="https://github.com/therishabh/salesforce-apex/assets/7955435/6042d211-966a-4645-97e1-b4f055e1b3cd">
 
+- To generate a Security Token, begin by clicking on your name in the header (classic mode) and navigate to the Settings section in the left-hand sidebar. From there, click on the "Reset My Security Token" link to create your token. Once generated, the token will be sent to your email address.
+<img width="721" alt="Screenshot 2024-05-21 at 2 14 20 PM" src="https://github.com/therishabh/salesforce-apex/assets/7955435/151810ce-65d1-4cf4-b4c7-64b2b01a1524">
+
+- Now Jump to our Postman and in postman first we need to create a request for access salesforce and get access_token.
+    - Enter URL in postman as base url and then add /services/oauth2/token
+    - create a post request.
+    - add following fields in body as form-data
+        - username : username of salesforce account
+        - password : password of salesforce account + Security Token which was sent to your email address.
+        - grant_type : 'password'
+        - client_id : Consumer Key
+        - client_secret : Consumer Secret
+
+<img width="721" alt="Screenshot 2024-05-21 at 2 20 59 PM" src="https://github.com/therishabh/salesforce-apex/assets/7955435/96458216-aada-4841-8fc4-e9cf5c34a41e">
 
 
+> Note : There is one more setting is important to configure the integration between two Salesforce orgs that should be enabled 'Allow OAuth Username-Password Flows' when getting invalid grant error.
+>
+> ![VElzx](https://github.com/therishabh/salesforce-apex/assets/7955435/8efd795b-3109-48c6-9da9-c9a32942f2ce)
+
+- After hit that above api you'll get access_token in response and from now you'll send many api by using that access_token in header.
+
+<img width="1439" alt="Screenshot 2024-05-21 at 2 27 24 PM" src="https://github.com/therishabh/salesforce-apex/assets/7955435/ef1130b7-2a98-4c26-839e-ee6ca0a7a228">
+
+  
 
 
 
