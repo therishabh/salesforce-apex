@@ -1018,7 +1018,57 @@ public class SalesforceInregrationController {
 }
 ```
 
+#### Create Rest API
+**Apex Web Services:**
+- We can expose our Apex class methods as a REST or SOAP web service operations.
+- By making your methods callable through the web, external applications can integrate with Salesforce to perform all type of operations like Add, Update, Delete etc to and from salesforce.
+- What that means is that you can create custom web services to make your APEX methods available to complete APEX code.
 
+**Syntax**
+To make your Apex class available as a REST web service is straightforward.
+- Define your class as global,
+- and define methods as global static.
+- Add annotations to the class and methods.
+
+For example, this sample Apex REST class uses one method. The getRecord method is a custom REST API call. It's annotated with **@HttpGet** and is invoked for a GET Request.
+```apex
+@RestResource(urlMapping='/Account/*')
+global with sharing class MyRestResource{
+    @HttpGet
+    global static Account getRecord(){
+        // Add your code...
+    }
+}
+```
+
+The class is annotated with **@RestResource(urlMapping='/Account/*')**
+
+##### RestContext Class and Properties</br>
+
+- Contains the RestRequest and RestResponse objects.
+**RestContext Properties -** The following are properties for RestContext.
+
+**- request:** Returns the RestRequest for your Apex REST method.
+**- response :** Returns the RestResponse for your Apex REST method.
+
+
+**Base URL of Apex Rest**
+- The base endpoint for Apex REST is `https://yourInstance.salesforce.com/services/apexrest/`
+- The URL mapping is appended to the base endpoint to form the endpoint for your REST service.
+     For example, in the class example, the REST endpoint is `https://yourinstance.salesforce.com/services/apexrest/`
+- For your org, it could look something like,
+`https://yourInstance.salesforce.com/services/apexrest/Account/*`
+- The URL mapping is case-sensitive and can contain a wildcard character (*)
+-  Note: You can use each annotation only once in each Apex class.
+-  Different Types of Annotations available
+
+**Different Type of Annotations Available**
+<img width="812" alt="Screenshot 2024-05-21 at 3 49 14 PM" src="https://github.com/therishabh/salesforce-apex/assets/7955435/9d6c9a42-666e-4c1f-b4c6-2b4a53836ccd">
+
+Apex provides mainly three built in classes to work with HTT services and create HTTP requests:
+**- Http Class:** It is used when initiating an HTTP request and response.
+**- HttpRequest Class:** It is used when initiating HTTP requests such as GET, DELETE, POST, PUT, and PATCH.
+**- HttpResponse Class:** It is used when handling the HTTP response returned by HTTP
 
 
 
