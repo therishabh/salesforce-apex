@@ -886,6 +886,20 @@ A connected app is a **framework that enables an external application to integra
 Connected Apps help user delegate their access without sharing sensitive credentials or giving full control of their applications to third parties. </br>
 > Note : The maximum number of OAuth 2.0 connected apps that can be registered through the dynamic client registration endpoint is 100
 
+### Postman Integration
+- First need to visit setup page in salesforce and search App manager inside setup page, then after click on **New Connected App** button.
+<img width="721" alt="Screenshot 2024-05-21 at 1 58 57 PM" src="https://github.com/therishabh/salesforce-apex/assets/7955435/997b597e-8e24-4593-addf-c167568f07b8">
+
+- Enter all required information then check Enable OAuth Settings checkbox and then after enter callback url, now we have to select OAuth Scopes from list and for now we can select Full access and save that. it will take 10 mins to activate.
+![screencapture-dyninno-dev-ed-develop-lightning-force-lightning-setup-ConnectedApplication-page-2024-05-21-14_02_43](https://github.com/therishabh/salesforce-apex/assets/7955435/0e5e7fad-3676-4237-abe7-5bc84106bc4e)
+
+- After creating your connected app you'll land to your app page and in this we need to click **Manage Consumer Details** button, and it'll first validate your account by verification code send on your email then after give you **Consumer Key** and **Consumer Secret**.
+<img width="1440" alt="Screenshot 2024-05-21 at 2 06 44 PM" src="https://github.com/therishabh/salesforce-apex/assets/7955435/2f6925df-8f5b-4610-98fb-f74d343cd888">
+<img width="721" alt="Screenshot 2024-05-21 at 2 07 44 PM" src="https://github.com/therishabh/salesforce-apex/assets/7955435/6042d211-966a-4645-97e1-b4f055e1b3cd">
+
+
+
+
 
 
 
