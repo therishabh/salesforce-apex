@@ -1065,10 +1065,86 @@ The class is annotated with **@RestResource(urlMapping='/Account/*')**
 **Different Type of Annotations Available**
 <img width="812" alt="Screenshot 2024-05-21 at 3 49 14 PM" src="https://github.com/therishabh/salesforce-apex/assets/7955435/9d6c9a42-666e-4c1f-b4c6-2b4a53836ccd">
 
-Apex provides mainly three built in classes to work with HTT services and create HTTP requests:
-**- Http Class:** It is used when initiating an HTTP request and response.
-**- HttpRequest Class:** It is used when initiating HTTP requests such as GET, DELETE, POST, PUT, and PATCH.
-**- HttpResponse Class:** It is used when handling the HTTP response returned by HTTP
+Apex provides mainly three built in classes to work with HTT services and create HTTP requests:</br>
+**- Http Class:** It is used when initiating an HTTP request and response.</br>
+**- HttpRequest Class:** It is used when initiating HTTP requests such as GET, DELETE, POST, PUT, and PATCH.</br>
+**- HttpResponse Class:** It is used when handling the HTTP response returned by HTTP</br></br>
+
+Example
+
+For single record
+```apex
+@RestResource(urlMapping='/createAccountRecord')
+global class MyRestWebService {
+	@HttpPost
+    global static void sendAccountRecords(){
+        RestRequest request = RestContext.request;
+        RestResponse response = RestContext.response;
+        
+        AccountWrapper requestBody = (AccountWrapper)JSON.deserialize(request.requestBody.toString(), AccountWrapper.class );
+        if(requestBody != null){
+            Account acc = new Account();
+            acc.Name = requestBody.name;
+            acc.Rating = requestBody.rating;
+            acc.Type = requestBody.type;
+            if(acc != null){
+                insert acc;
+            }
+        }
+        
+    }
+    
+    global Class AccountWrapper{
+        global String name;
+        global String rating;
+        global String type;
+    }
+}
+```
+
+For Multiple Records
+```apex
+@RestResource(urlMapping='/createAccountRecord')
+global class MyRestWebService {
+	@HttpPost
+    global static void sendAccountRecords(){
+        RestRequest request = RestContext.request;
+        RestResponse response = RestContext.response;
+        
+        String responseJson = '[';
+        List<Account> accountList = new List<Account>();        
+        List<AccountWrapper> requestBody = (List<AccountWrapper>)JSON.deserialize(request.requestBody.toString(), List<AccountWrapper>.class );
+        
+        if(!requestBody.isEmpty() && requestBody.size() > 0){
+            for(AccountWrapper accObj : requestBody){
+                Account acc = new Account();
+                acc.Name = accObj.name;
+                acc.Rating = accObj.rating;
+                acc.Type = accObj.type;
+                accountList.add(acc);
+            }
+            
+            if(!accountList.isEmpty() && accountList.size() > 0){
+            	insert accountList;
+                for(Account ac : accountList){
+                    responseJson += '{ "record id" : "'+ac.Id+'", "status" : "success"},';
+                }
+                responseJson = responseJson.removeEnd(',');
+            }
+        }
+        responseJson += ']';
+        response.responseBody = Blob.valueOf(responseJson);
+        response.statusCode = 200;
+    }
+    
+    global Class AccountWrapper{
+        global String name;
+        global String rating;
+        global String type;
+    }
+}
+```
+
 
 
 
