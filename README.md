@@ -700,6 +700,27 @@ private class AccountTriggerHandlerTest {
         List<Opportunity> oppList = [Select Id FROM Opportunity WHERE AccountId =: accList|0].Id];
         System.assert(oppList!=null, 'Opportunity is not created');
     }
+
+    @isTest
+    static void populateRatingTest() {
+        List<Account> accList = new List<Account>();
+
+        for(Integer i=1; i<=10; i++){
+            Account acc = new Account ();
+            acc.Name = 'Test ' + i;
+            acc.Active__c = 'Yes';
+            acc.Industry = 'Media';
+            accList.add (acc) ;
+        }
+
+        Test.startTest();
+        insert accList;
+        Test. stopTest() ;
+
+        List<Account> updatedAccountInfo = [Select Rating FROM Account WHERE Id =: accList|0].Id];
+        System.assert('Hot', updatedAccountInfo[0].Rating);
+
+    }
 }
 ```
 
