@@ -9,14 +9,15 @@
 3. [Static Keyword](#static-keyword)
 4. [Access Specifier](#access-specifier)
 5. [Trigger](#trigger)
-6. [DML (Data Manipulation Language)](#dml-data-manipulation-language)
-7. [SOQL Cheat Sheet](#soql-cheat-sheet)
-8. [Asynchronous Processing Basics](#asynchronous-processing-basics)
+6. [Apex Test Class](#apex-test-class)
+7. [DML (Data Manipulation Language)](#dml-data-manipulation-language)
+8. [SOQL Cheat Sheet](#soql-cheat-sheet)
+9. [Asynchronous Processing Basics](#asynchronous-processing-basics)
    - [Future Method in apex](#future-method-in-apex)
    - [Batch Apex](#batch-apex)
    - [Queueable Apex](#queueable-apex)
    - [Scheduled Apex](#scheduled-apex)
-9. [Integration in Salesforce](#integration-in-salesforce)
+10. [Integration in Salesforce](#integration-in-salesforce)
     - [Postman Integration](#postman-integration)
     - [Connect One Salesforce to another Salesforce account](#aa)
     - [Create Rest API](#ss)
@@ -584,6 +585,57 @@ public class ContactTriggerHandler {
     }
 }
 ```
+
+## Apex Test Class
+### Introduction
+- The Apex testing framework enables you to write and execute tests for your Apex classes and triggers on the Lightning Platform.
+- Apex unit tests ensure high quality for your Apex code and let you meet requirements for deploying Apex.
+- Apex code can only be written in a sandbox environment (copy of production) or a Developer org, not in production.
+- Apex code can be deployed to a production org from a sandbox. Also, app developers can distribute Apex code to customers from their Developer orgs by uploading packages to the Lightning Platform AppExchange (AppExchange is the leading enterprise cloud marketplace).
+- In addition to being critical for quality assurance, Apex unit tests are also requirements for deploying and distributing Apex.
+
+### Benefits of Apex Unit Tests
+- Ensuring that your Apex classes and triggers work as expected.
+- Having a suite of regression tests that can be rerun every time classes and triggers are updated to ensure that future updates you make to your app don't break existing functionality.
+- Meeting the code coverage requirements for deploying Apex to production or distributing Apex to customers via packages.
+- High-quality apps delivered to the production org, which makes production users more productive.
+- High-quality apps delivered to package subscribers, which increase your customers trust.
+
+### Code Coverage Requirement for Deployment
+- Before you can deploy your code or package it for the Lightning Platform AppExchange, at least 75% of Apex code must be covered by tests, and all those tests must pass.
+- In addition, each trigger must have some coverage. Even though code coverage is a requirement for deployment, don't write tests only to meet this requirement.
+- Make sure to test the common use cases in your app, including positive and negative test cases, and bulk and single-record processing.
+
+### Important to Remember
+- Calls to System.debug are not counted as part of Apex code coverage.
+- Test methods and test classes are not counted as part of Apex code limit (The default Apex code limit in Salesforce is 6 MB of code per organization, excluding comments and @isTest classes). So, no worries about writing long test class with more methods just to make sure that all your code branches are covered.
+- Class can be deployed on 0% coverage as well, but that overall coverage of your production org after getting your code deployed should be 75%, otherwise Salesforce won't let you deploy your code.
+
+### Test Method Syntax
+```apex
+@isTest
+static void testName() {
+	// code_block
+}
+
+OR
+
+static testMethod void testName() {
+	// code_block
+}
+```
+
+### Test Class with Test Method
+```apex
+@isTest
+private class MyTestClass {
+	@isTest
+	static void myTestMethod() {
+		// code_block
+	}
+}
+```
+
 
 ## DML (Data Manipulation Language)
 - DML is used to insert, update, delete & undelete records.
