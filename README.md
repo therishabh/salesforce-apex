@@ -19,7 +19,7 @@
    - [Scheduled Apex](#scheduled-apex)
 10. [Integration in Salesforce](#integration-in-salesforce)
     - [Postman Integration](#postman-integration)
-    - [Connect One Salesforce to another Salesforce account](#aa)
+    - [Connect One Salesforce to another Salesforce account](#connect-one-salesforce-to-another-salesforce-account)
     - [Create Rest API](#create-rest-api)
 
 ------
@@ -997,7 +997,7 @@ global class SomeClass implements Schedulable {
 }
 ```
 
-### Integration in Salesforce
+## Integration in Salesforce
 **Integration Methods**
 
 Salesforce can be integrated with the other systems by using various methods depending upon the overall business requirement, the commonly used ones are:
@@ -1022,15 +1022,15 @@ The SOAP API and REST API are both considered webservices and APIs in Salesforce
 
 <img width="901" alt="Screenshot 2024-05-21 at 1 38 58 PM" src="https://github.com/therishabh/salesforce-apex/assets/7955435/0c17131e-6f78-441d-87b9-9faf7d4d76e6">
 
-### What is API ?
+#### What is API ?
 API stands for Application Programming Interface and it's simply another way of sending commands to Salesforce, only this time there's no graphical UI to work through, instead developers use the APIs to send commands like View or Save to Salesforce programmatically by writing platform code.
 
-### What is connected app ?
+#### What is connected app ?
 A connected app is a **framework that enables an external application to integrate with Salesforce using APIs and standard protocols, such as SAML, OAuth, and OpenID Connect**. Connected apps use these protocols to authenticate, authorize, and provide single sign-on (SSO) for external apps.</br>
 Connected Apps help user delegate their access without sharing sensitive credentials or giving full control of their applications to third parties. </br>
 > Note : The maximum number of OAuth 2.0 connected apps that can be registered through the dynamic client registration endpoint is 100
 
-### Postman Integration
+#### Postman Integration
 - To begin, navigate to the setup page in Salesforce and locate the "App Manager" within the setup menu. From there, click on the **New Connected App** button to proceed.
 <img width="721" alt="Screenshot 2024-05-21 at 1 58 57 PM" src="https://github.com/therishabh/salesforce-apex/assets/7955435/997b597e-8e24-4593-addf-c167568f07b8">
 
@@ -1065,7 +1065,7 @@ Connected Apps help user delegate their access without sharing sensitive credent
 
 <img width="1439" alt="Screenshot 2024-05-21 at 2 27 24 PM" src="https://github.com/therishabh/salesforce-apex/assets/7955435/ef1130b7-2a98-4c26-839e-ee6ca0a7a228">
 
-#### Connect One Salesforce to another Salesforce account
+### Connect One Salesforce to another Salesforce account
 
 ```apex
 public class SalesforceInregrationController {
@@ -1159,7 +1159,7 @@ public class SalesforceInregrationController {
 }
 ```
 
-#### Create Rest API
+### Create Rest API
 **Apex Web Services:**
 - We can expose our Apex class methods as a REST or SOAP web service operations.
 - By making your methods callable through the web, external applications can integrate with Salesforce to perform all type of operations like Add, Update, Delete etc to and from salesforce.
