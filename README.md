@@ -717,7 +717,7 @@ private class AccountTriggerHandlerTest {
         insert accList;
         Test. stopTest() ;
 
-        List<Account> updatedAccountInfo = [Select Rating FROM Account WHERE Id =: accList|0].Id];
+        List<Account> updatedAccountInfo = [Select Rating FROM Account WHERE Id =: accList[0].Id];
         System.assertEquals('Hot', updatedAccountInfo[0].Rating);
 
     }
