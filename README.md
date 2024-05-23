@@ -20,7 +20,7 @@
 10. [Integration in Salesforce](#integration-in-salesforce)
     - [Postman Integration](#postman-integration)
     - [Connect One Salesforce to another Salesforce account](#aa)
-    - [Create Rest API](#ss)
+    - [Create Rest API](#create-rest-api)
 
 ------
 
