@@ -1194,11 +1194,11 @@ The class is annotated with **@RestResource(urlMapping='/Account/*')**
 
 
 **Base URL of Apex Rest**
-- The base endpoint for Apex REST is `https://yourInstance.salesforce.com/services/apexrest/`
+- The base endpoint for Apex REST is `https://yourInstance.my.salesforce.com/services/apexrest/`
 - The URL mapping is appended to the base endpoint to form the endpoint for your REST service.
-     For example, in the class example, the REST endpoint is `https://yourinstance.salesforce.com/services/apexrest/`
+     For example, in the class example, the REST endpoint is `https://yourinstance.my.salesforce.com/services/apexrest/`
 - For your org, it could look something like,
-`https://yourInstance.salesforce.com/services/apexrest/Account/*`
+`https://yourInstance.my.salesforce.com/services/apexrest/Account/*`
 - The URL mapping is case-sensitive and can contain a wildcard character (*)
 -  Note: You can use each annotation only once in each Apex class.
 -  Different Types of Annotations available
