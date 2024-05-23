@@ -660,19 +660,19 @@ private class TemperatureConverterTest {
 
     @isTest
     static void testFreezingPoint() {
-        Decimal celsius = TemperatureConverter FahrenheitToCelsius (32) ;
+        Decimal celsius = TemperatureConverter FahrenheitToCelsius(32) ;
         System. assertEquals (0,celsius);
     }
     
     @isTest
     static void testBoilingPoint() {
-        Decimal celsius = TemperatureConverter. FahrenheitToCelsius (212) ;
+        Decimal celsius = TemperatureConverter. FahrenheitToCelsius(212) ;
         System. assertEquals (10,celsius, 'Boiling point temperature is not expected.');
     ｝
 
     @isTest
     static void testNegativeTemp() {
-        Decimal celsius = TemperatureConverter. FahrenheitToCelsius (-10) ;
+        Decimal celsius = TemperatureConverter. FahrenheitToCelsius(-10) ;
         System. assertEquals (-23.33,celsius);
     ｝
 }
@@ -697,8 +697,8 @@ private class AccountTriggerHandlerTest {
         insert accList;
         Test. stopTest() ;
 
-        List<Opportunity> oppList = [Select Id FROM Opportunity WHERE AccountId =: accList|0].Id];
-        System.assert(oppList!=null, 'Opportunity is not created');
+        List<Opportunity> oppList = [Select Id FROM Opportunity WHERE AccountId =: accList[0].Id];
+        System.assert(oppList != null, 'Opportunity is not created');
     }
 
     @isTest
@@ -718,7 +718,7 @@ private class AccountTriggerHandlerTest {
         Test. stopTest() ;
 
         List<Account> updatedAccountInfo = [Select Rating FROM Account WHERE Id =: accList|0].Id];
-        System.assert('Hot', updatedAccountInfo[0].Rating);
+        System.assertEquals('Hot', updatedAccountInfo[0].Rating);
 
     }
 }
