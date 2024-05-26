@@ -21,7 +21,7 @@
     - [Postman Integration](#postman-integration)
     - [Connect One Salesforce to another Salesforce account](#connect-one-salesforce-to-another-salesforce-account)
     - [Create Rest API](#create-rest-api)
-
+11. [Deployment](#deployment)
 ------
 
 ## Collections
@@ -1286,10 +1286,48 @@ global class MyRestWebService {
 }
 ```
 
+### Deployment
 
+QA org => SIT org => UAT org => Production
 
+#### Introduction
+- In Salesforce, "deployment" typically refers to the process of moving changes made in one environment (such as development or sandbox) to another sandbox or production environment.
+- The deployment process ensures that any new configurations, customizations, or code changes are safely and correctly applied to the production instance of Salesforce without causing any disruption to the existing functionality.
 
+#### Data Vs Metadata
+- Metadata is the data which describes other data.
+	- Example : Field APIs, Object APIs
+- Data is actual information.
+	- Example: Values in particular field of a record
 
+#### Salesforce Sandboxes
+There are 4 Sandboxes
+- Developer
+- Developer Pro
+- Partial
+- Full Copy (More or less a replica of Production Environment)
 
+#### Developer Sandbox Characteristics
+- Refresh Interval - 1 Day
+- Data Storage - File Storage - 200MB | Data Storage - 200MB
+- What's Copied? - Metadata
+
+#### Developer Pro Sandbox Characteristics
+- Refresh Interval - 1 Day
+- Data Storage - File Storage - 1GB | Data Storage - 1GB
+- What's Copied? - Metadata
+
+#### Partial Sandbox Characteristics
+- Refresh Interval - 5 Days
+- Data Storage - File Storage - 5GB | Data Storage - 5GB
+- What's Copied? - Metadata + Sample Data
+
+#### Full Copy Sandbox Characteristics
+- Refresh Interval - 29 Days
+- Data Storage - File Storage - 5GB(+more) | Data Storage - 5GB(+more)
+- What's Copied? - Metadata + All Data
+
+#### Sandbox Development Flow
+<img width="1094" alt="Screenshot 2024-05-26 at 9 59 42 PM" src="https://github.com/therishabh/salesforce-apex/assets/7955435/83677e5d-07ca-4168-9057-2d339f19cc44">
 
 
