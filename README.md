@@ -1380,10 +1380,12 @@ There are 4 Sandboxes
 - Copado is a popular native Salesforce Continuous Integration and Continuous Deployment (Cl/CD) platform that aims to streamline and automate the development and deployment processes for Salesforce applications.
 - It is designed to work natively within the Salesforce ecosystem and provides a set of tools and features that enable efficient application development, testing, and deployment on the Salesforce platform.
 
+Youtube Link regarding change set, Outbonund and Inbound. : 
+Deployment Using change set, Outbound and Inbound changeset
+******https://www.youtube.com/watch?v=GIVbdVwjdag******
 
 
-
-
+## Apex 
 
 
 
