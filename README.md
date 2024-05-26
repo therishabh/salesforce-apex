@@ -1184,7 +1184,7 @@ global with sharing class MyRestResource{
 
 The class is annotated with **@RestResource(urlMapping='/Account/*')**
 
-##### RestContext Class and Properties</br>
+### RestContext Class and Properties</br>
 
 - Contains the RestRequest and RestResponse objects.
 **RestContext Properties -** The following are properties for RestContext.
@@ -1286,21 +1286,21 @@ global class MyRestWebService {
 }
 ```
 
-### Deployment
+## Deployment
 
 QA org => SIT org => UAT org => Production
 
-#### Introduction
+### Introduction
 - In Salesforce, "deployment" typically refers to the process of moving changes made in one environment (such as development or sandbox) to another sandbox or production environment.
 - The deployment process ensures that any new configurations, customizations, or code changes are safely and correctly applied to the production instance of Salesforce without causing any disruption to the existing functionality.
 
-#### Data Vs Metadata
+### Data Vs Metadata
 - Metadata is the data which describes other data.
 	- Example : Field APIs, Object APIs
 - Data is actual information.
 	- Example: Values in particular field of a record
 
-#### Salesforce Sandboxes
+### Salesforce Sandboxes
 There are 4 Sandboxes
 - Developer
 - Developer Pro
@@ -1327,7 +1327,78 @@ There are 4 Sandboxes
 - Data Storage - File Storage - 5GB(+more) | Data Storage - 5GB(+more)
 - What's Copied? - Metadata + All Data
 
-#### Sandbox Development Flow
+### Sandbox Development Flow
 <img width="1094" alt="Screenshot 2024-05-26 at 9 59 42 PM" src="https://github.com/therishabh/salesforce-apex/assets/7955435/83677e5d-07ca-4168-9057-2d339f19cc44">
+
+### Various Deployment Methods
+- Change Set
+- Workbench
+- Salesforce CLI (Command Line Interface) - ANT
+- Salesforce Extension for VS Code
+- Salesforce DX
+- Metadata API
+- Managed Packages
+- Continuous Integration/Continuous Deployment (CI/CD)
+- 3rd Party Tools - Copado, Flosum, Gearset
+
+#### Change Set
+- Change Sets are a simple and point-and-click way to transfer customizations between Salesforce organizations.
+- They are typically used for moving changes from sandbox to production or between sandboxes.
+- Change Sets can include various components such as custom objects, fields, workflows, reports, and more.
+- Change set is provided by Salesforce itself, so we don't need to install anything it will be available inside our salesforce.
+
+#### Workbench
+- Workbench is a powerful web-based tool and a popular choice among Salesforce developers and administrators for various tasks, including deployment.
+- It provides a user-friendly interface to interact with Salesforce metadata and data, making it easier to perform operations such as data manipulation, metadata deployment, querying, and more.
+
+#### Salesforce CLI
+- Salesforce CLI allows developers to use command-line commands to retrieve and deploy metadata between different environments.
+- This method is more flexible and can be used in combination with version control systems, such as Git, for better development practices.
+
+#### Salesforce Extensions for VS Code
+- This is an extension in Visual Studio Code that provides powerful development and deployment tools for Salesforce developers.
+- It enables source code management, deployment, and other development tasks within the integrated development environment (IDE).
+
+#### Salesforce DX (Developer Experience)
+- Salesforce DX is a set of tools and practices aimed at improving the development lifecycle.
+- It allows for source-driven development, meaning that the source code is the single source of truth for the application.
+- It uses scratch orgs for development and facilitates easy deployment to production or other environments.
+
+#### Metadata API
+- The Metadata API is a web service provided by Salesforce, which allows you to retrieve and deploy metadata components programmatically.
+- This API is suitable for automating deployments and integrating with external tools or systems.
+
+#### Managed Package
+- If you want to distribute your custom applications to other Salesforce organizations, you can package your components into Managed Packages.
+- Managed Packages can be installed in other orgs, and they help you ensure that your customizations are secure and upgradeable.
+
+#### CI/CD
+- For a more automated and continuous deployment process, you can set up Cl/CD pipelines using tools like Jenkins, CircleCI, or Azure DevOps.
+- These pipelines automate the deployment process, running tests and deploying changes to production whenever new code is pushed to a specific branch.
+
+#### 3rd Party Tools - Copado
+- Copado is a popular native Salesforce Continuous Integration and Continuous Deployment (Cl/CD) platform that aims to streamline and automate the development and deployment processes for Salesforce applications.
+- It is designed to work natively within the Salesforce ecosystem and provides a set of tools and features that enable efficient application development, testing, and deployment on the Salesforce platform.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
