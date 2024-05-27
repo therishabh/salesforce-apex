@@ -1385,11 +1385,14 @@ Deployment Using change set, Outbound and Inbound changeset
 ******https://www.youtube.com/watch?v=GIVbdVwjdag******
 
 
-## Apex 
+## Change Sets in Salesforce
+A change set is a means by which one organization can send customizations to another organization. Change sets in Salesforce are groupings of components that can be deployed from one Salesforce org to another Salesforce org. This is out of a box deployment user interface tool provided by Salesforce. Change sets contain information about the org. They don’t contain data, such as records.
 
+#### What is an outbound change set?
+**Outbound change set:** An outbound change set is a change set created in the Source organization that you want to deploy to the target organization. Sending an outbound change set to the target org doesn’t mean that the changes will be deployed in that org. The change set must be accepted and deployed.
 
-
-
+#### What is an inbound change set?
+**Inbound change set:** An inbound change set is a change set that is sent from the source Salesforce org to the target Salesforce org.
 
 
 
