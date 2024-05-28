@@ -952,30 +952,31 @@ Q. : How to check failed records in batchable apex?
 A.
 first of all you need to make your batch class stateful using Database.Stateful so replace your first line with
 
-`public class SimpleBatch implements Database.Batchable<sObject>,Database.Stateful{`
+```public class SimpleBatch implements Database.Batchable<sObject>,Database.Stateful{```
 
 A global variable required which will maintain failed record.
 
-`global List<String> exception_List;`
+```global List<String> exception_List;```
 
 Use Database.update method instead of update with allOrNothing = false parameter which will return how many records has passed and failed in update call.
 
-`
-Database.SaveResult[] SaveResultList = Database.update(objsToUpdate,false);   
+```Database.SaveResult[] SaveResultList = Database.update(objsToUpdate,false);```
+
 You will iterate saveResultList and you will add failed records in exception_list
 
- for(integer i =0; i<objsToUpdate.size();i++){
-        String msg='';
-        If(!SaveResultList[i].isSuccess()){
+```apex
+for(integer i = 0; i < objsToUpdate.size(); i++) {
+        String msg=''; 
+        If(!SaveResultList[i].isSuccess()) {
                 msg += userList.get(i).id + '\n'+'Error: "';        
                 for(Database.Error err: SaveResultList[i].getErrors()){  
-                     msg += err.getmessage()+'"\n\n';
+                        msg += err.getmessage()+'"\n\n';
                 } 
         }
         if(msg!='')
-            exception_List.add(msg);
-     } 
-`
+                exception_List.add(msg);
+} 
+```
 
 You can use this exception_list in execute method to send in your final email.
 
