@@ -948,9 +948,10 @@ public class ContactBatch implements Database.Batchable<sobject> {
 ContactBatch con = new ContactBatch();
 Database.executeBatch(con, 10);
 ```
-Q. : How to check failed records in batchable apex?
-A.
-first of all you need to make your batch class stateful using Database.Stateful so replace your first line with
+
+Q. : How to check failed records in batchable apex?</br>
+A.</br>
+first of all you need to make your batch class stateful using Database.Stateful so replace your first line with</br></br>
 
 ```public class SimpleBatch implements Database.Batchable<sObject>,Database.Stateful{```
 
