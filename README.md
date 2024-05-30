@@ -22,6 +22,9 @@
     - [Connect One Salesforce to another Salesforce account](#connect-one-salesforce-to-another-salesforce-account)
     - [Create Rest API](#create-rest-api)
 11. [Deployment](#deployment)
+12. [Exception Handling](#exception-handling)
+13. [Alternate of SELECT * in Salesforce](#alternate-of-select--in-salesforce)
+
 ------
 
 ## Collections
@@ -1430,11 +1433,192 @@ A change set is a means by which one organization can send customizations to ano
 **Inbound change set:** An inbound change set is a change set that is sent from the source Salesforce org to the target Salesforce org.
 
 
+## Exception Handling
+Whenever any code fails or breaks, then SF throws an error on the screen of user.<br/>
+
+This message is mostly raw and gives no clarity to user. Also user gets unclear information, which confuses him more.<br/>
+
+The ideal scenarios is, whenever any error occurs, then we need to handle it and present a user friendly message for the same Or inform concern technical person like Developer about this issue.<br/>
+
+To handle this situation, first you need to know, what kind of errors are possible? <br/>
+Means types of Exceptions :<br/>
+
+Type of exception: <br/>
+1. DML exception
+2. List exception
+3. Null pointer exception
+4. Query exception
+5. Generic type
 
 
+How to write code here after to handle the exception:
 
+```apex
+try {
+	//code from which u think err will come
+｝
+catch {
+	// instead of throwing err on screen, write catch block here, so SF will not throw err on screen and SF will assume that u will handle this situation and SF will realize it has no responsibility wont do anything.
+	// What we can go ?
+	// Show some simple message on screen / send email to developer etc anything
+}
+finally{
+	//write a code which u want to perform at extreme end, after try and catch scenario, if u want to do something at end, then write code here. This is optional to write any code here.
+}
+```
 
+#### Example: 
+Handle Generic type of exception.
+```apex
+Try {
+	string name;
+	// name = 'Raj'; //we are expecting some data from end user but we didi not get and field is empty
 
+	integer LengthOfText;
+	LengthOfText = name. length () ;
+
+	system.debug ('Length = ' + Length0fText );
+}
+catch (exception ex) {
+	system.debug ('The info about error = ' + ex.getmessage()) ;
+｝
+finally{
+	// signature work
+}
+```
+
+```apex
+// NullPointerException Example :
+
+Try {
+	string name;
+	// name = 'Raj'; //we are expecting some data from end user but we didi not get and field is empty
+
+	integer LengthOfText;
+	LengthOfText = name. length () ;
+
+	system.debug ('Length = ' + Length0fText );
+}
+catch (NullPointerException ex) {
+	system.debug ('Seems you did not enter the needed data into salesforce') ;
+｝
+finally{
+	// signature work
+}
+```
+
+```apex
+// DMLException Example :
+
+try {
+	lead l = new lead();
+	insert l;
+｝
+catch(DMLException ex) {
+	system.debug('Seems some DML error, we will take needed action!');
+	//show end user a clear message: "seems record did not create/update properly.
+}
+finally {
+	// signature work
+}
+```
+
+```apex
+// ListException Example :
+
+try {
+	List<Integer> MyList = new List<integer>();
+	MyList.add(100);
+
+	integer temp = MyList[1];
+｝
+catch(ListException ex) {
+	system.debug('Seems some List error, we will take needed action!');
+}
+finally {
+	// signature work
+}
+```
+
+```apex
+// QueryException Example :
+
+try {
+	lead l;
+	l = [SELECT id FROM lead];
+｝
+catch(QueryException ex) {
+	system.debug('Seems some Query error, we will take needed action!');
+}
+finally {
+	// signature work
+}
+```
+
+========== Ideal Code ==========
+```apex
+Try{
+	// whatever logic or code you have..
+	lead 1 = [SELECT id FROM lead 1;
+｝
+catch (ListException ex) {
+	system.debug ('Seems some List error, we will take needed action!');
+｝
+catch (DMLException ex) {
+	system.debug ('Seems some DMI error, we will take needed action!');
+｝
+catch (NullPointerException ex) {
+	system.debug ('Seems some Null value processed!');
+}
+catch (QueryException ex) {
+	system.debug ('Seems some Query error, we will t ake needed action!');
+}
+catch (Exception ex){
+	//show generic error message to end user
+}
+finally{
+	// signature work
+	System.debug ('Control came to Finally block');
+}
+```
+
+## Alternate of SELECT * in Salesforce
+
+```apex
+//Efficient way
+
+//Declare object name
+string VarTableName = 'Shekhar_Pen_c ';
+
+//Create a string variable where u will have to store entire query
+string VarQuery = 'SELECT ';
+
+//Declare a list which can hold such multiple names of table
+List<string> VarListOfTables = new List<string>();
+
+//Add above table entry into Varlist0fTables collection
+VarListOfTables.add(VarTableName);
+
+//There is a very imp class "Schema" in SF which tells info about objects, fields etc
+set<String> VarSetOfAllFields = schema.describeSObjects(VarListOfTables)[0].fields.getMap().keyset();
+//above line will give u all the fields in that object
+
+system.debug('The output =' + VarSetOfAllFields);
+//means, list of all fields is ready
+
+//use for-each loop to process 1 by 1 all fields present in VarSetOfAllFields
+for(string VarOneFieldName : VarSetOfAllFields) {
+	VarQuery = VarQuery + VarOneFieldName +', '
+}
+
+//current status of VarQuery = SELECT name,age_c,
+VarQuery = VarQuery.removeEnd(', ');
+//current status of VarQuery = SELECT name, age_c
+
+//Add FROM and add table pame we decided above in the query
+VarQuery = VarQuery + ' FROM ' + VarTableName;
+//current status of VarQuery = SELECT name,age_c FROM Shekhar_Pen_c
+```
 
 
 
