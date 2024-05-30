@@ -1620,9 +1620,40 @@ VarQuery = VarQuery + ' FROM ' + VarTableName;
 //current status of VarQuery = SELECT name,age_c FROM Shekhar_Pen_c
 ```
 
+## Javascript Remoting or Remoting or APEX Remoting or Remote Action
 
+## Static Resources in Salesforce
+Static resources in Salesforce are files that can be used in various parts of the platform, such as Visualforce pages, Apex classes, and Lightning components. These resources can include images, stylesheets, JavaScript files, and other types of documents. By using static resources, you can easily manage and reuse files across your organization, making it easier to maintain and update your Salesforce applications.
 
+To create and manage static resources in Salesforce, you can use the Static Resource section of the Setup menu. Here, you can upload new resources, edit existing ones, and delete resources that are no longer needed.
 
+To upload a new resource, click the "New" button, give your resource a name, select the file to upload and set the cache control. You can also upload multiple files at once by compressing them into a .zip file.
+
+#### How To Create & Use Static Resources (Step by Step)
+- Step 1: Navigate to Setup, search for "Static Resource" and click on "New" to create a new resource.
+  ![image](https://github.com/therishabh/salesforce-apex/assets/7955435/1b8d24b8-6c89-4e3b-b895-4947dd4ef665)
+
+- Step 2:- Enter a name, select a file to upload and set the cache control, then click "Save"
+  ![image](https://github.com/therishabh/salesforce-apex/assets/7955435/cca845e1-920b-4a4a-bec7-b8c9a3d17f5f)
+
+- Step 3:- Here you can see full detail about created static Resource and also see Where did it use, by clicking on where is this used?
+  ![image](https://github.com/therishabh/salesforce-apex/assets/7955435/87f58bf3-7a30-400f-93e2-621f1320b4cc)
+
+- Step 4 :- Now Referencing that Static Resource in Visualforce page ⇒ Open developer console ⇒ Create new Visualforce page
+  ![image](https://github.com/therishabh/salesforce-apex/assets/7955435/d02bee42-1c2c-451e-be56-a942b71d9038)
+
+- Step 5:- To render Visualforce page code ⇒ save the code and click on Preview button at the left corner on the top
+
+#### Using Static Resources
+##### Apex classes
+
+In Apex classes, you can use the getContent() method to retrieve the contents of a static resource. The method returns the resource as a Blob, so you can then use it in various ways, such as creating a PDF document or sending it as an email attachment.
+
+##### Lightning Web Component :
+
+To use Static Resource in Lightning Web Component, First we need to import it from the import Salesforce_Images from '@salesforce/resourceUrl/SalesforceImages
+
+Then, we can use Salesforce_Images to refer to the static resource.
 
 
 
