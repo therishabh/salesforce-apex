@@ -1655,5 +1655,52 @@ To use Static Resource in Lightning Web Component, First we need to import it fr
 
 Then, we can use Salesforce_Images to refer to the static resource.
 
+## Generate PDF in Salesforce (Download or Send Email)
+
+https://arrify.com/generate-pdf-in-salesforce/
+
+## Security in Apex class
+When you are writing code in Apex, the security of your code is of utmost importance. You should ensure that your code meets the latest Security guidelines.
+
+### User Mode vs System Mode?
+User Mode is when apex code is running by taking the user’s permissions and sharing into consideration. Profile permissions, Field level permissions, and sharing rules are respected when code is running in user mode.<br/><br/>
+System Mode is when apex code is running without taking the user’s permissions and sharing into consideration. In system mode apex code has access to all objects, fields, and records and user’s sharing, FLS, and Profile permissions are not respected.
+
+> Note : Visualforce page always works in User Mode but APEX class by default works in God / System Mode
+
+```apex
+public ******* class MyClass {
+	//some code
+｝
+***** = we can use "with sharing" or "without sharing"
+```
+
+- without sharing => GOD / System Mode
+- with sharing => User Mode
+
+> If we dont write anything before "class" keyword, then also by default "without sharing" format will start
+> If we dont want to allow APEX class behave like above scenario and we want to make that class more secure, then we need to use "with sharing" keyword.
+
+Question : If by default keyword will be "without sharing" then why SF gave us that keyword?
+Answer : We dont need "without sharing" keyword when we have standalone APEX class (one APEX class), but definitely we need "without sharing" keyword when we make class to class calls.
+
+```apex
+// Suppose, we have 2 below classes:
+public with sharing class ClassA{
+	// some code
+	FunctionA () {
+		// some code
+		// ClassB.FunctionB() ;
+	}
+｝
+
+public class ClassB {
+	// some code
+	FunctionB() {
+		// This function contains a very general code which needs to be executed for all users, without checking any access
+		// That's why developer of class B did not write any keyword for class B
+	}
+}
+```
 
 
