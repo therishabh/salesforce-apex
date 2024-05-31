@@ -621,6 +621,38 @@ trigger CheckDuplicateEmail on Account (before insert) {
 }
 ```
 
+## How to avoid recursion in Trigger
+Recursion is the process of executing the same Trigger multiple times to update the record again and again due to automation. There may be chances we might hit the Salesforce Governor Limit due to Recursive Trigger.
+
+#### Resolve this issue by using Static Boolean Variable
+You can create a class with a static Boolean variable with a default value of true. In the trigger, before executing your code keep a check that the variable is true or not. Once you check make the variable false.
+
+Apex Class with Static Variable
+
+```apex
+public class ContactTriggerHandler{
+     public static Boolean isFirstTime = true;
+}
+```
+
+Trigger Code
+```apex
+Trigger ContactTriggers on Contact (after update){
+    Set<String> accIdSet = new Set<String>(); 
+    if(ContactTriggerHandler.isFirstTime){
+        ContactTriggerHandler.isFirstTime = false;
+        System.debug('---- Trigger run ---->'+Trigger.New.size() );
+         for(Contact conObj : Trigger.New){
+            if(conObj.name != 'Test') {
+                accIdSet.add(conObj.accountId);
+            }
+         }
+       // any code here
+    }
+}
+```
+
+
 ## Apex Test Class
 ### Introduction
 - The Apex testing framework enables you to write and execute tests for your Apex classes and triggers on the Lightning Platform.
