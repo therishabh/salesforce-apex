@@ -1621,6 +1621,13 @@ VarQuery = VarQuery + ' FROM ' + VarTableName;
 ```
 
 ## Javascript Remoting or Remoting or APEX Remoting or Remote Action
+<img width="945" alt="Screenshot 2024-05-31 at 7 21 16 AM" src="https://github.com/therishabh/salesforce-apex/assets/7955435/3b6e26ea-f656-4395-8b9c-ae66baecc027">
+<img width="934" alt="Screenshot 2024-05-31 at 7 21 54 AM" src="https://github.com/therishabh/salesforce-apex/assets/7955435/99ac13ca-c33b-40c2-b7c4-1eee5be15143">
+
+
+<img width="956" alt="Screenshot 2024-05-31 at 7 20 58 AM" src="https://github.com/therishabh/salesforce-apex/assets/7955435/fee243ea-b43a-4a2c-a5d7-117546b22c52">
+
+
 
 ## Static Resources in Salesforce
 Static resources in Salesforce are files that can be used in various parts of the platform, such as Visualforce pages, Apex classes, and Lightning components. These resources can include images, stylesheets, JavaScript files, and other types of documents. By using static resources, you can easily manage and reuse files across your organization, making it easier to maintain and update your Salesforce applications.
