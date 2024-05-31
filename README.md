@@ -589,6 +589,38 @@ public class ContactTriggerHandler {
 }
 ```
 
+```apex
+Question : Write a trigger to check if account email id already exist when user want to insert any entry into account object.
+
+trigger CheckDuplicateEmail on Account (before insert) {
+    // Set to store all email IDs of the new records being inserted
+    Set<String> newEmailIds = new Set<String>();
+    
+    // Loop through the records being inserted to collect email IDs
+    for (Account acc : Trigger.new) {
+        if (acc.Email__c != null) {
+            newEmailIds.add(acc.Email__c);
+        }
+    }
+    
+    // Query for existing accounts with the same email IDs
+    List<Account> existingAccounts = [SELECT Id, Email__c FROM Account WHERE Email__c IN :newEmailIds];
+    
+    // Set to store the existing email IDs
+    Set<String> existingEmailIds = new Set<String>();
+    for (Account acc : existingAccounts) {
+        existingEmailIds.add(acc.Email__c);
+    }
+    
+    // Check if any new records have an email ID that already exists
+    for (Account acc : Trigger.new) {
+        if (acc.Email__c != null && existingEmailIds.contains(acc.Email__c)) {
+            acc.addError('An account with this email ID already exists: ' + acc.Email__c);
+        }
+    }
+}
+```
+
 ## Apex Test Class
 ### Introduction
 - The Apex testing framework enables you to write and execute tests for your Apex classes and triggers on the Lightning Platform.
