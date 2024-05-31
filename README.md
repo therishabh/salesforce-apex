@@ -1784,5 +1784,11 @@ public class PenClassDemonstration{
 }
 ```
 
+## Benefits of Test isRunningTest
+
+There are many cases where we want to avoid some execution to happen on Test class level, which is fine if that works on APEX level (during non testing situation)
+
+Test.isRunningTest() method is used to identify, if the piece of code being executed is invoked from a Test class execution or from other artefacts such as a Trigger, Batch Job etc
+
 
 
