@@ -1797,5 +1797,25 @@ There are many cases where we want to avoid some execution to happen on Test cla
 
 Test.isRunningTest() method is used to identify, if the piece of code being executed is invoked from a Test class execution or from other artefacts such as a Trigger, Batch Job etc
 
+## Bulk API
+
+#### Q. what is bulk API while working on data management or data loader ? <br/>
+A. Bulk API is like a modified way to load large number of data in Salesforce
+
+#### Q. Bulk api Works in synchronous mode or asynchronous mode ?</br>
+A. The reason why it is able to load large number of Records because it actually works in asynchronous mode and these are the key reason why bulk API is able to manage large number of data.
+
+#### Q. By default data loader which uses usage which API ? </br>
+A. Data Loader by default is taking SOAP Based API.
+
+#### Q. Have you ever enabled Buld API ?
+A. YES (Then inteview again asked immediate question that have you seen any kind of difference in the behavious in your project while working with Buld API and when bulk api is not enabled)
+A. Yes we have seen some difference between the data order with Bulk APi and non bulk API the major difference is by default you are not allowed to work on hard delete but after enable bulk api that Hard Delete option will be enabled. and normal way you have an option in setting to insert null data or not, but after enable bulk api that null data insert option will be disabled that means you can not insert null data.
+
+![Screenshot 2024-05-31 at 12 35 11 PM](https://github.com/therishabh/salesforce-apex/assets/7955435/ded14278-7b4e-4f17-91a6-136f0dab2245)
+
+
+Use Bulk API enabled means Bulk API + Parallel mode (Fast, but there may be chance to fail connection)<br/>
+Use Enable serial mode for Bulk api means Bulk API + Serial Mode (slow, but connection will not fail because it will insert one by one record)
 
 
