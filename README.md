@@ -621,6 +621,51 @@ trigger CheckDuplicateEmail on Account (before insert) {
 }
 ```
 
+```apex
+// Question : when contact is inserted or deleted then you want the count of contacts in account object.
+
+trigger contactTrigger on Contact (after insert, after delete, after undelete){
+    if(Trigger.isAfter){
+        if(Trigger.isInsert){
+            ContactTriggerHandler.updateAccountCount(Trigger.new); 
+        }
+
+        if(Trigger.isDelete){
+            ContactTriggerHandler.updateAccountCount(Trigger.old); 
+        }
+
+        if(Trigger.isUndelete){
+            ContactTriggerHandler.updateAccountCount(Trigger.new); 
+        }
+    }
+}
+
+
+public class ContactTriggerHandler{
+    public static void updateAccountCount(List<Contact> conList){
+        Set<Id> accountIds = new Set<Id>();
+        List<Account> updateAccList = new List<Account>();
+
+
+        for(Contact con : conList){
+            if(con.AccountId != null){
+                accountIds.add(con.AccountId);
+            }
+        }
+
+        List<Account> accList = [SELECT Id, (SELECT Id FROM Contacts) FROM Account WHERE Id IN: accountIds];
+        for(Account acc: accList){
+            acc.contact_count__c = acc.Contacts.size();
+            updateAccList.add(acc);
+        }
+
+        if(updateAccList.size() > 0) {
+           update updateAccList; 
+        }
+    }
+}
+```
+
 ## How to avoid recursion in Trigger
 Recursion is the process of executing the same Trigger multiple times to update the record again and again due to automation. There may be chances we might hit the Salesforce Governor Limit due to Recursive Trigger.
 
