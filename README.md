@@ -962,7 +962,8 @@ public class CreateAccountAndUser {
         ac.name = 'Salesforce Shiksha';
         insert ac;
     ｝
-    
+
+    @future
     public static void createuser (){
         List‹Profile> upro = [Select id,name from Profile where name = 'Standard User'];
         List<UserRole> uRole = [Select id, name from UserRole where name = 'CEO'];
