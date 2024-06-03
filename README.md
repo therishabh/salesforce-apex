@@ -1448,6 +1448,40 @@ QA org => SIT org => UAT org => Production
 - Data is actual information.
 	- Example: Values in particular field of a record
 
+### Sandbox:
+When we make payment to SF to get the environment to work, we get Production. We must not do our work directly on Production as it hampers the work of client. 
+
+So we need to create Sandbox first.
+
+#### What is Sandbox exactly?
+It's nothing but the replica of Production environment with some limitations depending on type of Sandbox, and in Sandbox we actually need to make implementation of any Project work we do.
+
+#### A deployment related real time scenario:
+
+1 Jan = Got project </br>
+2 Jan = Client bought SF edition / PROD </br>
+3 Jan = Sandbox created | We started work </br>
+1 Feb = Project done | Deployed to PROD </br>
+2 Feb = Hereonwards client started using project & asked us to stop the service </br>
+</br>
+</br>
+</br>
+</br>
+1 Aug = Client told some changes in present code </br>
+2 Aug = Started working on PROD ? = Wrong = Why? </br>
+2 Aug = Started working on Sandbox = Wrong = Why? </br>
+</br>
+</br>
+</br>
+PROD to SB = Refresh </br>
+When we need fresh copy of LIVE env. </br>
+</br>
+</br>
+SB to PROD = Deploy </br>
+When our work is done, and we need to provide to client. </br>
+</br>
+
+
 ### Salesforce Sandboxes
 There are 4 Sandboxes
 - Developer
