@@ -1463,14 +1463,17 @@ It's nothing but the replica of Production environment with some limitations dep
 3 Jan = Sandbox created | We started work </br>
 1 Feb = Project done | Deployed to PROD </br>
 2 Feb = Hereonwards client started using project & asked us to stop the service </br>
-</br>
-</br>
-</br>
-</br>
+.</br>
+.</br>
+.</br>
+.</br>
+.</br>
+.</br>
+.</br>
+.</br>
 1 Aug = Client told some changes in present code </br>
 2 Aug = Started working on PROD ? = Wrong = Why? </br>
 2 Aug = Started working on Sandbox = Wrong = Why? </br>
-</br>
 </br>
 </br>
 PROD to SB = Refresh </br>
@@ -1479,8 +1482,6 @@ When we need fresh copy of LIVE env. </br>
 </br>
 SB to PROD = Deploy </br>
 When our work is done, and we need to provide to client. </br>
-</br>
-
 
 ### Salesforce Sandboxes
 There are 4 Sandboxes
@@ -1511,6 +1512,67 @@ There are 4 Sandboxes
 
 ### Sandbox Development Flow
 <img width="1094" alt="Screenshot 2024-05-26 at 9 59 42 PM" src="https://github.com/therishabh/salesforce-apex/assets/7955435/83677e5d-07ca-4168-9057-2d339f19cc44">
+
+
+### Change Set:
+Change set is like a suitcase.</br>
+Change set helps us to transfer the items from SB to PROD where all the entities will be added to CS by person at SB. And this CS will be received by person at Prod.
+</br></br>
+Types:</br>
+1. Inbound CS</br>
+2. Outbound CS</br>
+
+#### Login on Sandbox: 
+
+Production:</br>
+URL = http://login.salesforce.com</br>
+UID = therishabhagrawal@gmail.com</br>
+pw = abc</br>
+</br>
+==</br>
+</br>
+Sandbox:</br>
+(Assume, sandbox name is 'sandbox1')</br>
+URL = http://test.salesforce.com</br>
+UID = therishabhagrawal@gmail.com.sandbox1</br>
+pw = abc</br>
+</br>
+
+#### Create new Sandbox from Production account
+- Click on setup then you'll see sandbox in left pannel
+  <img width="721" alt="Screenshot 2024-06-04 at 3 09 40 AM" src="https://github.com/therishabh/salesforce-apex/assets/7955435/13d0ce4c-2aa4-4bb1-b57c-07bf295af212">
+
+- Sandbox screen
+  <img width="1440" alt="Screenshot 2024-06-04 at 3 09 31 AM" src="https://github.com/therishabh/salesforce-apex/assets/7955435/e4a93219-1872-4572-8d2c-129e3eb38eda">
+
+- <img width="1439" alt="Screenshot 2024-06-04 at 3 12 18 AM" src="https://github.com/therishabh/salesforce-apex/assets/7955435/722b4342-e1d2-4aa3-9754-de7c0bb0c349">
+
+- <img width="722" alt="Screenshot 2024-06-04 at 3 12 46 AM" src="https://github.com/therishabh/salesforce-apex/assets/7955435/f95aadfc-7415-4109-9dd4-df66abe80fef">
+
+<img width="1438" alt="Screenshot 2024-06-04 at 3 13 02 AM" src="https://github.com/therishabh/salesforce-apex/assets/7955435/97076218-fbde-4410-824e-f356a28ea29f">
+
+<img width="1437" alt="Screenshot 2024-06-04 at 3 13 25 AM" src="https://github.com/therishabh/salesforce-apex/assets/7955435/fe756086-addc-408c-aad5-0ef28b392f7c">
+
+<img width="1440" alt="Screenshot 2024-06-04 at 3 15 12 AM" src="https://github.com/therishabh/salesforce-apex/assets/7955435/5b3a2880-6826-41b6-b130-975ee7253f84">
+
+<img width="1436" alt="Screenshot 2024-06-04 at 3 18 59 AM" src="https://github.com/therishabh/salesforce-apex/assets/7955435/ddbd3799-22ea-49e2-aa80-a04f0e907290">
+
+<img width="1438" alt="Screenshot 2024-06-04 at 3 19 54 AM" src="https://github.com/therishabh/salesforce-apex/assets/7955435/210e800c-ab1c-4992-96b1-df645c314424">
+
+Before creating outbound set First of all we need to create a connection between our sandbox with production, so for that we need to click on deployment settings.
+<img width="1440" alt="Screenshot 2024-06-04 at 3 21 12 AM" src="https://github.com/therishabh/salesforce-apex/assets/7955435/a5df9edf-3a30-49ab-ac9b-d2a082e440a8">
+<img width="722" alt="Screenshot 2024-06-04 at 3 24 20 AM" src="https://github.com/therishabh/salesforce-apex/assets/7955435/fa761807-6bd6-4896-b7c2-07753ea2b378">
+<img width="722" alt="Screenshot 2024-06-04 at 3 24 32 AM" src="https://github.com/therishabh/salesforce-apex/assets/7955435/7cb1554b-798e-4f46-92af-2b7962703fa6">
+
+This is production screen (Deployment Screen)
+<img width="1431" alt="Screenshot 2024-06-04 at 3 25 22 AM" src="https://github.com/therishabh/salesforce-apex/assets/7955435/c60aba11-2755-4d3d-8b88-0930263c64ae">
+<img width="721" alt="Screenshot 2024-06-04 at 3 26 44 AM" src="https://github.com/therishabh/salesforce-apex/assets/7955435/c7178ede-2f73-46f4-82a6-d724ef6c6b02">
+<img width="721" alt="Screenshot 2024-06-04 at 3 27 01 AM" src="https://github.com/therishabh/salesforce-apex/assets/7955435/e1a874b1-0390-407e-9e7f-eedb6296ac84">
+
+#### Video Link : 
+https://www.youtube.com/watch?v=EAudzGsZoq8&ab_channel=ShekharSalesforce
+
+
 
 ### Various Deployment Methods
 - Change Set
