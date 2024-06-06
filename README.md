@@ -25,6 +25,15 @@
 12. [Deployment](#deployment)
 13. [Exception Handling](#exception-handling)
 14. [Alternate of SELECT * in Salesforce](#alternate-of-select--in-salesforce)
+15. [Javascript Remoting or Remoting or APEX Remoting or Remote Action](#javascript-remoting-or-remoting-or-apex-remoting-or-remote-action)
+16. [Static Resources in Salesforce](#static-resources-in-salesforce)
+17. [Generate PDF in Salesforce](#generate-pdf-in-salesforce-download-or-send-email)
+18. [Security in Apex class](#security-in-apex-class)
+19. [Send Email in Salesforce with Apex Method](#send-email-in-salesforce-with-apex-method)
+20. [Server Side Validation](#server-side-validation)
+21. [Benefits of Test isRunningTest](#benefits-of-test-isrunningtest)
+22. [Bulk API](#bulk-api)
+23. [Invocable Method](#invocable-method)
 
 ------
 
@@ -2058,4 +2067,5 @@ A. Yes we have seen some difference between the data order with Bulk APi and non
 Use Bulk API enabled means Bulk API + Parallel mode (Fast, but there may be chance to fail connection)<br/>
 Use Enable serial mode for Bulk api means Bulk API + Serial Mode (slow, but connection will not fail because it will insert one by one record)
 
+## Invocable Method
 
