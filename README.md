@@ -12,18 +12,19 @@
 6. [Apex Test Class](#apex-test-class)
 7. [DML (Data Manipulation Language)](#dml-data-manipulation-language)
 8. [SOQL Cheat Sheet](#soql-cheat-sheet)
-9. [Asynchronous Processing Basics](#asynchronous-processing-basics)
+9. [SOSL](#sosl)
+10. [Asynchronous Processing Basics](#asynchronous-processing-basics)
    - [Future Method in apex](#future-method-in-apex)
    - [Batch Apex](#batch-apex)
    - [Queueable Apex](#queueable-apex)
    - [Scheduled Apex](#scheduled-apex)
-10. [Integration in Salesforce](#integration-in-salesforce)
+11. [Integration in Salesforce](#integration-in-salesforce)
     - [Postman Integration](#postman-integration)
     - [Connect One Salesforce to another Salesforce account](#connect-one-salesforce-to-another-salesforce-account)
     - [Create Rest API](#create-rest-api)
-11. [Deployment](#deployment)
-12. [Exception Handling](#exception-handling)
-13. [Alternate of SELECT * in Salesforce](#alternate-of-select--in-salesforce)
+12. [Deployment](#deployment)
+13. [Exception Handling](#exception-handling)
+14. [Alternate of SELECT * in Salesforce](#alternate-of-select--in-salesforce)
 
 ------
 
@@ -878,6 +879,39 @@ public class DMLDemo {
 
 ## SOQL Cheat Sheet
 https://www.apexhours.com/soql-cheat-sheet/
+
+## SOSL
+Salesforce Object Search Language (SOSL) is a Salesforce search language that is used to perform text searches in records. Use SOSL to search fields across multiple standard and custom object records in Salesforce. SOSL is a search language in salesforce and the important feature is that Unlike SOQL, we can search in multiple objects at same time using SOSL. In SOQL, we can query only one object at a time but in SOSL, We can search for some specified string like ‘testString’ in multiple objects at the same time.
+
+#### Difference between SOQL and SOSL
+Like SOQL, SOSL allows you to search your organization’s records for specific information. Unlike SOQL, which can only query one standard or custom object at a time, a single SOSL query can search all objects.
+
+Another difference is that SOSL matches fields based on a word match while SOQL performs an exact match by default (when not using wildcards). For example, searching for ‘Digital’ in SOSL returns records whose field values are ‘Digital’ or ‘The Digital Company’, but SOQL returns only records with field values of ‘Digital’.
+
+#### Example
+```apex
+// Search 'Salesforce' keyword in Account object under all fields
+List<List<SObject>> accList = [FIND 'Salesforce' IN ALL FIELDS RETURNING Account];
+
+// Search 'Salesforce' keyword in Account object under all fields and get it's ID, Name, Phone field info
+List<List<SObject>> accList = [FIND 'Salesforce' IN ALL FIELDS RETURNING Account(Id, Name, Phone)];
+
+// Search 'Salesforce' keyword in Account object under all fields and get it's ID, Name, Phone field info and we need to add where condition for account object
+List<List<SObject>> accList = [FIND 'Salesforce' IN ALL FIELDS RETURNING Account(Id, Name, Phone WHERE Name = 'Manchester Utd')];
+
+// if we want to search from two objects
+List<List<SObject>> accList = [FIND 'Salesforce' IN ALL FIELDS RETURNING Account(Id, Name, Phone), Contact(Id, Name)];
+
+// if you want you search multiple text in single query then we need to pass both keyword in single quote by OR seperator
+List<List<SObject>> accList = [FIND '"Salesforce" OR "SF"' IN ALL FIELDS RETURNING Account(Id, Name, Phone), Contact(Id, Name)];
+
+// wildcards:
+FIND {Salesforce N*}
+FIND {Salesforce N?ob}
+
+List<List<SObject>> accList = [FIND 'Sa*' IN ALL FIELDS RETURNING Account(Id, Name, Phone), Contact(Id, Name)];
+
+```
 
 ## Asynchronous Processing Basics
 - Asynchronous Apex is used to run processes in a separate thread, at a later time. An asynchronous process is a process or function that executes a task "in the background" without the user having to wait for the task to finish.
