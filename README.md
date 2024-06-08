@@ -793,12 +793,10 @@ public with sharing class SampleClass {
 		integer a = btc;
 		return a;
 		}
-
 		set;
-
-		Or
-
 	}
+
+	Or
 
 	//VariableABC {set;get;}
 
