@@ -697,15 +697,15 @@ public class ContactTriggerHandler{
         	}
     	}
     
-		// To maintain which company has how many employees
-		List<Account> accList = [SELECT id, name, (SELECT id FROM Contacts) FROM Account WHERE id IN :AccountIds];
-		Map<Id, integer> AccountContactMap = new Map<Id, integer>();
+	// To maintain which company has how many employees
+	List<Account> accList = [SELECT id, name, (SELECT id FROM Contacts) FROM Account WHERE id IN :AccountIds];
+	Map<Id, integer> AccountContactMap = new Map<Id, integer>();
         for(Account acc: accList) {
                 integer siblingCount = acc.contacts.size() > 0 ? acc.contacts.size() - 1 : 0;
                 AccountContactMap.put(acc.id, siblingCount);
         }
         
-        //To call all employees one by one and setting the sibling count on that
+        // To call all employees one by one and setting the sibling count on that
         list<Contact> GetContacts = [SELECT id, SiblingCount_C, AccountId FROM contact WHERE AccountId in : AccountContactMap.keySet()];
         list<Contact> TpUpdate = new list<Contact>();
     
