@@ -2068,5 +2068,53 @@ Use Bulk API enabled means Bulk API + Parallel mode (Fast, but there may be chan
 Use Enable serial mode for Bulk api means Bulk API + Serial Mode (slow, but connection will not fail because it will insert one by one record)
 
 ## Invocable Method
+The invocable actions mechanism allows to create custom code and package it into components / actions available in declarative tools, such as Flow. You provide input values that the apex class does something with, and it gives you output values.
+
+The InvocableMethod annotation tells Salesforce that this class should be exposed to users of invocable actions in the Flow Builder. It can be used to invoke a single Apex method.
+
+**Sample Code**
+```apex
+public class AccountAction {
+  @InvocableMethod(label='Get Account Names' description='Returns the list of account' category='Account')
+  public static List<Account> getAccount(List<ID> ids) {
+    // Do Something
+  }
+}
+```
+#### InvocableMethod Considerations:
+- The invocable method must be static, public, or global, and its class must be an outer class.
+- Only one method in a class can have the InvocableMethod annotation.
+- Triggers can’t reference Invocable methods.
+- No other annotations can be used alongside the InvocableMethod annotation.
+- There can be at most one input parameter and its data type must be a list.
+
+**Scenario:** </br>
+Create a Custom Picklist field (status) on Account with Active, In Active & Hold. If the Account status is changed to In Active or Hold. Delete all the Closed Won Opportunity related to that Account.
+
+- In Flow Screen firstly we need to select Record Triggered Flow
+<img width="721" alt="Screenshot 2024-06-08 at 4 58 04 PM" src="https://github.com/therishabh/salesforce-apex/assets/7955435/bef72290-1b39-440d-b0bc-3aca137a510a">
+
+<img width="721" alt="Screenshot 2024-06-08 at 4 58 52 PM" src="https://github.com/therishabh/salesforce-apex/assets/7955435/233d51cc-5a55-4214-b52b-8a5771ed51b1">
+<img width="1439" alt="Screenshot 2024-06-08 at 4 59 59 PM" src="https://github.com/therishabh/salesforce-apex/assets/7955435/286f109b-c136-4078-9f7c-6523762a7a69">
+<img width="722" alt="Screenshot 2024-06-08 at 5 00 18 PM" src="https://github.com/therishabh/salesforce-apex/assets/7955435/402cb36f-e1d7-49a5-a022-7f7f094f3825">
+
+- now we need to call the apex class method, so for that we need to click on plus button in flow and then select Action option from list.
+<img width="721" alt="Screenshot 2024-06-08 at 5 00 37 PM" src="https://github.com/therishabh/salesforce-apex/assets/7955435/5132a6fc-ddd2-44d1-aff6-b45580da7eac">
+
+- now New Action screen will be open and in this screen we need to search label of out invocable Method.
+<img width="721" alt="Screenshot 2024-06-08 at 5 04 29 PM" src="https://github.com/therishabh/salesforce-apex/assets/7955435/03f2500b-4833-42b7-8d5![Uploading Screenshot 2024-06-08 at 5.09.11 PM.png…]()
+6-16dfc496d01c">
+
+now everything is aligned but here is one problem, that is we are not checking if user change that status field only then after we need to run this flow
+ <img width="1440" alt="Screenshot 2024-06-08 at 5 09 47 PM" src="https://github.com/therishabh/salesforce-apex/assets/7955435/b1d0e9cb-7ca6-4d49-9c95-fe3288c194b2">
+
+
+
+
+
+
+
+
+
 
 
