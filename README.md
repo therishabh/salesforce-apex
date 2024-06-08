@@ -717,6 +717,8 @@ public class ContactTriggerHandler{
         update (TpUpdate);
     }
 }
+
+>> In the above scenario we can not handle after update trigger because in trigger handler we are updating contacts itself, so if we'll handle after update trigger then it'll go to in a infinite loop (recusion situation will come)
 ```
 
 ## How to avoid recursion in Trigger
