@@ -722,6 +722,47 @@ public class ContactTriggerHandler{
 >> In the above scenario we can not handle after update trigger because in trigger handler we are updating contacts itself, so if we'll handle after update trigger then it'll go to in a infinite loop (recusion situation will come)
 ```
 
+```apex
+// Question : Write a trigger to prevert update status of Account object, if user will update satus of account object to Closed then first we need to check if all opportunity is closed or not, if all opportunity has been closed then only user can change status of account to closed else throw an error.
+
+
+ trigger AccountTrigger on Account(before update){
+    if(Trigger.isBefore()){
+        if(Trigger.isUpdate()){
+            AccountTriggerHandler.updateStatus(Trigger.new, Trigger.oldMap)
+        }
+    }
+ }
+
+ public class AccountTriggerHandler{
+    public static void updateStatus(List<Account> accList, Map<id, Account> oldAccountMap){
+
+        Set<Id> accIds = new Set<Id>();
+         List<Opportunity> oppList = new List<Opportunity>();
+        for(Account acc: accList){
+            if(acc.status__c == 'Closed' && oldAccountMap.get(acc.Id).status__c != 'Closed'){
+                accIds.add(acc.Id);
+            }
+        }
+        if(accIds.size() > 0){
+            oppList = [SELECT Id, Status FROM Opportunity WHERE AccountId IN :accIds AND status__c != 'Closed'];
+            Map<Id, Boolean> accOpenOpp = new Map<Id, Boolean>();
+
+            for(Opportunity opp : oppList){
+                accOpenOpp.put(opp.AccountId, true);
+            }
+
+            for(Account acc: accList){
+                if(accOpenOpp.containsKey(acc.Id)){
+                    acc.addError('You can not close account because all opportunity should be closed first.');
+                }
+            }
+        }
+    }
+ }
+
+```
+
 #### Q: When Maximum Trigger Depth Exceeded Error comes ?
 Ans : When trigger goes to recursive loop, that means trigger called itself back to back. we can solve this by static boolean variable (see resolve recursion)
 
