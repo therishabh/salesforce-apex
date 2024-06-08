@@ -721,6 +721,9 @@ public class ContactTriggerHandler{
 >> In the above scenario we can not handle after update trigger because in trigger handler we are updating contacts itself, so if we'll handle after update trigger then it'll go to in a infinite loop (recusion situation will come)
 ```
 
+#### Q: When Maximum Trigger Depth Exceeded Error comes ?
+Ans : When trigger goes to recursive loop, that means trigger called itself back to back. we can solve this by static boolean variable (see resolve recursion)
+
 ## How to avoid recursion in Trigger
 Recursion is the process of executing the same Trigger multiple times to update the record again and again due to automation. There may be chances we might hit the Salesforce Governor Limit due to Recursive Trigger.
 
@@ -751,6 +754,64 @@ Trigger ContactTriggers on Contact (after update){
     }
 }
 ```
+
+## Order of execution
+1. Standard validation rule
+2. Before trigger
+3. Custom validation rule
+4. After trigger
+5. WFR (Work Flow Rule)
+6. Process builder *
+7. If WER/PB has any action called as "field update" and this changes any record, and on that record's object we have trigger, then one more time the before and after trigger code will work. BUT ONLY ONE TIME !!!
+8. Data will be committed in database
+
+##### IMP IQ:
+**Requirement:** If Age < 18 = throw error as per Validation Rule. <br/> <br/>
+Assume, user created a record with exp 20, so VR did not come, then trigger came, then WFR came, and at that time by "WFR field update", value of Age became 15, what will happen? Error will come or not?
+
+Answer : Error will not come because after WFR trigger will render.
+
+
+Counter IQ:
+**Requirement :** If Age < 18 = throw error as per "Trigger", using function addError.<br/> <br/>
+Assume, user created a record with exp 20, then WFR came, and at that time by "WFR field update", value of Age became 15, what will happen? Error will come or not?
+
+### Order of execution in Visualforce page : 
+
+Visualforce page:
+```apex
+<apex:page controller="SampleClass" action="{!FunctionA}">
+	<apex:outputText>{!VariableABC}</apex:outputText>
+</арех:page>
+```
+
+```apex
+public with sharing class SampleClass {
+	public String VariableABC {
+		get {
+		integer a = btc;
+		return a;
+		}
+
+		set;
+
+		Or
+
+	}
+
+	//VariableABC {set;get;}
+
+	public SampleClass (ApexPages. StandardController StdController1) {
+		// any code
+	}
+
+	public void FunctionA() {
+		// any code
+	}
+}
+//any code
+```
+>> Order of execution in visualforce page is 1: constructor function 2: action function 3: getter function
 
 
 ## Apex Test Class
