@@ -676,6 +676,49 @@ public class ContactTriggerHandler{
 }
 ```
 
+```apex
+// Question : Trigger to count number of sibling in contacts associated with an account
+trigger ContactTrigger on Contact (after insert) {
+    if(Trigger.isAfter){
+        if(Trigger.isInsert){
+            ContactTriggerHandler.updateContactSibling(Trigger.new);
+        }   
+    }
+}
+
+public class ContactTriggerHandler{
+     public static void updateContactSibling(List<Contact> conList){
+        
+        // To get list of all accounts (companies) involved in this process
+		Set<Id> AccountIds = new Set<Id>();
+		for (contact c : conList) {
+			if(c.AccountId != null)
+				AccountIds.add(c.AccountId);
+        	}
+    	}
+    
+		// To maintain which company has how many employees
+		List<Account> accList = [SELECT id, name, (SELECT id FROM Contacts) FROM Account WHERE id IN :AccountIds];
+		Map<Id, integer> AccountContactMap = new Map<Id, integer>();
+        for(Account acc: accList) {
+                integer siblingCount = acc.contacts.size() > 0 ? acc.contacts.size() - 1 : 0;
+                AccountContactMap.put(acc.id, siblingCount);
+        }
+        
+        //To call all employees one by one and setting the sibling count on that
+        list<Contact> GetContacts = [SELECT id, SiblingCount_C, AccountId FROM contact WHERE AccountId in : AccountContactMap.keySet()];
+        list<Contact> TpUpdate = new list<Contact>();
+    
+        for (contact c: GetContacts ){
+            c.SiblingCount__c = AccountContactMap.get.(c.AccountId);
+            TpUpdate.add(c);
+        }
+
+        update (TpUpdate);
+    }
+}
+```
+
 ## How to avoid recursion in Trigger
 Recursion is the process of executing the same Trigger multiple times to update the record again and again due to automation. There may be chances we might hit the Salesforce Governor Limit due to Recursive Trigger.
 
