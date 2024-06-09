@@ -1443,6 +1443,10 @@ for(integer i = 0; i < objsToUpdate.size(); i++) {
 
 You can use this exception_list in execute method to send in your final email.
 
+#### Q: Can we call a batch class from another ?
+Ans : Yes</br></br>
+How ?</br>
+In finish method</br>
 
 
 
