@@ -776,17 +776,21 @@ You can create a class with a static Boolean variable with a default value of tr
 Apex Class with Static Variable
 
 ```apex
-public class ContactTriggerHandler{
+public class DealTriggerHandler{
      public static Boolean isFirstTime = true;
 }
 ```
+
+Public = so i can use this variable outside
+static = so that data will not vanish when control is out of class.
+
 
 Trigger Code
 ```apex
 Trigger ContactTriggers on Contact (after update){
     Set<String> accIdSet = new Set<String>(); 
-    if(ContactTriggerHandler.isFirstTime){
-        ContactTriggerHandler.isFirstTime = false;
+    if(DealTriggerHandler.isFirstTime){
+        DealTriggerHandler.isFirstTime = false;
         System.debug('---- Trigger run ---->'+Trigger.New.size() );
          for(Contact conObj : Trigger.New){
             if(conObj.name != 'Test') {
@@ -1031,6 +1035,66 @@ public class DMLDemo {
 - Query existing records and display their values.
 - Then update the record and do Update DML.
 - Check updated records in Org.
+
+## Database.insert (process Buld DML)
+
+1. Helpful in processing in large records
+2. When we want to see which record were successful
+3. When we want to see which records failed
+4. What are IDs of success records
+5. What are error reasons
+6. What are error fields
+7. This will help for partial DML
+8. We can process large records by this
+9. Documentation can be done using debig logs to know the reasons of errors
+10. Everything is dynamic, whether records are few or large
+<br/><br/>
+
+DML statement with database function:
+Suppose, we have some records (say, 20), in a list. If suppose, I did insert for that list, and 1 record is having bad data so error took place. Yet, all rest 19 records will be cancelled. And nothing will be inserted.
+<br/>
+This is the regular pattern of DML.
+
+When we make any transaction using **database.insert()** or **database.update()** then the return value is **database.saveresult**
+
+```apex
+Account acc1 = new Account();
+acc1.Name = 'Account 22001';
+
+
+Account acc2 = new Account();
+acc2.Name = 'Account 22001';
+
+
+Account acc3 = new Account();
+acc3.Industry = 'Chemical';
+
+list<Account> accList = new list<Account>();
+accList.add(acc1);
+accList.add(acc2);
+accList.add(acc3);
+
+List<database.saveresult> resultList = database.insert(accList, false);
+system.debug(resultList);
+for(database.saveresult result : resultList){
+    system.debug('--------------------------');
+    system.debug(result.isSuccess());
+    system.debug(result.getErrors());
+    system.debug(result.getID());
+    system.debug('--------------------------');
+}
+
+```
+
+<img width="1435" alt="Screenshot 2024-06-09 at 10 42 25 AM" src="https://github.com/therishabh/salesforce-apex/assets/7955435/73149346-79c4-4ba3-adad-f6137247a53d">
+
+database.saveresult database contains 3 methods 
+- getErrors()
+- getId()
+- isSuccess()
+  
+![Screenshot 2024-06-09 at 10 46 09 AM](https://github.com/therishabh/salesforce-apex/assets/7955435/e83dd55f-7eda-47f2-87c2-4b53141c9997)
+
 
 
 ## SOQL Cheat Sheet
@@ -2107,6 +2171,8 @@ public class ClassB {
 ```
 
 ## Send Email in Salesforce with Apex Method
+
+
 ```apex
 public class EmailManager {
     // Public method
