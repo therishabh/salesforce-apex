@@ -794,6 +794,41 @@ public class ContactTriggerHandler{
 
 ```
 
+```apex
+// Question : Write a trigger to update contact when accounts phone changed.
+trigger UpdateContactOnAccountPhoneChange on Account (after update) {
+    // Set to hold account IDs with changed phone numbers
+    Set<Id> changedAccountIds = new Set<Id>();
+    
+    // Map to hold account IDs and their new phone numbers
+    Map<Id, String> accountIdToPhoneMap = new Map<Id, String>();
+    
+    // Iterate through the trigger's new list of updated accounts
+    for (Account updatedAccount : Trigger.new) {
+        // Check if the phone number has been changed
+        if (Trigger.oldMap.get(updatedAccount.Id).Phone != updatedAccount.Phone) {
+            // Add account ID to the set of changed IDs
+            changedAccountIds.add(updatedAccount.Id);
+            // Add account ID and new phone number to the map
+            accountIdToPhoneMap.put(updatedAccount.Id, updatedAccount.Phone);
+        }
+    }
+    
+    // Query for related contacts in bulk
+    List<Contact> relatedContacts = [SELECT Id, AccountId FROM Contact WHERE AccountId IN :changedAccountIds];
+    
+    // Iterate through related contacts and update phone numbers
+    for (Contact relatedContact : relatedContacts) {
+        relatedContact.Phone = accountIdToPhoneMap.get(relatedContact.AccountId);
+    }
+    
+    // Update contacts
+    if (!relatedContacts.isEmpty()) {
+        update relatedContacts;
+    }
+}
+```
+
 #### Q: When Maximum Trigger Depth Exceeded Error comes ?
 Ans : When trigger goes to recursive loop, that means trigger called itself back to back. we can solve this by static boolean variable (see resolve recursion)
 
