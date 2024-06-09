@@ -1488,10 +1488,10 @@ Ans. 5 (that's why we should not call any batch apex from Trigger)
 
 ### Queueable Apex:
 1) It is also a type of asynchronous apex.
-2) It is similar to future method but provides additional functionality which future method was unable to provide -
-a) We can use non-primitive data type in Queueable apex.
-b) Chaining is possible.
-c) Can Monitor the job because when you submit job by invoking system.enqueueJob method it returns the ID.You can use that ID to monitor.
+2) It is similar to future method but provides additional functionality which future method was unable to provide - </br>
+	a) We can use non-primitive data type in Queueable apex.</br>
+	b) Chaining is possible.</br>
+	c) Can Monitor the job because when you submit job by invoking system.enqueueJob method it returns the ID.You can use that ID to monitor.</br>
 
 **Example**
 ```js
