@@ -1131,7 +1131,7 @@ public class DMLDemo {
 - Then update the record and do Update DML.
 - Check updated records in Org.
 
-## Database.insert (process Buld DML)
+## Database.insert (process Bulk DML)
 
 1. Helpful in processing in large records
 2. When we want to see which record were successful
