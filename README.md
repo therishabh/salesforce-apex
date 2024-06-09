@@ -336,15 +336,15 @@ All triggers define implicit variables that allow developer to access run-time c
 The context variable Trigger.operationType is used to get the current System.TriggerOperation enum value.
 
 The following are the values of the System.TriggerOperation enum:
-
-AFTER_DELETE
-AFTER_INSERT
-AFTER_UNDELETE
-AFTER_UPDATE
-BEFORE_DELETE
-BEFORE_INSERT
-BEFORE_UPDATE
-
+<br/>
+AFTER_DELETE<br/>
+AFTER_INSERT<br/>
+AFTER_UNDELETE<br/>
+AFTER_UPDATE<br/>
+BEFORE_DELETE<br/>
+BEFORE_INSERT<br/>
+BEFORE_UPDATE<br/>
+<br/>
 Example:
 ```apex
 trigger TestSwitch on Account (before insert, after insert) {
