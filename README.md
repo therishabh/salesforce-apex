@@ -1448,7 +1448,43 @@ Ans : Yes</br></br>
 How ?</br>
 In finish method</br>
 
+#### Q. Can we call a batch class from trigger ?
+Ans.  Yes, but not advised because there is a limit on calling batch classes per Salesforce org. If Trigger has large records, it will call many batch classes, then limit can hit.</br>
+Upto 5 active batch jobs are allowed in APEX (in queue).
 
+#### Q: What access specifiers we use in Batch class?
+Ans. Global
+
+#### What interface we use for Batch apex/Batch class?
+Ans. Database.Batchable
+
+#### Q: What is QueryLocator?
+Ans. The way we have data type like integer, string; same way we have "Database.QueryLocator" which contains large number of records, like a container/pot.</br></br>
+And this is return type of start() function.
+
+#### Q. How we are going to call the query? Normal way?
+Ans. No! </br>
+We will use "database.getQueryLocator()" function.
+
+#### Q.
+#### How to count any values of processed records in batch class ?
+#### OR
+#### Can I save info about processed records in batch class?
+#### OR
+#### I want to make sum of all values processed by above batch class?
+This IS first line Of Batch class | normal process: <br/>
+<br/>
+`global class AccountlaxUpdate implements Database.Batchable<sObject> {`
+<br/><br/>
+Make it like this:<br/>
+<br/>
+`global class AccountTaxUpdate implements Database.Batchable<sObject>, Database.Stateful{`
+
+#### IQ:TCS, India :  what can be another return type of Start function ?
+Ans. Iterator (we dont use this in max cases) (just memorize for interview)
+
+#### Q: How many parallel batch apex can be called in one org?
+Ans. 5 (that's why we should not call any batch apex from Trigger)
 
 ### Queueable Apex:
 1) It is also a type of asynchronous apex.
