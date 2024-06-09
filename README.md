@@ -332,6 +332,36 @@ All triggers define implicit variables that allow developer to access run-time c
 #### Trigger Context Variable Comparison 
 <img width="1211" alt="Screenshot 2024-04-09 at 1 30 13 PM" src="https://github.com/therishabh/salesforce-dev/assets/7955435/29eadfad-6a82-4a8a-82a2-f80f9f3ef6b2">
 
+#### What is Trigger.operationType?
+The context variable Trigger.operationType is used to get the current System.TriggerOperation enum value.
+
+The following are the values of the System.TriggerOperation enum:
+
+AFTER_DELETE
+AFTER_INSERT
+AFTER_UNDELETE
+AFTER_UPDATE
+BEFORE_DELETE
+BEFORE_INSERT
+BEFORE_UPDATE
+
+Example:
+```apex
+trigger TestSwitch on Account (before insert, after insert) {
+    switch on Trigger.operationType {
+        when BEFORE_INSERT {
+            System.debug('Before Insert');
+        }
+        when AFTER_INSERT {
+            System.debug('After Insert');
+        }
+        when else {
+            System.debug('Something went wrong');
+        }
+    }
+}
+```
+
 #### Syntax
 ```apex
 trigger TriggerName on ObjectName (trigger_events) {
@@ -766,6 +796,36 @@ public class ContactTriggerHandler{
 
 #### Q: When Maximum Trigger Depth Exceeded Error comes ?
 Ans : When trigger goes to recursive loop, that means trigger called itself back to back. we can solve this by static boolean variable (see resolve recursion)
+
+```apex
+// Question : we have a picklist of contact type in contact object where we will store type of contact (Platinum, Gold, Silver) and we have one field in account object that is Premium_contact_status. so ask is if any premium contact will update then status value (premium_contact_status__c) should be update.
+
+trigger ContactMasterTrigger on Contact (after update) {
+	
+    Set<Id> setAccountIds = new Set<Id>();
+    List<Account> accountListToBeUpdate = new List<Account>();
+    
+    for(Contact con: Trigger.new) {
+        if(con.AccountId != null && con.contact_type__c == 'Platinum') {
+            setAccountIds.add(con.AccountId);
+        }
+    }
+    
+    if(setAccountIds.size() > 0){
+        List<Account> accList = [SELECT Id, premium_contact_status__c FROM Account WHERE id IN : setAccountIds];
+        for(Account acc : accList){
+            acc.premium_contact_status__c = 'Platinum contact modified!';
+            accountListToBeUpdate.add(acc);
+        }
+    }
+    
+    if(accountListToBeUpdate.size() > 0){
+        update accountListToBeUpdate;
+    }
+}
+```
+
+
 
 ## How to avoid recursion in Trigger
 Recursion is the process of executing the same Trigger multiple times to update the record again and again due to automation. There may be chances we might hit the Salesforce Governor Limit due to Recursive Trigger.
