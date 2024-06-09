@@ -1520,7 +1520,7 @@ system.debug('Job Id : ' + JobId);
 - The Apex scheduler lets you delay execution so that you can run apex classes at a specified time.
 - It schedules a job in future.
 - It's a global class that implements Schedulable Interface.
-- You can schedule it using "CRON Expression" or using "Schedule apex button" in Salesforce Ul.
+- You can schedule it using **"CRON Expression"** or using "Schedule apex button" in Salesforce Ul.
 - It has only execute method.
 - You can have only 100 active or scheduled jobs concurrently.
 - You can call future method using schedule apex ;@future(callout=true)
@@ -1533,6 +1533,18 @@ global class SomeClass implements Schedulable {
     }
 }
 ```
+
+<img width="1222" alt="Screenshot 2024-06-09 at 5 44 44 PM" src="https://github.com/therishabh/salesforce-apex/assets/7955435/52f1e9b1-c78a-4ec1-93a9-f235b936f2ba">
+<img width="1214" alt="Screenshot 2024-06-09 at 5 45 48 PM" src="https://github.com/therishabh/salesforce-apex/assets/7955435/931de9ed-a333-41e9-ad8c-efd6d42a490e">
+
+Check scheduled jobs
+<img width="1216" alt="Screenshot 2024-06-09 at 5 47 20 PM" src="https://github.com/therishabh/salesforce-apex/assets/7955435/8fcade83-699a-4901-ad6b-77dbe22cf568">
+
+#### Q:Amazon, India : How by query/code we can check above thing?
+>> Select Id, CronJobDetail.Name, State, NextFireTime From CronTrigger limit 10
+
+#### IQ:Object which stores all such info: 
+Ans: "CronTrigger"
 
 ## Integration in Salesforce
 **Integration Methods**
