@@ -722,9 +722,9 @@ public class ContactTriggerHandler{
      public static void updateContactSibling(List<Contact> conList){
         
         // To get list of all accounts (companies) involved in this process
-		Set<Id> AccountIds = new Set<Id>();
-		for (contact c : conList) {
-			if(c.AccountId != null)
+        Set<Id> AccountIds = new Set<Id>();
+        for (contact c : conList) {
+                if(c.AccountId != null) {
 				AccountIds.add(c.AccountId);
         	}
     	}
@@ -733,8 +733,8 @@ public class ContactTriggerHandler{
 	List<Account> accList = [SELECT id, name, (SELECT id FROM Contacts) FROM Account WHERE id IN :AccountIds];
 	Map<Id, integer> AccountContactMap = new Map<Id, integer>();
         for(Account acc: accList) {
-                integer siblingCount = acc.contacts.size() > 0 ? acc.contacts.size() - 1 : 0;
-                AccountContactMap.put(acc.id, siblingCount);
+                integer contactCount = acc.contacts.size();
+                AccountContactMap.put(acc.id, contactCount);
         }
         
         // To call all employees one by one and setting the sibling count on that
@@ -742,7 +742,7 @@ public class ContactTriggerHandler{
         list<Contact> TpUpdate = new list<Contact>();
     
         for (contact c: GetContacts ){
-            c.SiblingCount__c = AccountContactMap.get.(c.AccountId);
+            c.SiblingCount__c = AccountContactMap.get.(c.AccountId) > 0 ? AccountContactMap.get.(c.AccountId) - 1 : 0;
             TpUpdate.add(c);
         }
 
