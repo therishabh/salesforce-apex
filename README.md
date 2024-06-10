@@ -2551,7 +2551,8 @@ Named Credentials in Salesforce provide a secure and simplified way to configure
 **3. Maintainability:** Easily update authentication details and endpoints without changing your code.
 
 >> Use the callout: prefix followed by the Named Credential name to construct the endpoint URL.
->>  Example : string url  = 'callout:IMDB/imdb/imdbSearchByName?query='+searchText;
+</br>
+>> Example : string url  = 'callout:IMDB/imdb/imdbSearchByName?query='+searchText;
 
 Named Credentials in Salesforce provide a robust, secure, and easy-to-maintain way to manage authentication details for external service integrations. By centralizing the storage of credentials and endpoint URLs, they enhance security and simplify the process of making API calls from Apex.
 
