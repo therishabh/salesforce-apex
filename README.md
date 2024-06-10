@@ -2468,10 +2468,79 @@ Create a Custom Picklist field (status) on Account with Active, In Active & Hold
 now everything is aligned but here is one problem, that is we are not checking if user change that status field only then after we need to run this flow
  <img width="1440" alt="Screenshot 2024-06-08 at 5 09 47 PM" src="https://github.com/therishabh/salesforce-apex/assets/7955435/b1d0e9cb-7ca6-4d49-9c95-fe3288c194b2">
 
+## Check Limit in Salesforce
 
+```apex
+//Org limit checking code :
 
+//Creating map for getting current limit of SF Org
+Map<String, System.OrgLimit> VarOrgLimitMap = OrgLimits.getMap() ;
 
+//Raw format output
+System.debug ('VarOrgLimitMap-' + VarOrgLimitMap) ;
 
+//Use below code to generate meaning / easy to comprehend data
+for (String OrgLimitName :VarOrgLimitMap.keySet()) {
+
+	//This provides data of used as well as remaining limits
+	System.OrgLimit VarOrgLimit = VarOrgLimitMap.get(OrgLimitName) ;
+
+	//This line will print information about names of all limits provided by this code
+	System.debug ('Org Limit Name: ' + OrgLimitName) ;
+
+	//This line gives the used limits in Org
+	System.debug ('Org Limit Used:' + VarOrglimit.getValue()) ;
+
+	//This line gives the user limits in Org
+	System.debug('Org Limit Available:' + VarOrgLimit.getLimit());
+}
+```
+
+## Platform Event
+Platform Event is based on Event-Driven Architecture which enable apps to communicate inside and outside of Salesforce. Platform events are based on the publish/subscribe model and work directly with a message bus which handles the queue of incoming events and processes listening for them.
+
+Platform Events are used to deliver notification within Salesforce or external app. It is based on Event-Driven Architecture. Platform event are helpful to overcome with point to point Salesforce Integration challenges.
+
+#### Key Features of Platform Events
+1. **Event-Driven Architecture:** Platform Events support an event-driven architecture, allowing different parts of a system to communicate with each other through events.</br>
+2. **Publish-Subscribe Model:** Events are published by publishers and consumed by subscribers, following a publish-subscribe model.</br>
+3. **Real-Time Processing:** Events can be processed in real-time, enabling immediate response to changes or actions within the system.</br>
+
+```apex
+public class OrderService {
+    public void placeOrder(String orderId) {
+        // Create instance of the event
+        Order_Event__e orderEvent = new Order_Event__e();
+        orderEvent.OrderID__c = orderId;
+
+        // Publish the event
+        Database.SaveResult sr = EventBus.publish(orderEvent);
+
+        if (sr.isSuccess()) {
+            System.debug('Event published successfully.');
+        } else {
+            System.debug('Event publish failed: ' + sr.getErrors()[0].getStatusCode() + ' - ' + sr.getErrors()[0].getMessage());
+        }
+    }
+}
+```
+
+```apex
+trigger OrderEventTrigger on Order_Event__e (after insert) {
+    for (Order_Event__e event : Trigger.New) {
+        // Process the event
+        System.debug('Received Order Event: ' + event.OrderID__c);
+
+        // Yahan pe hum custom logic add kar sakte hain jaise ki order processing
+    }
+}
+```
+
+```apex
+// Example usage
+OrderService orderService = new OrderService();
+orderService.placeOrder('123456789012345678');
+```
 
 
 
