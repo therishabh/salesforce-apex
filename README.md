@@ -288,6 +288,12 @@ APEXClassForCalculator.multiply(3,6);
 - _Trigger class will execute automatically based on trigger event what you have definded in Trigger class._
 - Trigger file extension is **apxt** while Apex class file extension is **apxc**
 
+#### Best Practices
+**- One trigger per object** so you don’t have to think about the execution order as there is no control over which trigger would be executed first.
+**- Logic-less Triggers –** use Helper classes to handle logic.
+**- Code coverage 100%**
+**- Handle recursion –** To avoid the recursion on a trigger, make sure your trigger is getting executed only one time. You may encounter the error : ‘Maximum trigger depth exceeded’, if recursion is not handled well.
+
 #### Types of Triggers
 - Before Triggers
   - It is used to update or validate record values before saved to database.
@@ -879,7 +885,6 @@ public class DealTriggerHandler{
 Public = so i can use this variable outside
 static = so that data will not vanish when control is out of class.
 
-
 Trigger Code
 ```apex
 Trigger ContactTriggers on Contact (after update){
@@ -894,6 +899,34 @@ Trigger ContactTriggers on Contact (after update){
          }
        // any code here
     }
+}
+```
+
+**This is good for less than 200 records. But what about if we have a large set of records it won’t work. It will update the first 200+ records then it will skip the others. Let’s execute the above code with more than 200+ records.**
+
+### Use Static Set or Map
+So It is better to use a Static set or map to store all executed record ids. So when next time it will execute again we can check record is already executed or not. Let modify the above code with the help of Set.
+
+```apex
+public class ContactTriggerHandler{
+     public static Set<Id> setExecutedRecord = new Set<Id>();
+}
+```
+
+Let us the same set variable in Trigger.
+
+```apex
+trigger ContactTriggers on Contact (after update){
+        System.debug('---- Trigger run ---->'+Trigger.New.size() );
+         for(Contact conObj : Trigger.New){
+             if(ContactTriggerHandler.setExecutedRecord.contains(conObj.id)){
+                ContactTriggerHandler.setExecutedRecord.add(conObj.id);
+                if(conObj.name != 'Test') {
+                    // logic
+                }
+            }    
+         }
+       // any code here
 }
 ```
 
