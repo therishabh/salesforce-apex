@@ -289,10 +289,10 @@ APEXClassForCalculator.multiply(3,6);
 - Trigger file extension is **apxt** while Apex class file extension is **apxc**
 
 #### Best Practices
-**- One trigger per object** so you don’t have to think about the execution order as there is no control over which trigger would be executed first.
-**- Logic-less Triggers –** use Helper classes to handle logic.
-**- Code coverage 100%**
-**- Handle recursion –** To avoid the recursion on a trigger, make sure your trigger is getting executed only one time. You may encounter the error : ‘Maximum trigger depth exceeded’, if recursion is not handled well.
+**- One trigger per object** so you don’t have to think about the execution order as there is no control over which trigger would be executed first.<br/>
+**- Logic-less Triggers –** use Helper classes to handle logic.<br/>
+**- Code coverage 100%**<br/>
+**- Handle recursion –** To avoid the recursion on a trigger, make sure your trigger is getting executed only one time. You may encounter the error : ‘Maximum trigger depth exceeded’, if recursion is not handled well.<br/>
 
 #### Types of Triggers
 - Before Triggers
@@ -1001,6 +1001,22 @@ public with sharing class SampleClass {
 - Meeting the code coverage requirements for deploying Apex to production or distributing Apex to customers via packages.
 - High-quality apps delivered to the production org, which makes production users more productive.
 - High-quality apps delivered to package subscribers, which increase your customers trust.
+
+### Best Practices
+- Test class must start with @isTest annotation.
+- Focus 90+ : To deploy to production at least 75% code coverage is required. But always try to focus on 90%+. We should not focus on the percentage of code coverage, We should make sure that every use case should covered including positive, negative,bulk and single record.
+- One Assert Statement per method : Always put assert statements for negative and positive tests.
+	- System.assert(condition, msg)
+	- System.assertEquals(expected, actual, msg)
+	- System.assertNotEquals(expected, actual, msg)
+- @testSetup to create test records once in a method and use in every test method in the test class.
+- Create TestFactory class with @isTest annotation to exclude from organization code size limit.
+- No SeeAllData=true : Always use ( seeAllData = false ) at class or method level. User, profile, organization, AsyncApexjob, Corntrigger, RecordType, ApexClass, ApexComponent, ApexPage we can access without (seeAllData=true) .
+- As apex runs in system mode so the permission and record sharing are not taken into account . So we need to use System.runAs to enforce record sharing.
+- Avoid Using Hard Coding Ids anywhere in test Class or any apex class
+- Governor limits : Using Test.startTest()gives developers a new set of governor limits for the act stage of their test. Test.stopTest() then allows them to return to their previous governor limits. Test classes must test for Governor Limits using Limits Class
+- Testing Exception : Any exceptions that are caught in the production methods should be tested by feeding the test data that throws exception. Exception Type and error message should be asserted
+- Exercise bulk trigger functionality – use at least 200 records in your tests.
 
 ### Code Coverage Requirement for Deployment
 - Before you can deploy your code or package it for the Lightning Platform AppExchange, at least 75% of Apex code must be covered by tests, and all those tests must pass.
