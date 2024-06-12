@@ -2604,4 +2604,40 @@ Named Credentials in Salesforce provide a secure and simplified way to configure
 
 Named Credentials in Salesforce provide a robust, secure, and easy-to-maintain way to manage authentication details for external service integrations. By centralizing the storage of credentials and endpoint URLs, they enhance security and simplify the process of making API calls from Apex.
 
+## Apex Sharing
+
+Suppose we have 2 users, and user_1 had created a record R1 and it is not visible to user_2. Now user_1 want to share that R1 record to user_2 so there are multiple way we have learned in admin to share that record like :
+- Role based sharing
+- Sharing Rules
+- Manual Sharing
+
+but apart from these 3 way there is an another way to share that record that is with the help of code, that is called Apex Sharing.
+
+```apex
+//======= Sharing record by code / in APEX class =============
+
+//API name of object = Shekhar_Pen_c
+//For this APEX sharing scenario = Shekhar_Pen_Share
+
+//Create variable of the object, of which u want to share record
+Shekhar_Pen_Share VarPenRecordShare = New Shekhar_Pen_Share();
+
+//Decide which record u want to share
+//Give record Id which u want to use for this sharing process
+Shekhar_Pen_c VarP = [SELECT id FROM Shekhar_Pen_c WHERE name = 'Kenny'];
+VarPenRecordShare.ParentId = VarP.id;
+
+//Get record id of Tom user to whom we want to share above record
+User VarU = [SELECT id FROM user WHERE firstname = 'Tom.'];
+VarPenRecordShare.UserOrGroupId = VarU.Id;
+
+//We can set single user or public group ID as well
+//Decide which access level we want to give (2 famous options: Read/Edit)
+VarPenRecordShare.AccessLevel = 'Read';
+
+// Commit to the database
+Database.insert (VarPenRecordShare, false);
+```
+
+
 
