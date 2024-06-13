@@ -1244,6 +1244,23 @@ database.saveresult database contains 3 methods
 ## SOQL Cheat Sheet
 https://www.apexhours.com/soql-cheat-sheet/
 
+
+
+## FIELDS() function in SOQL
+Earlier Query all fields functionality was not available in Salesforce. Now we can get records of all fields available in Salesforce using the new FIELDS() function of Salesforce Object Query Language (SOQL).
+
+1.FIELDS(ALL) – All Fields including custom and standard fields. This is like * in SQL.
+
+2.FIELDS(Custom) – This will fetch only custom fields.
+
+3.FIELDS(Standard) – This will fetch only standard fields.
+
+Example Query: SELECT FIELDS(ALL) FROM ACCOUNT LIMIT 200
+
+Note:  The SOQL FIELDS() function must have a LIMIT of 200. We can also use the above query in workbench but we can not export data in bulk CSV.
+
+
+
 ## SOSL
 Salesforce Object Search Language (SOSL) is a Salesforce search language that is used to perform text searches in records. Use SOSL to search fields across multiple standard and custom object records in Salesforce. SOSL is a search language in salesforce and the important feature is that Unlike SOQL, we can search in multiple objects at same time using SOSL. In SOQL, we can query only one object at a time but in SOSL, We can search for some specified string like ‘testString’ in multiple objects at the same time.
 
