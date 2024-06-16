@@ -866,6 +866,43 @@ trigger ContactMasterTrigger on Contact (after update) {
 }
 ```
 
+```apex
+// Question: prevent deletion of account if its have more than 2 contacts
+
+trigger AccountTrigger on Account(before delete){
+    if(Trigger.isBefore){
+        if(Trigger.isDelete){
+            AccountTriggerHandler.preventDelete(Trigger.Old)
+        }
+    }
+}
+
+public class AccountTriggerHandler{
+    public static void preventDelete(List<Account> accList){
+        
+        Set<Id> accountIdsSet = new Set<Id>();
+
+        for(Account acc: accList){
+            accountIdsSet.add(acc.Id);
+        }
+
+
+        List<Account> accWitCon = [SELECT Id, (SELECT Id FROM Contacts) FROM Account WHERE Id IN :accountIdsSet HAVING Count(Contacts) > 2];
+
+        Set<Id> accountWithConIdsSet = new Set<Id>();
+        for(Account acc: accWitCon){
+            accountWithConIdsSet.add(acc.Id);
+        }
+
+        for(Account acc: accList){
+            if(accountWithConIdsSet.contains(acc.Id)){
+                acc.addError('You can not delete this account, because it has more than 2 contants')
+            }
+        }
+    }
+}
+```
+
 
 
 ## How to avoid recursion in Trigger
