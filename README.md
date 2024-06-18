@@ -1480,6 +1480,54 @@ trigger SyncAccountToSAP on Account (after insert) {
 
 ```
 
+**call third party like sap with future method**
+
+```apex
+public class SyncAccountWithSAP {
+
+    @future(callout=true)
+    public static void syncAccount(String accountId) {
+        // Retrieve the Account record
+        Account acc = [SELECT Id, Name, BillingStreet, BillingCity, BillingState, BillingPostalCode, BillingCountry 
+                       FROM Account WHERE Id = :accountId];
+
+        // Prepare the data to be sent to SAP
+        String sapEndpoint = 'https://your-sap-endpoint-url.com';  // Replace with your SAP endpoint URL
+        HttpRequest req = new HttpRequest();
+        req.setEndpoint(sapEndpoint);
+        req.setMethod('POST');
+        req.setHeader('Content-Type', 'application/json');
+
+        // Create a JSON payload to send to SAP
+        Map<String, Object> sapPayload = new Map<String, Object>();
+        sapPayload.put('accountId', acc.Id);
+        sapPayload.put('accountName', acc.Name);
+        sapPayload.put('billingStreet', acc.BillingStreet);
+        sapPayload.put('billingCity', acc.BillingCity);
+        sapPayload.put('billingState', acc.BillingState);
+        sapPayload.put('billingPostalCode', acc.BillingPostalCode);
+        sapPayload.put('billingCountry', acc.BillingCountry);
+
+        String jsonBody = JSON.serialize(sapPayload);
+        req.setBody(jsonBody);
+
+        // Send the HTTP request to SAP
+        Http http = new Http();
+        HttpResponse res = http.send(req);
+
+        // Handle response from SAP if needed
+        if (res.getStatusCode() != 200) {
+            System.debug('Error syncing Account with SAP: ' + res.getBody());
+            // Handle error scenario, log or notify admins
+        } else {
+            System.debug('Account synced successfully with SAP');
+            // Optionally, handle success scenario
+        }
+    }
+}
+
+```
+
 ### Batch Apex
 1) When you are dealing with big data(millions of records) that can exceed normal processing limits then you use Batch there.
 2) Batch is most advanced in Asynchronous Apex.
