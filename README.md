@@ -1441,6 +1441,45 @@ public class CreateAccountAndUser {
 • You cannot call a future method from another.
 • There is a limit of 50 future calls per Apex invocation. There is an additional limit on the number of calls in a 24-hour period.
 
+**Connect salesforce org with external system like SAP by using future method**
+```apex
+trigger SyncAccountToSAP on Account (after insert) {
+    // Define the endpoint URL of SAP's web service
+    String sapEndpoint = 'https://sap.example.com/api/accounts';
+
+    List<Account> accountsToSend = new List<Account>();
+
+    for (Account acc : Trigger.new) {
+        // Create a JSON payload to send to SAP
+        String payload = '{' +
+                            '"accountId": "' + acc.Id + '",' +
+                            '"accountName": "' + acc.Name + '",' +
+                            // Add other fields you want to sync
+                         '}';
+        
+        // Send the data to SAP using outbound messaging (HTTP request)
+        HttpRequest request = new HttpRequest();
+        request.setEndpoint(sapEndpoint);
+        request.setMethod('POST');
+        request.setHeader('Content-Type', 'application/json');
+        request.setBody(payload);
+
+        // Execute the HTTP request
+        HttpResponse response = new Http().send(request);
+
+        // Check the response (optional: handle errors or log responses)
+        if (response.getStatusCode() != 200) {
+            // Handle error scenario if needed
+            System.debug('Error syncing account to SAP: ' + response.getBody());
+        } else {
+            // Add logic if needed for successful sync
+            System.debug('Account synced to SAP successfully: ' + response.getBody());
+        }
+    }
+}
+
+```
+
 ### Batch Apex
 1) When you are dealing with big data(millions of records) that can exceed normal processing limits then you use Batch there.
 2) Batch is most advanced in Asynchronous Apex.
