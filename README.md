@@ -2705,5 +2705,8 @@ VarPenRecordShare.AccessLevel = 'Read';
 Database.insert (VarPenRecordShare, false);
 ```
 
+## Metadata API
+Metadata is data about data. The main purpose of Metadata API is to move metadata between Salesforce orgs during the development process. Use Metadata API to deploy, retrieve, create, update, or delete customization information, such as custom object definitions and page layouts.
+You can move metadata with one of two ways. The first method is with Metadata API deploy() and retrieve() calls. Admins often use the deploy() and retrieve() calls to move the full metadata model.
 
 
