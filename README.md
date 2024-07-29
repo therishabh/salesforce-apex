@@ -1437,9 +1437,9 @@ public class CreateAccountAndUser {
 ```
 
 **Things to Remember**
-• It can happen that future methods are running in different order as they are called.
-• You cannot call a future method from another.
-• There is a limit of 50 future calls per Apex invocation. There is an additional limit on the number of calls in a 24-hour period.
+- It can happen that future methods are running in different order as they are called.
+- You cannot call a future method from another.
+- There is a limit of 50 future calls per Apex invocation. There is an additional limit on the number of calls in a 24-hour period.
 
 **Connect salesforce org with external system like SAP by using future method**
 ```apex
