@@ -1535,7 +1535,7 @@ public class SyncAccountWithSAP {
 4) Default batch size is 200.
 5) Maximum Batch size is 2000.
 6) Implements Database.Batchable interface.
-7) If you are using Database. QueryLocator it can retrieves 50 million records from Database while Database. Query retrieves 50 k records.
+7) If you are using Database.QueryLocator it can retrieves 50 million records from Database while Database. Query retrieves 50 k records.
 
 **Database.Batchable interface gives three methods -**</br>
 **1. start (one time run) -** This method collects all the records or objects to be passed to **execute** method for further processing.</br>
@@ -1553,8 +1553,10 @@ public class SyncAccountWithSAP {
 - You can schedule batch apex class by implementing Schedulable interface.
 
 **Disadvantages of Batch Apex:**
-• You cannot call future method from Batch class.
-• Only one batch Apex job's start method can run at a time in an org.
+- You cannot call future method from Batch class.
+- Only one batch Apex job's start method can run at a time in an org.
+
+- For Reference : https://trailhead.salesforce.com/trailblazer-community/feed/0D54V00007T4IGZSA3 (You cannot call future method from Batch class)
 
 **Syntax**
 ```js
