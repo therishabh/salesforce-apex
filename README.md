@@ -1704,6 +1704,39 @@ ID JobId = System.enqueueJob(con);
 system.debug('Job Id : ' + JobId);
 ```
 
+```apex
+public class ContactCreationQueueable implements Queueable {
+    private List<Account> accListToCreateContacts;
+    
+    public ContactCreationQueueable(List<Account> expectingAccountsFromTrigger) { 
+        this.acclistToCreateContacts = expectingAccountsFromTrigger;
+    ｝
+    
+    public void execute(QueueableContext qCont) {
+        List<Contact> conListToInsert = new List<Contact>();
+
+        //Loop on all accounts that are inserted
+        for(Account acc: accListToCreateContacts){
+            Contact con = new Contact();
+            con.lastName = acc.Name;
+            con.AccountId = acc.Id;
+            conListToInsert.add(con); // Add each contact to list
+        ｝
+       
+        if(conListToInsert.size() > 0)
+        INSERT conListToInsert;
+    }
+}
+
+
+// Trigger
+trigger AccountTriggerForContacts on Account (after insert) {
+    if(Trigger.isAfter && Trigger.isInsert){
+       System.enqueueJob(new ContactCreationQueueable(Trigger.New)); //Trigger.new has list of accounts that are inserted
+    }
+}
+```
+
 ### Scheduled Apex
 - You can run Apex classes at a specified time.
 - Run Maintenance tasks on Daily or Weekly basis.
