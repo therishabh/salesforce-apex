@@ -1376,7 +1376,7 @@ https://developer.salesforce.com/docs/atlas.en-us.salesforce_app_limits_cheatshe
 - Whereas in future method, methods runs asynchronously in its own thread.
 - This unblocks users from performing other operations.
 - Provides higher governor & execution limits for processing.
-- future method never returns anything so we have to use static void keyword when declaring future method.
+- future method never returns anything so we have to use **static void** keyword when declaring future method.
 - You can perform mixed DML use future method.
 
 **Mixed DML**
