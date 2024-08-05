@@ -39,6 +39,49 @@
 
 ------
 
+##  Latest release in 2024
+
+1. Field History Tracking
+You can now find a Field History Tracking page in Setup where you can control both the tracked objects as well as the fields. Additionally, you can easily see the number of tracked fields right from the get-go before starting to make any changes.
+Goto -> setup -> field histrory tracking-- objects-- No. of fields
+
+2. Use Blank Spaces to Align Fields on Dynamic Forms-Enabled Pages
+for example - a form has two section 
+in left we have address field which will take 3/4 rows so to align the same in right section we can add blank field which will be part of 200 fields in a object
+
+3. 14. Get a Summary of a User’s Permissions and Access
+Troubleshooting user permissions and access just got a little bit easier with the User Access Summary on a user record. The summary view will display various permissions and memberships in an easy-to-use view.
+goto setup -> user -> choose shikha bansal ->> user access summary
+
+4. Einstein for Flow
+
+5. LWC enhancements
+
+lightning-datatable component now includes a new attribute called wrap-table-header, allowing the header text to wrap within column widths. 
+
+```
+<lightning-datatable
+    key-field="id"
+    data={data}
+    columns={columns}
+    wrap-table-header={true}>
+</lightning-datatable>
+```
+
+The lightning-input component introduces a new attribute called role, enabling the creation of accessible combo boxes. Accessibility behaviors have been added or modified, including passing down ARIA attributes for various input types and removing the role=alert attribute for specific input types.
+
+Example for lightning-input changes:
+
+```
+<!-- New attribute: role -->
+<lightning-input
+    type="text"
+    role="combobox">
+</lightning-input>
+```
+
+
+
 ## Collections
 - There are 3 types of collections.
 
