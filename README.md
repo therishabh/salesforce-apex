@@ -395,6 +395,541 @@ System.debug(service.getTotalStudents());
 ---
 
 
+# 🔧 Methods in Salesforce (Apex)
+
+---
+
+## 1️⃣ Method kya hota hai?
+
+### Simple definition
+
+> **Method ek block of code hota hai jo ek specific kaam karta hai**
+
+👉 Jaise:
+
+* Calculation
+* Data validate karna
+* Record insert/update karna
+* Value return karna
+
+📌 Apex me **business logic mostly methods ke andar hi hota hai**
+
+---
+
+## 2️⃣ Method ka Basic Syntax (Apex)
+
+```apex
+accessModifier returnType methodName(parameters) {
+    // logic
+}
+```
+
+---
+
+### 🔹 Example
+
+```apex
+public Integer addNumbers(Integer a, Integer b) {
+    return a + b;
+}
+```
+
+---
+
+## 3️⃣ Method ke Parts (Line-by-Line Meaning)
+
+```apex
+public        // Access Modifier – method ka access level
+Integer       // Return type – kya value return hogi
+addNumbers    // Method name
+(Integer a, Integer b) // Parameters (inputs)
+{
+    return a + b; // Method body (logic)
+}
+```
+
+---
+
+## 4️⃣ Return Type ke Types
+
+### 🔹 1. Method jo value return karta hai
+
+```apex
+public Integer getMarks() {
+    return 90;
+}
+```
+
+---
+
+### 🔹 2. Method jo kuch return nahi karta (`void`)
+
+```apex
+public void printMessage() {
+    System.debug('Hello Salesforce');
+}
+```
+
+📌 `void` ka matlab = **no return**
+
+---
+
+## 5️⃣ Parameters kya hote hain?
+
+👉 Parameters = method ko data dena
+
+```apex
+public void setName(String name) {
+    System.debug(name);
+}
+```
+
+Method call:
+
+```apex
+setName('Rishabh');
+```
+
+---
+
+## 6️⃣ Types of Methods in Salesforce
+
+---
+
+## 🔹 1. Instance Method
+
+👉 Object ke sath call hota hai
+
+```apex
+public class Student {
+
+    public Integer marks;
+
+    public Integer getMarks() {
+        return marks;
+    }
+}
+```
+
+Usage:
+
+```apex
+Student s = new Student();
+s.marks = 80;
+System.debug(s.getMarks());
+```
+
+---
+
+## 🔹 2. Static Method
+
+👉 Class ke naam se call hota hai
+👉 Object banana zaroori nahi
+
+```apex
+public class MathUtil {
+
+    public static Integer square(Integer x) {
+        return x * x;
+    }
+}
+```
+
+Usage:
+
+```apex
+System.debug(MathUtil.square(5));
+```
+
+---
+
+## 7️⃣ Getter & Setter Methods
+
+👉 Encapsulation ka core part
+
+```apex
+public class Student {
+
+    private Integer marks;
+
+    public void setMarks(Integer value) {
+        marks = value;
+    }
+
+    public Integer getMarks() {
+        return marks;
+    }
+}
+```
+
+---
+
+## 8️⃣ Method Overloading (Same name, different params)
+
+```apex
+public class Calculator {
+
+    public Integer add(Integer a, Integer b) {
+        return a + b;
+    }
+
+    public Decimal add(Decimal a, Decimal b) {
+        return a + b;
+    }
+}
+```
+
+📌 Rule:
+
+* Method name same
+* Parameters different
+
+---
+
+## 9️⃣ Method Overriding (Inheritance required)
+
+```apex
+public virtual class Parent {
+
+    public virtual void show() {
+        System.debug('Parent');
+    }
+}
+```
+
+```apex
+public class Child extends Parent {
+
+    public override void show() {
+        System.debug('Child');
+    }
+}
+```
+
+---
+
+## 🔥 10️⃣ Static vs Instance Method (IMPORTANT)
+
+| Point   | Static Method       | Instance Method       |
+| ------- | ------------------- | --------------------- |
+| Call    | Class name          | Object                |
+| Memory  | One copy            | Per object            |
+| Use     | Utility logic       | Object specific logic |
+| Example | `MathUtil.square()` | `student.getMarks()`  |
+
+---
+
+## 🔑 Interview One-Liners
+
+> Methods in Apex are used to encapsulate reusable business logic and can be instance or static depending on the use case.
+
+> Static methods are commonly used in utility and service classes, while instance methods operate on object-specific data.
+
+---
+
+# 🔁 Method Overloading vs Method Overriding (Salesforce Apex)
+
+---
+
+## 🟢 PART 1: METHOD OVERLOADING
+
+---
+
+## 1️⃣ Method Overloading kya hota hai?
+
+> **Same class ke andar SAME method name
+> but DIFFERENT parameters**
+
+👉 Matlab:
+
+* Method ka **naam same**
+* Parameters **different** (number / type)
+* **Inheritance required nahi**
+
+📌 Decision **compile time** par hota hai
+➡️ Isliye ise **Compile Time Polymorphism** kehte hain
+
+---
+
+## 2️⃣ Method Overloading – Simple Example
+
+```apex
+public class Calculator {
+
+    // Method 1
+    public Integer add(Integer a, Integer b) {
+        return a + b;
+    }
+
+    // Method 2 (Same name, different parameters)
+    public Integer add(Integer a, Integer b, Integer c) {
+        return a + b + c;
+    }
+}
+```
+
+### Usage
+
+```apex
+Calculator c = new Calculator();
+
+System.debug(c.add(2, 3));       // Calls add(Integer, Integer)
+System.debug(c.add(1, 2, 3));    // Calls add(Integer, Integer, Integer)
+```
+
+📌 Compiler khud samajh jata hai kaunsa method call karna hai.
+
+---
+
+## 3️⃣ Overloading ke Rules (IMPORTANT)
+
+✅ Same class
+✅ Same method name
+✅ Parameters **must be different**
+
+❌ Sirf return type change karke overloading **nahi hoti**
+
+### ❌ INVALID Overloading Example
+
+```apex
+public Integer add(Integer a, Integer b) { }
+public Decimal add(Integer a, Integer b) { } // ❌ NOT allowed
+```
+
+---
+
+## 4️⃣ Salesforce Real Use Case (Overloading)
+
+```apex
+public class AccountService {
+
+    public void createAccount(String name) {
+        insert new Account(Name = name);
+    }
+
+    public void createAccount(String name, String industry) {
+        insert new Account(Name = name, Industry = industry);
+    }
+}
+```
+
+📌 Same kaam, different inputs → **Perfect Overloading use**
+
+---
+
+## 🧠 One-Line Memory Trick (Overloading)
+
+> **Same class + same name + different inputs**
+
+---
+
+---
+
+## 🔵 PART 2: METHOD OVERRIDING
+
+---
+
+## 5️⃣ Method Overriding kya hota hai?
+
+> **Parent class ke method ko
+> Child class me REDEFINE karna**
+
+👉 Matlab:
+
+* **Inheritance required**
+* Method name **same**
+* Parameters **same**
+* Child class apna implementation deta hai
+
+📌 Decision **runtime** par hota hai
+➡️ Isliye ise **Runtime Polymorphism** kehte hain
+
+---
+
+## 6️⃣ Method Overriding – Basic Example
+
+### 🔹 Parent Class
+
+```apex
+public virtual class Parent {
+
+    public virtual void show() {
+        System.debug('This is Parent');
+    }
+}
+```
+
+### 🔹 Child Class
+
+```apex
+public class Child extends Parent {
+
+    public override void show() {
+        System.debug('This is Child');
+    }
+}
+```
+
+---
+
+### Usage
+
+```apex
+Parent p = new Child();
+p.show();
+```
+
+### Output
+
+```
+This is Child
+```
+
+📌 Object **Child ka hai**, isliye **Child ka method call hota hai**
+
+---
+
+## 7️⃣ Overriding ke Rules (VERY IMPORTANT)
+
+✅ Inheritance must
+✅ Parent method → `virtual`
+✅ Child method → `override`
+✅ Signature same hona chahiye
+
+❌ Static methods override **nahi hote**
+❌ Private methods override **nahi hote**
+
+---
+
+## 8️⃣ Salesforce Real Example (Overriding)
+
+### 🔹 Abstract / Parent Class
+
+```apex
+public virtual class NotificationService {
+
+    public virtual void send(String message) {
+        System.debug('Sending notification');
+    }
+}
+```
+
+### 🔹 Child Class – Email
+
+```apex
+public class EmailNotification extends NotificationService {
+
+    public override void send(String message) {
+        System.debug('Sending Email: ' + message);
+    }
+}
+```
+
+### 🔹 Child Class – SMS
+
+```apex
+public class SMSNotification extends NotificationService {
+
+    public override void send(String message) {
+        System.debug('Sending SMS: ' + message);
+    }
+}
+```
+
+---
+
+### Usage (Abstraction + Overriding)
+
+```apex
+NotificationService service;
+
+service = new EmailNotification();
+service.send('Hello');
+
+service = new SMSNotification();
+service.send('Hi');
+```
+
+📌 Same method → different behavior → **Overriding power**
+
+---
+
+## 🧠 One-Line Memory Trick (Overriding)
+
+> **Parent ka method, child ka behaviour**
+
+---
+
+---
+
+## 🔥 FINAL COMPARISON TABLE (INTERVIEW GOLD)
+
+| Point          | Overloading  | Overriding    |
+| -------------- | ------------ | ------------- |
+| Class          | Same class   | Parent–Child  |
+| Inheritance    | ❌ No         | ✅ Yes         |
+| Method name    | Same         | Same          |
+| Parameters     | Different    | Same          |
+| Decision time  | Compile time | Runtime       |
+| Polymorphism   | Compile-time | Runtime       |
+| Static methods | ✅ Allowed    | ❌ Not allowed |
+
+---
+
+## 🎯 Common Interview Traps (Avoid These)
+
+❓ *Can static methods be overridden?*
+❌ No, static methods belong to class, not object
+
+❓ *Is return type enough for overloading?*
+❌ No, parameters must differ
+
+❓ *Can private methods be overridden?*
+❌ No, they are not visible to child class
+
+---
+
+## 🧠 Ultra-Easy Difference Trick
+
+> **Overloading = SAME class, DIFFERENT input**
+> **Overriding = DIFFERENT class, SAME input**
+
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
