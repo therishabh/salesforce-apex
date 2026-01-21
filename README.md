@@ -1,11 +1,7 @@
 # Salesforce development
 
-Bilkul 👍
-Chalo **Salesforce Development (Apex)** ke fundamentals ko **notes-friendly Hinglish** me step-by-step samajhte hain, taaki future me easily refer kar sako. Main **kuch bhi skip nahi karunga**.
 
----
-
-# 1️⃣ Variables kya hote hain (Apex me)
+# Variables kya hote hain (Apex me)
 
 ### Variable ka matlab
 
@@ -38,7 +34,7 @@ String name = 'Rishabh';
 
 ---
 
-# 2️⃣ Primitive vs Non-Primitive Data Types
+# Primitive vs Non-Primitive Data Types
 
 ## 🟢 Primitive Data Types
 
@@ -113,7 +109,7 @@ acc.Name = 'Test Account';
 
 ---
 
-# 3️⃣ Classes kya hoti hain (Apex)
+# Classes kya hoti hain (Apex)
 
 ### Class ka matlab
 
@@ -166,7 +162,7 @@ s.display();
 
 ---
 
-# 4️⃣ Access Modifier vs Access Specifier (IMPORTANT INTERVIEW TOPIC)
+# Access Modifier vs Access Specifier (IMPORTANT INTERVIEW TOPIC)
 
 Salesforce me log aksar confuse ho jaate hain, isliye dhyaan se padho 👇
 
@@ -241,7 +237,7 @@ public static Integer count = 0;
 
 ---
 
-# 5️⃣ Combined Example (Class + Variable + Modifier)
+## Combined Example (Class + Variable + Modifier)
 
 ```apex
 public with sharing class StudentService {
