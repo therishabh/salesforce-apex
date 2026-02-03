@@ -562,6 +562,65 @@ for(Integer i = 0; i < accList.size(); i += size) {
 }
 ```
 
+
+```apex
+List<Integer> myList = new List<Integer>();   // Define a new list
+myList.add(47);                               // Adds a second element of value 47 to the end of the list
+Integer i = myList.get(0);                    // Retrieves the element at index 0
+myList.set(0, 1);                             // Adds the integer 1 to the list at index 0
+myList.remove(0)                              // Remove element of 0 index
+myList.clear();                               // Removes all elements from the list
+integer myListLength = myList.size();         // How many items in the list
+```
+
+```apex
+List<String> myList = new List<String>();
+myList.add('Harry');
+myList.add('Ram');
+myList.add('Shyam');
+myList.add('Rishabh');
+myList.add('Madhav');
+myList.add('Shikha');
+system.debug('Collection list : '+myList);
+myList.remove(2);
+myList.set(3,'Hari');
+
+integer totalListLength = myList.size();
+system.debug('Total List length : ' + totalListLength);
+
+// check if any item exits inside list
+if(myList.contains('Rishabh')){
+    system.debug('Yes, Rishabh is exist');
+}
+if(myList.contains('Pankaj')){
+    system.debug('Yes, Pankaj is exist');
+} else {
+  system.debug('Pankaj is not exist inside the list');          
+}
+
+// for each loop
+for(string name: myList){
+    system.debug('Person Name : ' + name);
+}
+
+// check if myList empty
+if(myList.isEmpty()){
+    system.debug('myList is empty');
+} else {
+    system.debug('myList is not empty and it contain '+myList.size()+' items');
+}
+// clear list
+myList.clear();
+if(myList.isEmpty()){
+    system.debug('myList is empty');
+}
+
+```
+**Output**
+<img width="1362" alt="Screenshot 2024-04-02 at 4 52 38 PM" src="https://github.com/therishabh/salesforce-dev/assets/7955435/ab821b66-d603-4afd-8c47-e0d3c7915aa8">
+
+List of all methods available in List : https://developer.salesforce.com/docs/atlas.en-us.apexref.meta/apexref/apex_methods_system_list.htm#apex_System_List_methods
+
 ---
 
 ### ⚠️ Warning
