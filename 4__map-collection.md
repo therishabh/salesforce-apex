@@ -1,18 +1,3 @@
-🔥 YES — this is the **MOST IMPORTANT collection in Apex**, Rishabh
-If you truly master **Map**, you’ll cross from *developer* to *architect-level thinking* in Salesforce.
-
-I’ll explain **Map Collection** in the **same deep, practical, interview-ready way**:
-
-* Basics → behavior → methods
-* Real Salesforce patterns
-* Trigger + SOQL usage
-* Complex real-world tasks
-* Interview traps
-
-Take this slowly — **Map is power** 💪
-
----
-
 # 🔶 MAP COLLECTION IN APEX (ZERO → ARCHITECT)
 
 ---
