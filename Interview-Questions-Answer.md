@@ -1,3 +1,1646 @@
+
+# How do you handle Governor Limits in large-scale applications?
+
+### ✅ Detailed Explanation
+
+Governor Limits are **runtime limits enforced by Salesforce** to ensure fair usage of shared resources in a multi-tenant environment.
+---
+
+### 🔹 Key Strategies to Handle Governor Limits
+
+### 1. Bulkification (Most Important)
+
+Always process **records in collections**, not single records.
+
+❌ Bad
+
+```apex
+for(Account acc : Trigger.new){
+    insert new Contact(AccountId = acc.Id);
+}
+```
+
+✅ Good
+
+```apex
+List<Contact> contacts = new List<Contact>();
+for(Account acc : Trigger.new){
+    contacts.add(new Contact(AccountId = acc.Id));
+}
+insert contacts;
+```
+
+---
+
+### 2. Avoid SOQL & DML inside loops
+
+- Never write SOQL or DML inside a for loop
+- Instead, collect data first, then perform one SOQL / one DML
+
+❌ Wrong
+
+```apex
+for(Account acc : Trigger.new){
+    Contact c = [SELECT Id FROM Contact WHERE AccountId = :acc.Id];
+}
+```
+
+✅ Correct
+
+* Collect IDs
+* Query once
+* Use Map
+
+---
+
+### 3. Use Collections (Maps & Sets) for Efficient Data Access
+- Use Map and Set to store IDs and avoid duplicate queries
+- Helps in reducing SOQL queries and improving performance
+
+```apex
+Map<Id, Account> accMap = new Map<Id, Account>(Trigger.new);
+```
+
+---
+
+### 4. Use Asynchronous Processing
+
+When data is heavy, move logic to async:
+
+* Future
+* Queueable
+* Batch
+* Platform Events
+
+This helps because async has higher governor limits
+---
+
+### 5. Optimize SOQL Queries
+
+- Query only required fields, not SELECT *
+
+- Use WHERE conditions to limit records
+
+- Use indexed fields when possible
+
+---
+
+### 6. Avoid Unnecessary Automation Layers
+
+Too many flows + triggers = more limits consumption
+
+👉 Follow:
+**One Trigger per Object**
+**Use Handler Classes**
+
+---
+
+### 7. Use Batch Apex for large data
+
+- When records are in thousands or millions
+- Batch processes data in chunks (200 records per batch)
+
+---
+
+### 8.Use Efficient Trigger Design
+
+- One trigger per object
+- Use Trigger Framework
+- Move logic to handler classes
+
+---
+
+### **9. Optimize Data Volume**
+
+* Use **Skinny tables**
+* Archiving strategy
+* Use async for large updates
+
+---
+
+### 🎯 Interview Key Points to Say
+
+* Governor Limits ensure fair usage in multi-tenant architecture
+* Bulkification is the most important design principle
+* Avoid SOQL/DML inside loops
+* Use Maps and Sets for efficient data handling
+* Use async Apex (Future/Queueable/Batch) for heavy operations
+* Follow single trigger and handler pattern
+* Monitor limits using Limits class
+* Reduce automation layers to avoid limit conflicts
+
+---
+
+#  Difference between Future, Queueable, and Batch Apex
+
+### ✅ Comparison Table
+
+| Feature          | Future Apex           | Queueable Apex            | Batch Apex                    |
+| ---------------- | --------------------- | ------------------------- | ----------------------------- |
+| Execution Type   | Async                 | Async                     | Async (Chunk-based)           |
+| Data Volume      | Small                 | Medium                    | Very Large (Millions)         |
+| Parameter Types  | Only primitive        | Complex (Objects allowed) | Complex                       |
+| Job Chaining     | ❌ Not supported       | ✅ Supported               | ✅ Supported                   |
+| Monitoring       | ❌ No job ID           | ✅ Job ID available        | ✅ Full monitoring             |
+| Use Case         | Simple async callouts | Complex async processing  | Large data processing         |
+| Callouts Allowed | ✅ Yes                 | ✅ Yes                     | ✅ Yes                         |
+| Execution Limit  | 50 per transaction    | 50 per transaction        | 5 concurrent batches          |
+| Processing Style | Single transaction    | Single transaction        | Multiple chunks (200 records) |
+| Best For         | Fire-and-forget       | Controlled async job      | Mass data handling            |
+
+---
+
+### 🧑‍💼 Real-Time Example
+
+### Future Apex
+- Used for send email
+- Used for **simple callout** after record insert
+
+### Queueable Apex
+
+- Used for process order & call API
+- Used when:
+* Need chaining
+* Need complex object passing
+* Need job tracking
+
+### Batch Apex
+Used for:
+* Updating 5 million records
+* Data cleanup jobs
+* Nightly processing
+
+---
+
+### 🎯 Interview Key Points to Say
+
+* Future is simple async, only primitive parameters
+* Queueable is more powerful, supports chaining and complex objects
+* Batch Apex is for large data volumes in chunks
+* Queueable is preferred over Future in modern Salesforce
+* Batch Apex handles millions of records with chunk processing
+* Queueable provides job monitoring via Job ID
+
+---
+
+### Code examples for **Future, Queueable, and Batch Apex** that you can easily remember
+
+---
+
+## 1. Future Method – Syntax
+
+```apex
+public class FutureExample {
+
+    @future
+    public static void updateAccounts(List<Id> accIds) {
+        List<Account> accList = [SELECT Id, Name FROM Account WHERE Id IN :accIds];
+
+        for(Account acc : accList) {
+            acc.Name = acc.Name + ' Updated';
+        }
+
+        update accList;
+    }
+}
+```
+
+👉 **Calling Future Method**
+
+```apex
+FutureExample.updateAccounts(accIdList);
+```
+
+---
+
+## 2. Queueable Apex – Syntax
+
+```apex
+public class QueueableExample implements Queueable {
+
+    private List<Account> accList;
+
+    // Constructor
+    public QueueableExample(List<Account> accList) {
+        this.accList = accList;
+    }
+
+    public void execute(QueueableContext context) {
+        for(Account acc : accList) {
+            acc.Name = acc.Name + ' Updated';
+        }
+
+        update accList;
+    }
+}
+```
+
+👉 **Calling Queueable Job**
+
+```apex
+List<Account> accList = [SELECT Id, Name FROM Account LIMIT 10];
+System.enqueueJob(new QueueableExample(accList));
+```
+
+---
+
+## 3. Batch Apex – Syntax
+
+```apex
+global class BatchExample implements Database.Batchable<sObject> {
+
+    global Database.QueryLocator start(Database.BatchableContext bc) {
+        return Database.getQueryLocator('SELECT Id, Name FROM Account');
+    }
+
+    global void execute(Database.BatchableContext bc, List<Account> scope) {
+
+        for(Account acc : scope) {
+            acc.Name = acc.Name + ' Updated';
+        }
+
+        update scope;
+    }
+
+    global void finish(Database.BatchableContext bc) {
+        System.debug('Batch Job Completed');
+    }
+}
+```
+
+👉 **Calling Batch Job**
+
+```apex
+BatchExample batch = new BatchExample();
+Database.executeBatch(batch, 200);
+```
+
+---
+
+
+# How do you prevent recursive trigger execution?
+
+### Problem
+
+Recursion happens when:
+
+* Trigger updates a record
+* That update again fires trigger
+* Infinite loop occurs
+
+---
+
+### 🔹 Solution Approaches
+
+### **1. Static Boolean Variable (Simple Approach)**
+
+```apex
+public class TriggerHelper {
+    public static Boolean isFirstRun = true;
+}
+```
+
+```apex
+if(TriggerHelper.isFirstRun){
+    TriggerHelper.isFirstRun = false;
+    // logic here
+}
+```
+
+---
+
+### **2. Static Set of Record IDs (Better Approach)**
+
+```apex
+public class TriggerHelper {
+    public static Set<Id> processedIds = new Set<Id>();
+}
+```
+
+```apex
+for(Account acc : Trigger.new){
+    if(!TriggerHelper.processedIds.contains(acc.Id)){
+        TriggerHelper.processedIds.add(acc.Id);
+        // logic here
+    }
+}
+```
+
+---
+
+### **3. Use Trigger Framework**
+
+Use a **centralized handler class** that controls execution flow.
+
+---
+
+### **4. Use Field Change Check**
+
+Run logic only if a field value changed:
+
+```apex
+if(acc.Status__c != Trigger.oldMap.get(acc.Id).Status__c){
+    // run logic
+}
+```
+
+---
+
+
+### 🧑‍💼 Real-Time Example
+
+We had a scenario:
+
+* Account trigger updated Contact
+* Contact trigger updated Account
+
+👉 It created infinite loop
+
+Solution:
+
+* Used **static Set<Id> recursion guard**
+* Added **field change condition**
+* Moved logic to **service class**
+
+---
+
+### 🎯 Interview Key Points to Say
+
+* Recursion occurs when trigger updates same object repeatedly
+* Static Boolean or Static Set is used to control execution
+* Best practice is using Static Set of processed record IDs
+* Use field change checks to avoid unnecessary execution
+* Use trigger framework to control logic flow
+* Avoid updating same object unnecessarily inside trigger
+
+---
+
+# Difference between @wire and Imperative Apex
+
+### Detailed Explanation
+
+In **LWC (Lightning Web Components)**, there are **two ways to call Apex**:
+
+### 🔹 1. `@wire` (Reactive & Automatic)
+
+* Used for **read-only operations (GET data)**
+* Automatically executes when component loads or reactive parameter changes
+* Managed by **LDS (Lightning Data Service)**
+* Supports **caching**
+
+### 🔹 2. Imperative Apex (Manual Call)
+
+* Used for **create/update/delete or controlled fetch**
+* Called **manually via JS function**
+* No automatic execution
+* More control over when and how to call
+
+---
+
+### 🔸 Difference Table
+
+| Feature        | @wire                | Imperative Apex             |
+| -------------- | -------------------- | --------------------------- |
+| Execution      | Automatic            | Manual                      |
+| Use Case       | Read-only data       | DML / controlled operations |
+| Caching        | Yes (LDS cache)      | No (manual handling)        |
+| Control        | Low                  | High                        |
+| Error Handling | Auto handling        | Try-catch required          |
+| Parameters     | Reactive             | Passed manually             |
+| Re-execution   | Auto on param change | Manual re-call              |
+| Best For       | UI data display      | Button click, form submit   |
+
+---
+
+### 🧑‍💼 Real-Time Example
+
+* `@wire` → Load Account list on page load
+* Imperative → On button click, create new Account
+
+---
+
+### 🎯 Interview Key Points
+
+* `@wire` is reactive and used for read-only operations
+* Imperative Apex gives full control and used for DML
+* `@wire` supports caching via LDS
+* Imperative is used for user-driven actions like button click
+* Prefer `@wire` for performance and automatic refresh
+
+---
+
+### Code Example: 
+
+## @wire Apex (Reactive & Automatic)
+
+### ✅ Apex Class
+
+```apex
+public with sharing class AccountController {
+    
+    @AuraEnabled(cacheable=true)
+    public static List<Account> getAccounts() {
+        return [SELECT Id, Name FROM Account LIMIT 5];
+    }
+}
+```
+
+---
+
+### ✅ LWC JS (using @wire)
+
+```javascript
+import { LightningElement, wire } from 'lwc';
+import getAccounts from '@salesforce/apex/AccountController.getAccounts';
+
+export default class WireExample extends LightningElement {
+
+    @wire(getAccounts)
+    accounts; // automatically gets data
+}
+```
+
+---
+
+### ✅ LWC HTML
+
+```html
+<template>
+    <template if:true={accounts.data}>
+        <template for:each={accounts.data} for:item="acc">
+            <p key={acc.Id}>{acc.Name}</p>
+        </template>
+    </template>
+</template>
+```
+
+---
+---
+
+## Imperative Apex (Manual Call)
+
+### ✅ Apex Class (Same as above)
+
+```apex
+public with sharing class AccountController {
+    
+    @AuraEnabled
+    public static List<Account> getAccountsImperative() {
+        return [SELECT Id, Name FROM Account LIMIT 5];
+    }
+}
+```
+
+---
+
+### ✅ LWC HTML
+
+```html
+<template>
+    <lightning-button label="Load Accounts" onclick={handleClick}></lightning-button>
+
+    <template for:each={accounts} for:item="acc">
+        <p key={acc.Id}>{acc.Name}</p>
+    </template>
+</template>
+```
+
+---
+
+### ✅ LWC JS (Imperative Call)
+
+```javascript
+import { LightningElement } from 'lwc';
+import getAccountsImperative from '@salesforce/apex/AccountController.getAccountsImperative';
+
+export default class ImperativeExample extends LightningElement {
+
+    accounts = [];
+
+    handleClick() {
+        getAccountsImperative()
+            .then(result => {
+                this.accounts = result;
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    }
+}
+```
+
+---
+
+# How do you implement security in Salesforce?
+
+### ✅ Detailed Explanation
+
+Salesforce security works on **4 layers**:
+
+---
+
+### 🔹 1. Organization Level Security
+
+* Login IP range
+* Login hours
+* Password policies
+
+---
+
+### 🔹 2. Object Level Security (CRUD)
+
+* Controlled via:
+
+  * Profiles
+  * Permission Sets
+
+---
+
+### 🔹 3. Field Level Security (FLS)
+
+* Control access to specific fields
+* Read / Edit permissions
+
+---
+
+### 🔹 4. Record Level Security
+
+Controlled using:
+
+* OWD (Org Wide Defaults)
+* Role Hierarchy
+* Sharing Rules
+* Manual Sharing
+* Apex Sharing
+
+---
+
+### 🔹 Apex Security
+
+In code we enforce security using:
+
+```apex
+with sharing
+Schema.sObjectType.Account.isAccessible()
+Security.stripInaccessible()
+```
+
+---
+
+### 🔹 LWC Security
+
+* Use **@AuraEnabled(cacheable=true)** for read
+* Use **Lightning Data Service**
+* Respect FLS and sharing
+
+---
+
+### 🧑‍💼 Real-Time Example
+
+In a banking project:
+
+* Only Managers can see high-value accounts
+* Implemented using:
+
+  * Role hierarchy
+  * Sharing rules
+  * FLS on sensitive fields
+
+---
+
+### 🎯 Interview Key Points
+
+* Salesforce security is based on **CRUD, FLS, and Sharing model**
+* Use Profiles and Permission Sets for access control
+* Use OWD + Role hierarchy + Sharing rules for record access
+* Enforce security in Apex using **with sharing and stripInaccessible**
+* Use Named Credentials and OAuth for integration security
+
+---
+
+# Difference between Lookup vs Master-Detail (and When to use)
+
+### 🔸 Key Differences
+
+| Feature           | Lookup          | Master-Detail          |
+| ----------------- | --------------- | ---------------------- |
+| Relationship Type | Loose coupling  | Strong coupling        |
+| Parent Required   | ❌ Optional      | ✅ Mandatory            |
+| Child Ownership   | Independent     | Inherited from parent  |
+| Sharing           | Separate        | Inherited              |
+| Roll-up Summary   | ❌ Not available | ✅ Available            |
+| Cascade Delete    | ❌ No            | ✅ Yes                  |
+| Security          | Independent     | Controlled by parent   |
+| Re-parenting      | Allowed         | Not allowed by default |
+
+---
+
+### 🧑‍💼 Real-Time Usage
+
+### 🔹 Use Lookup when:
+
+* Objects are loosely related
+* Example: Contact ↔ Account (optional) (both looks lookup relationship but works like master detail because when any account will be delete then it's related contact will automatically delete.)
+
+### 🔹 Use Master-Detail when:
+
+* Strong dependency exists
+* Example: Order → Order Line Items
+
+---
+
+### 🎯 Interview Key Points
+
+* Lookup is loosely coupled relationship
+* Master-detail is tightly coupled with parent dependency
+* Master-detail supports roll-up summary and cascade delete
+* Use Master-detail when child cannot exist without parent
+* Use Lookup for flexible relationship
+
+---
+
+# When do you choose Flow over Apex Trigger?
+
+### ✅ Detailed Explanation
+
+Salesforce now recommends **“Flow First Approach”**
+
+Use **Flow** whenever possible, Apex only when needed.
+
+---
+
+### 🔹 Use Flow When:
+
+* Simple business logic
+* Field updates
+* Email alerts
+* Record creation
+* Approval automation
+* No complex logic
+
+👉 Example:
+When Account is created → create Contact
+
+---
+
+### 🔹 Use Apex Trigger When:
+
+* Complex logic
+* Cross-object transactions
+* External integrations
+* Performance critical operations
+* Large data handling
+
+👉 Example:
+Update 5 related objects + call API
+
+---
+
+### 🔹 Comparison
+
+| Feature         | Flow               | Apex Trigger        |
+| --------------- | ------------------ | ------------------- |
+| Complexity      | Low-Medium         | Medium-High         |
+| Performance     | Moderate           | High                |
+| Maintainability | High (declarative) | Developer dependent |
+| Debugging       | UI based           | Code logs           |
+| Bulk Handling   | Limited            | Strong              |
+
+---
+
+### 🧑‍💼 Real-Time Scenario
+
+Project requirement:
+
+* When Opportunity Closed Won
+* Create Invoice
+* Call external billing API
+* Update 3 objects
+
+👉 Solution:
+
+* Flow used for simple updates
+* Apex used for integration & complex logic
+
+---
+
+### 🎯 Interview Key Points
+
+* Follow **Flow-first approach**
+* Use Flow for simple automation
+* Use Apex trigger for complex logic and integrations
+* Apex provides better control and performance
+* Combine Flow + Apex for scalable architecture
+
+---
+
+# How do you optimize SOQL performance?
+
+### ✅ Detailed Explanation
+
+SOQL performance becomes critical when you are working with **large data volumes (LDV)** and **complex automation**.
+
+The goal is to:
+
+* Reduce **query time**
+* Avoid **full table scans**
+* Stay within **governor limits**
+* Ensure **selectivity**
+
+---
+
+### 🔹 Key Techniques to Optimize SOQL
+
+### 1. Use Selective Queries (Most Important)
+
+A query is selective when it returns **<10% of records**.
+
+👉 Use filters on:
+
+* Indexed fields (Id, Name, External Id, Lookup fields)
+* Custom indexed fields
+
+```apex
+SELECT Id FROM Account WHERE Status__c = 'Active'
+```
+
+---
+
+### 2. Avoid SELECT *
+
+Only fetch required fields.
+
+❌ Bad
+
+```apex
+SELECT * FROM Account
+```
+
+✅ Good
+
+```apex
+SELECT Id, Name FROM Account
+```
+
+---
+
+### 3. Avoid SOQL in Loops
+
+Always bulkify queries using **Set + Map**
+
+---
+
+### 4. Use WHERE Conditions Properly
+
+Avoid:
+
+* `!=`
+* `NOT IN`
+* `LIKE '%text%'`
+
+These break indexes.
+
+---
+
+### 5. Use Query Plan Tool
+
+Salesforce provides **Query Plan Tool** to check:
+
+* Cost
+* Selectivity
+* Index usage
+
+---
+
+### 6. Use LIMIT
+
+If you don’t need all records:
+
+```apex
+SELECT Id FROM Account LIMIT 100
+```
+
+---
+
+### 7. Use Skinny Tables (for LDV)
+
+Salesforce Support can create **Skinny Tables** for performance.
+
+---
+
+### 8. Avoid Large OFFSET
+
+Instead of OFFSET, use:
+
+* Last record Id
+* Pagination strategy
+
+---
+
+### 9. Use Relationship Queries Smartly
+
+Avoid deep nested queries unnecessarily.
+
+---
+
+### 10. Use SOSL When Needed
+
+Use SOSL when:
+
+* Searching text across multiple objects
+
+---
+
+### 🧑‍💼 Real-Time Example
+
+In one project:
+
+* We had 5 million Accounts
+* Query on non-indexed field → taking 20 sec
+
+👉 Solution:
+
+* Added **custom index**
+* Optimized WHERE clause
+* Reduced selected fields
+
+Result:
+- ⚡ Query time reduced to **< 1 sec**
+
+---
+
+### 🎯 Interview Key Points
+
+* Always use **selective SOQL queries**
+* Filter on **indexed fields**
+* Avoid SOQL in loops
+* Avoid negative filters like `!=`
+* Use **Query Plan tool**
+* Fetch only required fields
+* Use Skinny tables for large data volume
+* Use SOSL for text search
+
+---
+
+# You have 1 million records to process. What approach?
+
+### ✅ Detailed Explanation
+
+Processing **1 million records** cannot be done in a single transaction.
+
+👉 We must use **asynchronous, chunk-based processing**
+
+---
+
+### 🔹 Best Approach: **Batch Apex**
+
+### Why Batch Apex?
+
+* Processes data in **chunks (200 records per batch)**
+* Each batch runs in **separate transaction**
+* Resets governor limits each time
+
+---
+
+### 🔹 Batch Apex Structure
+
+```apex
+global class MyBatch implements Database.Batchable<sObject> {
+
+    global Database.QueryLocator start(Database.BatchableContext bc){
+        return Database.getQueryLocator('SELECT Id FROM Account');
+    }
+
+    global void execute(Database.BatchableContext bc, List<Account> scope){
+        // process 200 records
+    }
+
+    global void finish(Database.BatchableContext bc){
+        // post processing
+    }
+}
+```
+
+---
+
+### 🔹 Additional Optimization Techniques
+
+* Use **Database.Stateful** if needed
+* Use **parallel execution**
+* Use **bulkified logic**
+* Use **Queueable chaining if needed**
+
+---
+
+### 🔹 Alternative Options
+
+| Approach        | When to Use                  |
+| --------------- | ---------------------------- |
+| Batch Apex      | Best for millions of records |
+| Bulk API        | External data load           |
+| Platform Events | Event-driven processing      |
+| Queueable       | Medium volume                |
+
+---
+
+### 🧑‍💼 Real-Time Example
+
+Scenario:
+
+* Update 1.2 million Contact records nightly
+
+Solution:
+
+* Batch Apex scheduled at night
+* Batch size = 200
+* Logging in custom object
+
+Result:
+- ✔ Completed in ~2 hours
+- ✔ No governor limits error
+
+---
+
+### 🎯 Interview Key Points
+
+* Use **Batch Apex for million records**
+* Process data in **chunks of 200**
+* Each batch runs in **separate transaction**
+* Use **QueryLocator for large data**
+* Use **parallel processing if possible**
+* Monitor using **Async Apex Jobs**
+
+---
+
+# How do you handle code review as a Lead?
+
+### ✅ Detailed Explanation (Leadership Level)
+
+As a Lead, code review is not just about syntax — it's about:
+
+* Code quality
+* Scalability
+* Security
+* Maintainability
+* Best practices
+
+---
+
+### 🔹 My Code Review Approach
+
+### **1. Follow Coding Standards**
+
+Check:
+
+* Naming conventions
+* Clean structure
+* Proper comments
+
+---
+
+### **2. Check Bulkification & Governor Limits**
+
+* No SOQL/DML in loops
+* Proper use of collections
+
+---
+
+### **3. Check Security**
+
+* CRUD/FLS validation
+* with sharing
+* stripInaccessible()
+
+---
+
+### **4. Check Performance**
+
+* Efficient SOQL
+* Avoid unnecessary loops
+* Async usage where needed
+
+---
+
+### **5. Check Design Pattern**
+
+* Trigger framework
+* Service layer
+* Separation of concerns
+
+---
+
+### **6. Test Coverage & Quality**
+
+* Minimum 75% coverage
+* Positive + Negative + Bulk test cases
+
+---
+
+### **7. Error Handling & Logging**
+
+* Try-catch blocks
+* Proper error messages
+* Logging framework
+
+---
+
+### **8. Provide Constructive Feedback**
+
+* Give **clear suggestions**
+* Explain **why change is needed**
+* Encourage **best practices**
+
+---
+
+### **9. Knowledge Sharing**
+
+* Conduct review sessions
+* Document best practices
+
+---
+
+### 🧑‍💼 Real-Time Example
+
+In my team:
+
+* We follow **pull request review process**
+* Each PR requires:
+
+  * 1 senior approval
+  * All test cases passing
+* We use checklist:
+
+  * Security ✔
+  * Bulkification ✔
+  * Limits ✔
+  * Naming ✔
+
+Result:
+- ✔ High-quality code
+- ✔ Less production bugs
+
+---
+
+### 🎯 Interview Key Points
+
+* As a lead, I focus on **quality, performance, and scalability**
+* I check **bulkification, SOQL optimization, and limits**
+* I enforce **security (CRUD/FLS) and sharing rules**
+* I ensure **proper design patterns and architecture**
+* I review **test coverage and edge cases**
+* I give **constructive feedback and mentor team members**
+* I ensure **PR process and coding standards compliance**
+
+---
+
+# Record Locking Issue — How to Solve?
+
+### ✅ Problem
+
+Record locking happens when:
+
+* Two transactions try to update same record
+* Salesforce locks the record
+
+Error:
+`UNABLE_TO_LOCK_ROW`
+
+---
+
+### 🔹 Common Scenarios
+
+* Multiple triggers updating same parent record
+* Batch jobs running in parallel
+* Roll-up summary updates
+* Integration updates same record
+
+---
+
+### 🔹 Solutions
+
+### **1️⃣ Reduce Lock Contention**
+
+Avoid updating same parent record multiple times
+
+👉 Example:
+Instead of updating Account in loop Collect all updates and update once
+
+---
+
+### **2️⃣ Use Proper Data Partitioning**
+
+Divide data:
+
+* Based on region
+* Based on owner
+* Based on date
+
+---
+
+### **3️⃣ Avoid Parallel Processing**
+
+Batch Apex:
+
+```apex
+Database.executeBatch(batch, 200);
+```
+
+Use **serial mode** if locking issue:
+
+```apex
+Database.executeBatch(batch, 200, true);
+```
+
+---
+
+### **4️⃣ Use FOR UPDATE Carefully**
+
+Use locking query only when necessary
+
+---
+
+### **5️⃣ Retry Mechanism**
+
+If lock occurs:
+
+* Retry after delay
+* Use Queueable chaining
+
+---
+
+### **6️⃣ Reduce Roll-up Summary Dependencies**
+
+Because roll-ups lock parent record
+
+---
+
+### **7️⃣ Use Asynchronous Updates**
+
+Move logic to:
+
+* Queueable Apex
+* Platform Event
+
+---
+
+### 🧑‍💼 Real-Time Example
+
+Scenario:
+
+* Opportunity updates Account Total Revenue
+* Multiple users updating Opportunities simultaneously
+
+👉 Caused Account record locking
+
+Solution:
+
+* Removed direct Account update
+* Used **Queueable job to aggregate and update once**
+
+---
+
+### 🎯 Interview Key Points
+
+* Record locking occurs due to concurrent updates
+* I reduce locking by **minimizing parent record updates**
+* I use **data partitioning strategy**
+* I avoid **parallel batch execution**
+* I use **async processing to reduce contention**
+* I implement **retry mechanism for failed updates**
+
+---
+
+# How do you handle a production issue?
+
+### ✅ Detailed Approach (Leadership + Process)
+
+As a Lead, handling production issue requires **structured approach**.
+
+---
+
+### 🔹 My Approach (Step-by-Step)
+
+### **1️⃣ Identify & Understand Issue**
+
+* Get error logs
+* Check debug logs
+* Understand impact
+
+---
+
+### **2️⃣ Categorize Severity**
+
+| Severity | Example             |
+| -------- | ------------------- |
+| High     | System down         |
+| Medium   | Feature not working |
+| Low      | UI issue            |
+
+---
+
+### **3️⃣ Immediate Fix (Hotfix)**
+
+* Disable automation (if needed)
+* Create quick patch
+* Deploy via **quick deployment**
+
+---
+
+### **4️⃣ Root Cause Analysis**
+
+* Check logs
+* Check recent deployments
+* Reproduce issue in sandbox
+
+---
+
+### **5️⃣ Permanent Fix**
+
+* Code fix
+* Add validation
+* Add test cases
+
+---
+
+### **6️⃣ Testing**
+
+* Unit testing
+* UAT validation
+
+---
+
+### **7️⃣ Deploy & Monitor**
+
+* Deploy fix
+* Monitor logs
+* Confirm with users
+
+---
+
+### **8️⃣ Documentation & Learning**
+
+* Document RCA
+* Update knowledge base
+* Improve process
+
+---
+
+### 🧑‍💼 Real-Time Example
+
+Production issue:
+
+* Invoice creation failing
+
+Steps I took:
+
+1. Checked logs → found null pointer
+2. Disabled trigger temporarily
+3. Fixed code with null check
+4. Deployed hotfix
+5. Added test case
+6. Updated documentation
+
+---
+
+### 🎯 Interview Key Points
+
+* I follow structured **incident management process**
+* First I **analyze logs and identify impact**
+* I implement **quick hotfix to stabilize system**
+* Then perform **root cause analysis**
+* Implement **permanent fix with test coverage**
+* Deploy and **monitor system**
+* Document learnings and improve process
+
+---
+
+# What is Serial Mode in Batch Apex?
+
+### ✅ Detailed Explanation
+
+By default, **Batch Apex runs in parallel mode**, meaning:
+
+* Multiple batch chunks (scope = 200 records) run **simultaneously**
+
+This improves performance, but it can cause:
+- ❌ Record locking issues
+- ❌ Data conflicts
+
+---
+
+### 🔹 Serial Mode
+
+👉 **Serial Mode ka matlab hai:**
+
+> Batch Apex ke saare batches **ek ke baad ek (sequence me)** execute honge, **parallel me nahi**.
+
+Matlab:
+
+* Pehla batch complete hoga
+* Fir dusra start hoga
+* Fir teesra…
+  ➡️ **Ek time par sirf ek hi batch execute hoga**
+
+---
+
+# 🔹 Normally kya hota hai? (Default Behavior)
+
+Salesforce Batch Apex by default **Parallel Mode** me run karta hai:
+
+* Multiple batches **same time pe run** ho sakte hain
+* Fast hota hai
+* But **data conflict (record locking)** ka risk hota hai
+
+---
+
+# 🔹 Serial Mode kyun use karte hain?
+
+> 👉 Jab hume **data consistency** chahiye aur **record locking issue avoid karna hai**
+
+---
+
+**Serial mode means batch jobs run one chunk at a time (sequentially)** instead of parallel.
+
+> 👉 Only **one batch execution runs at a time**
+
+---
+
+### 🔸 How to Enable Serial Mode
+
+```apex
+Database.executeBatch(new MyBatchClass(), 200, true);
+```
+
+👉 The third parameter `true` = **serial mode**
+
+---
+
+### 🎯 Interview Key Points
+
+* Serial mode executes batch jobs **sequentially**
+* Prevents **record locking issues**
+* Slower than parallel but **safer for data consistency**
+* Used when **multiple records update same parent**
+
+---
+
+# What is Skinny Tables?
+
+### ✅ Detailed Explanation
+
+**Skinny Tables** are special **Salesforce-managed database tables** created by Salesforce Support to **improve query performance**.
+
+They contain:
+
+* Frequently used fields
+* From one or multiple objects
+
+---
+
+### 🔹 Why Skinny Tables?
+
+In large orgs with **millions of records**, standard tables are heavy.
+
+👉 Skinny tables:
+
+* Reduce joins
+* Reduce table size
+* Improve query speed
+
+---
+
+### 🔹 Key Features
+
+* Created by **Salesforce Support only**
+* Contains **subset of fields**
+* Supports **standard & custom fields**
+* Used for **read-heavy operations**
+
+---
+
+### 🧑‍💼 Real-Time Example
+
+Scenario:
+
+* Account object with **5 million records**
+* Query joining multiple fields taking **10+ seconds**
+
+Solution:
+✔ Created Skinny table with:
+
+* Id
+* Name
+* Status
+* Region
+
+Result:
+⚡ Query time reduced to **< 1 second**
+
+---
+
+### ⚠️ Limitations
+
+* No formula fields
+* No long text
+* Not automatically updated for schema changes
+* Cannot include all field types
+
+---
+
+### 🎯 Interview Key Points
+
+* Skinny tables improve **SOQL performance in large data volume**
+* Created by **Salesforce support**
+* Contain **subset of frequently used fields**
+* Reduce joins and improve speed
+* Used in **LDV (Large Data Volume) orgs**
+
+---
+
+# What is Locking Query?
+
+### ✅ Detailed Explanation
+
+A **locking query** is a SOQL query with `FOR UPDATE` clause that **locks records** during transaction.
+
+```apex
+SELECT Id, Name FROM Account WHERE Id = :accId FOR UPDATE
+```
+
+---
+
+### 🔹 What happens?
+
+* Record gets **locked**
+* Other transactions **cannot update it**
+* Prevents **data inconsistency**
+
+---
+
+### 🔹 When to Use?
+
+Use when:
+
+* You need **data consistency**
+* You are doing **financial calculations**
+* You want to avoid **race conditions**
+
+---
+
+### 🧑‍💼 Real-Time Example
+
+Scenario:
+
+* Two users updating same **bank balance**
+
+Without lock:
+❌ Data inconsistency
+
+With lock:
+✔ One transaction waits → data safe
+
+---
+
+### ⚠️ Caution
+
+* Overuse can cause **performance issues**
+* Can increase **lock contention**
+
+---
+
+### 🎯 Interview Key Points
+
+* Locking query uses `FOR UPDATE`
+* Locks record during transaction
+* Prevents **concurrent update conflicts**
+* Used in **critical data scenarios**
+* Should be used **carefully to avoid performance issues**
+
+---
+
+# Explain Retry Mechanism
+
+### ✅ Detailed Explanation
+
+A **Retry Mechanism** is used when:
+
+* An operation fails due to **temporary issue**
+* Example:
+
+  * Record locking
+  * API timeout
+  * Network failure
+
+Instead of failing permanently, system **retries the operation**
+
+---
+
+### 🔹 Why Retry?
+
+Because many failures are:
+
+* Temporary
+* Resolvable on retry
+
+---
+
+### 🔹 How to Implement in Salesforce
+
+### **Approach 1: Queueable Retry**
+
+```apex
+try{
+   // logic
+}catch(Exception e){
+   System.enqueueJob(new RetryJob());
+}
+```
+
+---
+
+### **Approach 2: Retry with Counter**
+
+```apex
+if(retryCount < 3){
+   retryCount++;
+   enqueue again
+}
+```
+
+---
+
+### **Approach 3: Custom Retry Queue Object**
+
+Store failed records in object:
+
+* Record Id
+* Error
+* Retry count
+* Status
+
+Then process using:
+
+* Batch Apex
+* Scheduled Job
+
+---
+
+### **Approach 4: Middleware Retry**
+
+If using MuleSoft:
+
+* Retry handled in middleware layer
+
+---
+
+### 🧑‍💼 Real-Time Example
+
+Scenario:
+
+* Integration callout failed due to timeout
+
+Solution:
+
+* Store failed record in **Retry Queue**
+* Scheduled batch retries every 30 mins
+* Max 3 retries
+
+Result:
+✔ 98% success after retry
+
+---
+
+### 🎯 Interview Key Points
+
+* Retry mechanism handles **temporary failures**
+* Used for **integration, locking, async jobs**
+* Implement using **Queueable, Batch, or Scheduled jobs**
+* Maintain **retry count and error logs**
+* Improves system **resilience and reliability**
+
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # Q: How do you avoid hardcoding?
 
 #### Answer (Interview-ready, balanced)
@@ -68,7 +1711,7 @@ or use Custom Metadata.
 
 ---
 
-## 🔹 Key ways to ensure code quality
+### 🔹 Key ways to ensure code quality
 
 #### 1. Follow Coding Standards & Best Practices
 
