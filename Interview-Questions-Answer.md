@@ -1,4 +1,3 @@
-
 ## 📑 Table of Contents
 
 * [How do you handle Governor Limits in large-scale applications?](#q-how-do-you-handle-governor-limits-in-large-scale-applications)
