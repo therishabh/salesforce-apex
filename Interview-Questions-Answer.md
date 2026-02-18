@@ -22,6 +22,20 @@
 * [What is your Branching Strategy?](#q-what-is-your-branching-strategy)
 * [How do you mentor junior developers?](#q-how-do-you-mentor-junior-developers)
 * [How do you design an Error Logging Framework in Salesforce?](#q-how-do-you-design-an-error-logging-framework-in-salesforce)
+* [What is a Selective Query in Salesforce?](#q-what-is-a-selective-query-in-salesforce)
+* [Why Test.startTest() and Test.stopTest() are important?](#q-why-teststarttest-and-teststoptest-are-important)
+* [How do you design a scalable trigger framework?](#q-how-do-you-design-a-scalable-trigger-framework)
+* [How do you handle 10k records update?](#q-how-do-you-handle-10k-records-update)
+* [When to use Future vs Queueable vs Batch?](#q-when-to-use-future-vs-queueable-vs-batch)
+* [What happens if a Queueable job fails?](#q-what-happens-if-a-queueable-job-fails)
+* [Explain LWC lifecycle hooks](#q-explain-lwc-lifecycle-hooks)
+* [Difference between @wire and Imperative Apex](#q-difference-between-wire-and-imperative-apex)
+* [How do you optimize LWC performance?](#q-how-do-you-optimize-lwc-performance)
+* [Difference between @wire and Imperative Apex (duplicate)](#q-difference-between-wire-and-imperative-apex)
+* [How do you prevent recursive trigger execution?](#q-how-do-you-prevent-recursive-trigger-execution)
+* [Difference between with sharing, without sharing, and inherited sharing](#q-difference-between-with-sharing-without-sharing-and-inherited-sharing)
+* [Explain the complete Order of Execution in Salesforce](#q-explain-the-complete-order-of-execution-in-salesforce)
+* [Difference between Custom Metadata vs Custom Settings](#q-difference-between-custom-metadata-vs-custom-settings)
 
 ---
 
@@ -2439,7 +2453,7 @@ You can say like this:
 ---
 ---
 
-# Q: What is a Selective Query in Salesforce?
+# Q. What is a Selective Query in Salesforce?
 
 #### 🔹 Answer (short & interview-ready)
 
@@ -2492,7 +2506,7 @@ SELECT Id FROM Account WHERE External_Id__c = :extId
 ---
 ---
 
-# Q: Why `Test.startTest()` and `Test.stopTest()` are important?
+# Q. Why `Test.startTest()` and `Test.stopTest()` are important?
 
 #### 🔹 Short, interview-ready answer
 
@@ -2535,7 +2549,7 @@ Test.stopTest(); // queueable executes here
 ---
 ---
 ---
-# Q: How do you design a scalable trigger framework?
+# Q. How do you design a scalable trigger framework?
 
 #### 🔹 Short, interview-ready answer
 
@@ -2602,7 +2616,7 @@ trigger AccountTrigger on Account (before insert, after insert) {
 ---
 ---
 
-# Q: How do you handle 10k records update?
+# Q. How do you handle 10k records update?
 
 #### 🔹 Short, interview-ready answer
 
@@ -2645,7 +2659,7 @@ Database.executeBatch(new MyBatchClass(), 200);
 ---
 ---
 
-# Q: When to use Future vs Queueable vs Batch?
+# Q. When to use Future vs Queueable vs Batch?
 
 #### 🔹 Short, interview-ready answer
 
@@ -2698,7 +2712,7 @@ All three are **asynchronous Apex**, but used for different data volumes and com
 ---
 ---
 
-# Q: What happens if a Queueable job fails?
+# Q. What happens if a Queueable job fails?
 
 #### 🔹 Short, interview-ready answer
 
@@ -2742,7 +2756,7 @@ public class MyQueueable implements Queueable {
 ---
 ---
 
-# Q: Explain LWC lifecycle hooks
+# Q. Explain LWC lifecycle hooks
 
 #### 🔹 Short, interview-ready answer
 
@@ -2807,7 +2821,7 @@ constructor → connectedCallback → renderedCallback → (updates → rendered
 ---
 ---
 
-# Q: Difference between `@wire` and Imperative Apex
+# Q. Difference between `@wire` and Imperative Apex
 
 #### 🔹 Short, interview-ready answer
 
@@ -2862,7 +2876,7 @@ getAccounts()
 ---
 ---
 
-# Q: How do you optimize LWC performance?
+# Q. How do you optimize LWC performance?
 
 #### 🔹 Short, interview-ready answer
 
@@ -2908,7 +2922,7 @@ To optimize LWC performance, I focus on **reducing server calls, minimizing re-r
 ---
 ---
 
-# Q: Difference between `@wire` and Imperative Apex
+# Q. Difference between `@wire` and Imperative Apex
 
 #### 🔹 Short, interview-ready answer
 
@@ -2965,7 +2979,7 @@ handleClick() {
 ---
 ---
 
-# Q: How do you prevent recursive trigger execution?
+# Q. How do you prevent recursive trigger execution?
 
 #### 🔹 Short, interview-ready answer
 
@@ -3037,7 +3051,7 @@ if(oldMap.get(acc.Id).Status__c != acc.Status__c){
 ---
 ---
 
-# Q: Difference between `with sharing`, `without sharing`, and `inherited sharing`
+# Q. Difference between `with sharing`, `without sharing`, and `inherited sharing`
 
 #### 🔹 Short, interview-ready answer
 
@@ -3089,7 +3103,7 @@ These keywords control **record-level access (sharing rules)** when Apex runs.
 ---
 ---
 
-# Q: Explain the complete Order of Execution in Salesforce
+# Q. Explain the complete Order of Execution in Salesforce
 
 #### 🔹 Short, interview-ready answer
 
