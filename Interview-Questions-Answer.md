@@ -3179,39 +3179,238 @@ Order of Execution is the **sequence in which Salesforce processes a record when
 ---
 # Q: Difference between Custom Metadata vs Custom Settings
 
-#### 🔹 Short, interview-ready answer
+Great 👍 Rishabh — this is a **very common and important Architect / Senior Developer question**.
 
-Both are used to store **configuration data**, but **Custom Metadata is preferred in modern Salesforce** because it is **deployable and more flexible**.
+I’ll give you a **complete, interview-ready explanation** with:
 
----
-
-#### 🔹 Key differences
-
-**Custom Metadata Types**
-
-* **Deployable** (can move with change set / package)
-* **Cached** → no SOQL needed (`getAll()`)
-* Can be used in **formulas, validation rules, flows**
-* Best for **business configuration**
+* clear concept
+* comparison
+* examples
+* real-time scenario
+* interview points
 
 ---
 
-**Custom Settings**
+# **Q. Explain Custom Metadata and Custom Settings in Salesforce**
 
-* **Not deployable with data** (data must be recreated in prod)
-* Needs **SOQL (for list)** or `getOrgDefaults()` (for hierarchy)
-* Two types: **List** and **Hierarchy**
-* Used for **older implementations or user-level settings**
+### **1️⃣ Custom Settings**
+
+**Custom Settings** are **custom data sets** that allow you to store **configuration data** in Salesforce.
+
+👉 This data is used in:
+
+* Apex
+* Validation rules
+* Formulas
+* Flows
 
 ---
 
-#### 🔹 Simple example
+### 🔹 Types of Custom Settings
 
-* Custom Metadata → mapping like *Customer Type → Discount %*
-* Custom Setting → storing *user-specific config (e.g., default region)*
+### **1. List Custom Setting**
+
+* Works like a custom object
+* Stores multiple records
+
+### **2. Hierarchy Custom Setting**
+
+* Provides data based on:
+
+  * Org level
+  * Profile level
+  * User level
 
 ---
 
-#### 🎯 One-line interview answer
+### 🔹 Example
 
-> “Custom Metadata is deployable and better for business configuration, while Custom Settings is older and mainly used for runtime or user-specific settings.”
+### 🎯 Scenario: Store Discount % per Region
+
+Custom Setting: `Discount_Config__c`
+
+| Region | Discount |
+| ------ | -------- |
+| India  | 10%      |
+| US     | 15%      |
+
+Apex:
+
+```apex
+Discount_Config__c config = Discount_Config__c.getInstance('India');
+Decimal discount = config.Discount__c;
+```
+
+---
+
+### 🔹 Use Cases
+
+* Store **dynamic configuration**
+* Store **API endpoints**
+* Store **feature flags**
+
+---
+
+### ⚠️ Limitations
+
+* Data is **not deployable via metadata** (data must be inserted manually or via data loader)
+* Not package-friendly for config data
+
+---
+
+## **2️⃣ Custom Metadata**
+
+**Custom Metadata Types (CMDT)** are similar to custom settings, but with **one big difference**:
+
+👉 **Data is treated as metadata**
+
+That means:
+✔ It can be deployed
+✔ It can be packaged
+✔ It can be version-controlled
+
+---
+
+### 🔹 Example
+
+Custom Metadata: `Tax_Config__mdt`
+
+| Country | Tax % |
+| ------- | ----- |
+| India   | 18%   |
+| Germany | 19%   |
+
+Apex:
+
+```apex
+Tax_Config__mdt config = [
+   SELECT Tax__c FROM Tax_Config__mdt WHERE Country__c = 'India'
+];
+```
+
+---
+
+### 🔹 Features
+
+* Deployable via Change Set / CI-CD
+* Package friendly
+* Read-only at runtime
+* Better for **application configuration**
+
+---
+
+### 🔥 **Difference between Custom Settings vs Custom Metadata**
+
+| Feature         | Custom Settings        | Custom Metadata        |
+| --------------- | ---------------------- | ---------------------- |
+| Data Type       | Data                   | Metadata               |
+| Deployable      | ❌ No                   | ✅ Yes                  |
+| Package Support | Limited                | Full support           |
+| Access          | Apex, Formula          | Apex, Formula          |
+| Edit at Runtime | Yes                    | No (read-only in prod) |
+| Use Case        | User-specific settings | App configuration      |
+
+---
+
+### 🧑‍💼 Real-Time Project Scenario
+
+### 🎯 Scenario: Multi-Country Pricing System
+
+In one project:
+
+Business operates in:
+
+* India
+* US
+* Europe
+
+Each country has:
+
+* Different tax
+* Different discount rules
+* Different integration endpoint
+
+---
+
+## 🔹 Solution Design
+
+### Used **Custom Metadata**
+
+Created CMDT:
+
+* `Country_Config__mdt`
+
+Fields:
+
+* Country
+* Tax Rate
+* Discount Rate
+* API Endpoint
+
+---
+
+## 🔹 Why Custom Metadata?
+
+✔ Data deployable across orgs
+✔ Version controlled
+✔ No manual data entry in production
+✔ Used in Apex, Flow, Validation
+
+---
+
+### 🔹 Apex Usage
+
+```apex
+Country_Config__mdt config = Country_Config__mdt.getInstance('India');
+Decimal tax = config.Tax__c;
+String endpoint = config.API_Endpoint__c;
+```
+
+---
+
+### 🔹 Result
+
+✔ No hardcoding
+✔ Easy config change
+✔ Scalable for new countries
+
+---
+
+# 🔹 When to Use What?
+
+### ✅ Use Custom Settings when:
+
+* You need **user/profile specific configuration**
+* Data changes frequently
+* You want runtime edit access
+
+---
+
+### ✅ Use Custom Metadata when:
+
+* You need **deployable configuration**
+* You want **CI/CD support**
+* You are building **product or package**
+
+---
+
+#### 🎯 Interview Key Points (Very Important)
+
+You can say these in interview:
+
+* Custom Settings store configuration data and support **hierarchy (user/profile/org level)**
+* Custom Metadata stores configuration as **metadata and is deployable**
+* Custom Metadata is preferred for **application configuration**
+* Custom Settings are used for **user-specific dynamic values**
+* Custom Metadata supports **CI/CD and packaging**
+* Custom Metadata is **read-only in production**, but safer and version controlled
+
+---
+
+### 🚀 Architect-Level Closing Line
+
+👉 *“In my projects, I prefer Custom Metadata for application configuration and Custom Settings for user-specific runtime configuration, ensuring scalable and deployable architecture.”*
+
+---
+
+Q. 
