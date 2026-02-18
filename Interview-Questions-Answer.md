@@ -1620,9 +1620,382 @@ Result:
 
 ---
 
+# How do you design for Large Data Volume (LDV)?
 
+### ✅ Detailed Explanation
 
+LDV means:
+👉 Millions of records in objects like Account, Opportunity, Case
 
+In LDV systems, main challenges are:
+
+* Slow queries
+* Record locking
+* Governor limits
+* Reporting performance
+
+---
+
+### 🔹 LDV Design Principles
+
+### **1. Use Selective SOQL Queries**
+
+* Filter on indexed fields
+* Avoid full table scan
+
+---
+
+### **2. Data Archiving Strategy**
+
+* Move old data to:
+
+  * Big Objects
+  * External storage
+* Keep active data small
+
+---
+
+### **3. Use Skinny Tables**
+
+* Improve query performance
+* Reduce joins
+
+---
+
+### **4. Proper Data Model Design**
+
+* Avoid too many lookup relationships
+* Use denormalized data where required
+
+---
+
+### **5. Use Asynchronous Processing**
+
+* Batch Apex
+* Queueable
+* Platform Events
+
+---
+
+### **6. Avoid Record Locking**
+
+* Reduce parent record updates
+* Use serial mode where required
+
+---
+
+### **7. Use Partitioning Strategy**
+
+Split data based on:
+
+* Region
+* Business unit
+* Date
+
+---
+
+### **8. Use Custom Indexes**
+
+For frequently filtered fields
+
+---
+
+### **9. Reporting Optimization**
+
+* Use custom report types
+* Avoid too many joins
+
+---
+
+### **10. Integration Optimization**
+
+* Use Bulk API for large data
+* Use CDC instead of polling
+
+---
+
+### 🧑‍💼 Real-Time Example
+
+In a telecom project:
+
+* 10 million Case records
+
+Solution:
+
+* Archive old cases to Big Objects
+* Added indexes on Status & Region
+* Used Skinny tables
+* Batch jobs for processing
+
+Result:
+⚡ Report time reduced from 30 sec → 3 sec
+
+---
+
+### 🎯 Interview Key Points
+
+* Use **selective queries and indexed fields**
+* Implement **data archiving strategy**
+* Use **Skinny tables and custom indexes**
+* Use **Batch Apex and async processing**
+* Avoid record locking using proper design
+* Partition data and optimize reports
+
+---
+
+# What is your Deployment Strategy?
+
+### ✅ Detailed Explanation
+
+A good deployment strategy ensures:
+
+* Safe releases
+* Minimal downtime
+* Easy rollback
+
+---
+
+### 🔹 My Deployment Approach
+
+### **1. Use CI/CD Pipeline**
+
+Tools:
+
+* GitLab CI
+* Jenkins
+* GitHub Actions
+
+---
+
+### **2. Environment Strategy**
+
+```
+Dev → QA → UAT → Pre-Prod → Production
+```
+
+---
+
+### **3. Use Unlocked Packages / Metadata API**
+
+* Modular deployments
+* Easy rollback
+
+---
+
+### **4. Automated Testing**
+
+* Apex tests
+* UI tests (Cypress)
+* Code coverage > 75%
+
+---
+
+### **5. Use Feature Toggles**
+
+Deploy code but enable later
+
+---
+
+### **6. Perform Smoke Testing**
+
+After deployment
+
+---
+
+### **7. Rollback Plan**
+
+* Backup metadata
+* Revert deployment quickly
+
+---
+
+### **8. Zero Downtime Strategy**
+
+* Deploy during low usage time
+* Use async operations
+
+---
+
+### 🧑‍💼 Real-Time Example
+
+In my project:
+
+* Used GitLab CI pipeline
+* Automatic deployment to QA
+* Manual approval for production
+* Smoke testing post deploy
+
+---
+
+### 🎯 Interview Key Points
+
+* I use **CI/CD pipeline for deployment**
+* Follow **multi-environment strategy**
+* Ensure **automated testing and validation**
+* Use **feature toggles and rollback plan**
+* Perform **post-deployment smoke testing**
+
+---
+
+# What is your Branching Strategy?
+
+### ✅ Detailed Explanation
+
+Branching strategy helps manage:
+
+* Multiple developers
+* Multiple features
+* Stable releases
+
+---
+
+### 🔹 My Preferred Strategy: **Git Flow**
+
+### 🔹 Branches
+
+| Branch      | Purpose            |
+| ----------- | ------------------ |
+| main/master | Production code    |
+| develop     | Integration branch |
+| feature/*   | New feature        |
+| release/*   | Pre-release        |
+| hotfix/*    | Production fixes   |
+
+---
+
+### 🔹 Flow
+
+```
+feature → develop → release → main
+```
+
+Hotfix:
+
+```
+hotfix → main → develop
+```
+
+---
+
+### 🔹 Benefits
+
+* Clean version control
+* Easy rollback
+* Parallel development
+
+---
+
+### 🧑‍💼 Real-Time Example
+
+* Developers work on feature branches
+* Merge request → code review
+* Merge to develop → QA testing
+* Release branch → UAT → production
+
+---
+
+### 🎯 Interview Key Points
+
+* I follow **Git Flow branching strategy**
+* Use **feature branches for development**
+* Use **release branch for UAT testing**
+* Use **hotfix branch for urgent production fixes**
+* Ensure **code review before merge**
+
+---
+
+# How do you mentor junior developers?
+
+### ✅ Detailed Explanation (Leadership)
+
+Mentoring is not just about teaching coding — it’s about:
+
+* Building problem-solving mindset
+* Improving code quality
+* Growing confidence
+
+---
+
+### 🔹 My Mentoring Approach
+
+### **1. Knowledge Sharing Sessions**
+
+* Weekly sessions
+* Topics like Apex, LWC, Integration
+
+---
+
+### **2. Pair Programming**
+
+* Work together on complex features
+
+---
+
+### **3. Code Reviews with Feedback**
+
+* Explain why improvement is needed
+* Share best practices
+
+---
+
+### **4. Provide Learning Path**
+
+* Give roadmap:
+
+  * Apex → LWC → Integration → Architecture
+
+---
+
+### **5. Encourage Best Practices**
+
+* Bulkification
+* Security
+* Design patterns
+
+---
+
+### **6. Give Ownership**
+
+* Assign small modules
+* Build confidence
+
+---
+
+### **7. Continuous Feedback**
+
+* Appreciate good work
+* Suggest improvements
+
+---
+
+### **8. Real-World Problem Solving**
+
+* Give real scenarios to solve
+
+---
+
+### 🧑‍💼 Real-Time Example
+
+In my team:
+
+* I mentored 3 junior devs
+* Conducted weekly Apex sessions
+* Helped them build trigger framework
+
+Result:
+✔ They became independent developers
+
+---
+
+## 🎯 Interview Key Points
+
+* I mentor through **code reviews, pair programming, and knowledge sessions**
+* I provide **clear learning roadmap**
+* I focus on **best practices and architecture thinking**
+* I give **ownership to build confidence**
+* I provide **continuous feedback and support**
+
+---
 
 
 
