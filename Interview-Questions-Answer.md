@@ -4,6 +4,7 @@
 ### ✅ Detailed Explanation
 
 Governor Limits are **runtime limits enforced by Salesforce** to ensure fair usage of shared resources in a multi-tenant environment.
+
 ---
 
 ### 🔹 Key Strategies to Handle Governor Limits
@@ -73,6 +74,7 @@ When data is heavy, move logic to async:
 * Platform Events
 
 This helps because async has higher governor limits
+
 ---
 
 ### 5. Optimize SOQL Queries
