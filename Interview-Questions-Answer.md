@@ -1,5 +1,5 @@
 
-# How do you handle Governor Limits in large-scale applications?
+# Q. How do you handle Governor Limits in large-scale applications?
 
 ### ✅ Detailed Explanation
 
@@ -133,7 +133,7 @@ Too many flows + triggers = more limits consumption
 
 ---
 
-#  Difference between Future, Queueable, and Batch Apex
+# Q.  Difference between Future, Queueable, and Batch Apex
 
 ### ✅ Comparison Table
 
@@ -280,7 +280,7 @@ Database.executeBatch(batch, 200);
 ---
 
 
-# How do you prevent recursive trigger execution?
+# Q. How do you prevent recursive trigger execution?
 
 ### Problem
 
@@ -377,7 +377,7 @@ Solution:
 
 ---
 
-# Difference between @wire and Imperative Apex
+# Q. Difference between @wire and Imperative Apex
 
 ### Detailed Explanation
 
@@ -533,7 +533,7 @@ export default class ImperativeExample extends LightningElement {
 
 ---
 
-# How do you implement security in Salesforce?
+# Q. How do you implement security in Salesforce?
 
 ### ✅ Detailed Explanation
 
@@ -620,7 +620,7 @@ In a banking project:
 
 ---
 
-# Difference between Lookup vs Master-Detail (and When to use)
+# Q. Difference between Lookup vs Master-Detail (and When to use)
 
 ### 🔸 Key Differences
 
@@ -661,7 +661,7 @@ In a banking project:
 
 ---
 
-# When do you choose Flow over Apex Trigger?
+# Q. When do you choose Flow over Apex Trigger?
 
 ### ✅ Detailed Explanation
 
@@ -736,7 +736,7 @@ Project requirement:
 
 ---
 
-# How do you optimize SOQL performance?
+# Q. How do you optimize SOQL performance?
 
 ### ✅ Detailed Explanation
 
@@ -884,7 +884,7 @@ Result:
 
 ---
 
-# You have 1 million records to process. What approach?
+# Q. You have 1 million records to process. What approach?
 
 ### ✅ Detailed Explanation
 
@@ -974,7 +974,7 @@ Result:
 
 ---
 
-# How do you handle code review as a Lead?
+# Q. How do you handle code review as a Lead?
 
 ### ✅ Detailed Explanation (Leadership Level)
 
@@ -1095,7 +1095,7 @@ Result:
 
 ---
 
-# Record Locking Issue — How to Solve?
+# Q. Record Locking Issue — How to Solve?
 
 ### ✅ Problem
 
@@ -1212,7 +1212,7 @@ Solution:
 
 ---
 
-# How do you handle a production issue?
+# Q. How do you handle a production issue?
 
 ### ✅ Detailed Approach (Leadership + Process)
 
@@ -1316,7 +1316,7 @@ Steps I took:
 
 ---
 
-# What is Serial Mode in Batch Apex?
+# Q. What is Serial Mode in Batch Apex?
 
 ### ✅ Detailed Explanation
 
@@ -1345,7 +1345,7 @@ Matlab:
 
 ---
 
-# 🔹 Normally kya hota hai? (Default Behavior)
+### 🔹 Normally kya hota hai? (Default Behavior)
 
 Salesforce Batch Apex by default **Parallel Mode** me run karta hai:
 
@@ -1355,7 +1355,7 @@ Salesforce Batch Apex by default **Parallel Mode** me run karta hai:
 
 ---
 
-# 🔹 Serial Mode kyun use karte hain?
+### 🔹 Serial Mode kyun use karte hain?
 
 > 👉 Jab hume **data consistency** chahiye aur **record locking issue avoid karna hai**
 
@@ -1386,7 +1386,7 @@ Database.executeBatch(new MyBatchClass(), 200, true);
 
 ---
 
-# What is Skinny Tables?
+# Q. What is Skinny Tables?
 
 ### ✅ Detailed Explanation
 
@@ -1459,7 +1459,7 @@ Result:
 
 ---
 
-# What is Locking Query?
+# Q. What is Locking Query?
 
 ### ✅ Detailed Explanation
 
@@ -1520,7 +1520,7 @@ With lock:
 
 ---
 
-# Explain Retry Mechanism
+# Q. Explain Retry Mechanism
 
 ### ✅ Detailed Explanation
 
@@ -1622,7 +1622,7 @@ Result:
 
 ---
 
-# How do you design for Large Data Volume (LDV)?
+# Q. How do you design for Large Data Volume (LDV)?
 
 ### ✅ Detailed Explanation
 
@@ -1745,7 +1745,7 @@ Result:
 
 ---
 
-# What is your Deployment Strategy?
+# Q. What is your Deployment Strategy?
 
 ### ✅ Detailed Explanation
 
@@ -1839,7 +1839,7 @@ In my project:
 
 ---
 
-# What is your Branching Strategy?
+# Q. What is your Branching Strategy?
 
 ### ✅ Detailed Explanation
 
@@ -1906,7 +1906,7 @@ hotfix → main → develop
 
 ---
 
-# How do you mentor junior developers?
+# Q. How do you mentor junior developers?
 
 ### ✅ Detailed Explanation (Leadership)
 
