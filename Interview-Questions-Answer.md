@@ -1,4 +1,32 @@
 
+## 📑 Table of Contents
+
+* [How do you handle Governor Limits in large-scale applications?](#q-how-do-you-handle-governor-limits-in-large-scale-applications)
+* [Difference between Future, Queueable, and Batch Apex](#q--difference-between-future-queueable-and-batch-apex)
+* [How do you prevent recursive trigger execution?](#q-how-do-you-prevent-recursive-trigger-execution)
+* [Difference between @wire and Imperative Apex](#q-difference-between-wire-and-imperative-apex)
+* [How do you implement security in Salesforce?](#q-how-do-you-implement-security-in-salesforce)
+* [Difference between Lookup vs Master-Detail (and When to use)](#q-difference-between-lookup-vs-master-detail-and-when-to-use)
+* [When do you choose Flow over Apex Trigger?](#q-when-do-you-choose-flow-over-apex-trigger)
+* [How do you optimize SOQL performance?](#q-how-do-you-optimize-soql-performance)
+* [You have 1 million records to process. What approach?](#q-you-have-1-million-records-to-process-what-approach)
+* [How do you handle code review as a Lead?](#q-how-do-you-handle-code-review-as-a-lead)
+* [Record Locking Issue — How to Solve?](#q-record-locking-issue--how-to-solve)
+* [How do you handle a production issue?](#q-how-do-you-handle-a-production-issue)
+* [What is Serial Mode in Batch Apex?](#q-what-is-serial-mode-in-batch-apex)
+* [What is Skinny Tables?](#q-what-is-skinny-tables)
+* [What is Locking Query?](#q-what-is-locking-query)
+* [Explain Retry Mechanism](#q-explain-retry-mechanism)
+* [How do you design for Large Data Volume (LDV)?](#q-how-do-you-design-for-large-data-volume-ldv)
+* [What is your Deployment Strategy?](#q-what-is-your-deployment-strategy)
+* [What is your Branching Strategy?](#q-what-is-your-branching-strategy)
+* [How do you mentor junior developers?](#q-how-do-you-mentor-junior-developers)
+* [How do you design an Error Logging Framework in Salesforce?](#q-how-do-you-design-an-error-logging-framework-in-salesforce)
+
+---
+
+
+
 # Q. How do you handle Governor Limits in large-scale applications?
 
 ### ✅ Detailed Explanation
