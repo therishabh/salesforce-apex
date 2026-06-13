@@ -9,8 +9,8 @@
 11. [SOSL](#sosl)
 12. [Asynchronous Processing](#asynchronous-processing)
  	- [Future Method in apex](#future-method-in-apex)
+  	- [Queueable Apex](#queueable-apex)
 	- [Batch Apex](#batch-apex)
- 	- [Queueable Apex](#queueable-apex)
   	- [Scheduled Apex](#scheduled-apex)
 13. [Governor Limits](#governor-limits)
 14. [Integration in Salesforce](#integration-in-salesforce)
@@ -1377,6 +1377,162 @@ public class SyncAccountWithSAP {
 
 ```
 
+
+## Queueable Apex:
+Queueable Apex is an asynchronous Apex mechanism that executes jobs in the background and provides additional features such as job monitoring, job chaining, and support for complex data types.
+
+### Example
+
+#### Example 1
+```apex
+public class AsyncContactManager implements System.Queueable {
+    private List<Contact> contactsToProcess;
+
+    public AsyncContactManager(List<Contact> contacts) {
+        this.contactsToProcess = contacts;
+    }
+
+    public void execute(System.QueueableContext context) {
+        // Process the contacts asynchronously
+        for (Contact contact : contactsToProcess) {
+            // Perform some processing on each contact
+            // For example, update a field or send an email
+            contact.Description = 'Processed asynchronously';
+        }
+        update contactsToProcess;
+
+		// get jobId
+		System.debug('Job ID: ' + context.getJobId());
+    }
+
+}
+
+#### Execution Step
+To run the `AsyncContactManager` class asynchronously, you can use the `System.enqueueJob` method. 
+Here's an example of how to do this:
+
+```apex
+List<Contact> contacts = [SELECT Id, Name FROM Contact WHERE SomeCondition__c = true];
+
+AsyncContactManager asyncManager = new AsyncContactManager(contacts);
+ID jobId = System.enqueueJob(asyncManager);
+System.debug('Job Id : ' + JobId);
+```
+
+In this example, we first query for a list of contacts that meet a certain condition. Then, we create an instance of the `AsyncContactManager` class, passing the list of contacts to its constructor. Finally, we call `System.enqueueJob` with the instance of `AsyncContactManager`, which will execute the `execute` method asynchronously in the background.
+
+
+#### Example 2
+```apex
+public class ContactCreationQueueable implements Queueable {
+    private List<Account> accListToCreateContacts;
+    
+    public ContactCreationQueueable(List<Account> expectingAccountsFromTrigger) { 
+        this.acclistToCreateContacts = expectingAccountsFromTrigger;
+    ｝
+    
+    public void execute(QueueableContext qCont) {
+        List<Contact> conListToInsert = new List<Contact>();
+
+        //Loop on all accounts that are inserted
+        for(Account acc: accListToCreateContacts){
+            Contact con = new Contact();
+            con.lastName = acc.Name;
+            con.AccountId = acc.Id;
+            conListToInsert.add(con); // Add each contact to list
+        ｝
+       
+        if(conListToInsert.size() > 0)
+        INSERT conListToInsert;
+    }
+}
+
+
+// Trigger
+trigger AccountTriggerForContacts on Account (after insert) {
+    if(Trigger.isAfter && Trigger.isInsert){
+       System.enqueueJob(new ContactCreationQueueable(Trigger.New)); //Trigger.new has list of accounts that are inserted
+    }
+}
+```
+
+> Salesforce me **executed asynchronous jobs** ki information dekhne ke liye sabse commonly used object **`AsyncApexJob`** hai.
+
+**AsyncApexJob Object store karta hai:**
+
+* Batch Apex Jobs
+* Queueable Jobs
+* Future Methods
+* Scheduled Apex Jobs
+
+#### Important Fields
+
+| Field             | Description                                    |
+| ----------------- | ---------------------------------------------- |
+| Id                | Job ID                                         |
+| Status            | Queued, Processing, Completed, Failed, Aborted |
+| JobType           | BatchApex, Future, Queueable, ScheduledApex    |
+| CreatedDate       | Job creation time                              |
+| CompletedDate     | Job completion time                            |
+| NumberOfErrors    | Total errors                                   |
+| TotalJobItems     | Total records/chunks                           |
+| JobItemsProcessed | Processed records/chunks                       |
+| MethodName        | Future method name                             |
+| ApexClassId       | Related Apex Class                             |
+
+---
+
+#### Example Query
+
+```apex
+List<AsyncApexJob> jobs = [
+    SELECT Id,
+           Status,
+           JobType,
+           CreatedDate,
+           CompletedDate,
+           NumberOfErrors
+    FROM AsyncApexJob
+    ORDER BY CreatedDate DESC
+];
+```
+
+---
+
+#### Queueable Job Status Check
+
+```apex
+Id jobId = System.enqueueJob(new MyQueueable());
+
+AsyncApexJob job = [
+    SELECT Id, Status
+    FROM AsyncApexJob
+    WHERE Id = :jobId
+];
+
+System.debug(job.Status);
+```
+---
+
+#### UI Me Kahan Dikhta Hai?
+
+Salesforce Setup me:
+
+```text
+Setup
+  ↓
+Apex Jobs
+```
+
+Yahan jo data dikhta hai wo primarily **AsyncApexJob** object se aata hai.
+
+---
+
+
+
+
+
+
 ## Batch Apex
 1) When you are dealing with big data(millions of records) that can exceed normal processing limits then you use Batch there.
 2) Batch is most advanced in Asynchronous Apex.
@@ -1527,64 +1683,8 @@ Ans. Iterator (we dont use this in max cases) (just memorize for interview)
 #### Q: How many parallel batch apex can be called in one org?
 Ans. 5 (that's why we should not call any batch apex from Trigger)
 
-### Queueable Apex:
-1) It is also a type of asynchronous apex.
-2) It is similar to future method but provides additional functionality which future method was unable to provide - </br>
-	a) We can use non-primitive data type in Queueable apex.</br>
-	b) Chaining is possible.</br>
-	c) Can Monitor the job because when you submit job by invoking system.enqueueJob method it returns the ID.You can use that ID to monitor.</br>
-
-**Example**
-```js
-public class ContactQueueable implements Queueable {
-    public void execute(QueueableContext context) {
-        List<Contact> conList = [Select id, status__c from Contact];
-        for (Contact con : conList){
-            con.status__c = 'Inactive';
-        }
-        update conList;
-    }
-}
-```
-**Execute Window**
-```
-ContactQueueable con = new ContactQueueable();
-ID JobId = System.enqueueJob(con);
-system.debug('Job Id : ' + JobId);
-```
-
-```apex
-public class ContactCreationQueueable implements Queueable {
-    private List<Account> accListToCreateContacts;
-    
-    public ContactCreationQueueable(List<Account> expectingAccountsFromTrigger) { 
-        this.acclistToCreateContacts = expectingAccountsFromTrigger;
-    ｝
-    
-    public void execute(QueueableContext qCont) {
-        List<Contact> conListToInsert = new List<Contact>();
-
-        //Loop on all accounts that are inserted
-        for(Account acc: accListToCreateContacts){
-            Contact con = new Contact();
-            con.lastName = acc.Name;
-            con.AccountId = acc.Id;
-            conListToInsert.add(con); // Add each contact to list
-        ｝
-       
-        if(conListToInsert.size() > 0)
-        INSERT conListToInsert;
-    }
-}
 
 
-// Trigger
-trigger AccountTriggerForContacts on Account (after insert) {
-    if(Trigger.isAfter && Trigger.isInsert){
-       System.enqueueJob(new ContactCreationQueueable(Trigger.New)); //Trigger.new has list of accounts that are inserted
-    }
-}
-```
 
 ### Scheduled Apex
 - You can run Apex classes at a specified time.
