@@ -1085,43 +1085,94 @@ List<List<SObject>> accList = [FIND 'Sa*' IN ALL FIELDS RETURNING Account(Id, Na
 
 ```
 
-## Asynchronous Processing Basics
-- Asynchronous Apex is used to run processes in a separate thread, at a later time. An asynchronous process is a process or function that executes a task "in the background" without the user having to wait for the task to finish.
-- Synchronous Apex means entire Apex code is executed in one single go. Asynchronous term means not existing or occurring at the same time.
-- We use asynchronous apex mostly when callouts to external systems is required, code needs to be run at some particular time, higher Governor Limits are required for some operation.
-- An asynchronous process executes a task in the background.
-- User doesn't have to wait for the task to finish.
-- Use Asynchronous Apex for:
-    - Callouts to external systems
-    - Operations that require higher limits
-    - Code that needs to run at a certain time.
-      
-**Benefits of Asynchronous Processing**
-- User Efficiency
-- Scalability
-- Higher Governor Limits
-- Can process more number of records
+## Asynchronous Processing
+**Asynchronous Processing** means executing code **in the background**, separately from the current user transaction. Instead of making the user wait for a task to finish, Salesforce places the task in a queue and executes it later when resources are available.
 
-**Types of Asynchronous Processing**
-Туре | Overview | Common Scenarios
---- | --- | ---
-Future Methods | Run in their own thread, and do not start until resources are available </br> <ul><li>Callouts to external Web services</li><li>Operations which can run in their own thread</li><li>To prevent the mixed DML error</li></ul>| Web service callout.
-Batch Apex | Run large jobs that would exceed normal processing limits </br> <ul><li>When processing is required on lots of records</li><li>Jobs that need larger query results</li></ul> | Data cleansing or archiving of records
-Queueable Apex | Similar to future methods, but provide additional job chaining and allow more complex data types to be used. </br> <ul><li>Processing on Non-primitive data types</li><li>Chaining of jobs</li><li>To start a long-running operation and get an ID for it</li></ul> | Performing sequential processing operations with external Web Services.
-Scheduled Apex |  Schedule Apex to run at a specified time. | Daily or weekly tasks.
+### Synchronous vs Asynchronous
 
-**Governor & Execution Limits**
-- Asynchronous apex provides higher governor and execution limits.
-- Number of SOQL is doubled from 100 to 200.
-- Total heap size and maximum CPU time are similarly larger for asynchronous calls.
-- As you get higher limits with async, also those governor limits are independent of the limits in the synchronous request that queued the async request initially.
+#### Synchronous Processing
 
-https://developer.salesforce.com/docs/atlas.en-us.salesforce_app_limits_cheatsheet.meta/salesforce_app_limits_cheatsheet/salesforce_app_limits_platform_apexgov.htm
+* Runs immediately.
+* User waits until execution completes.
+* Suitable for quick operations.
 
-**How Async Processing Works?** </br>
-- Enqueue
-- Persistence
-- Dequeue
+```text
+User Clicks Button
+       ↓
+Apex Executes
+       ↓
+Response Returned
+```
+
+#### Asynchronous Processing
+
+* Runs in the background.
+* User does not wait for completion.
+* Suitable for long-running or resource-intensive operations.
+
+```text
+User Clicks Button
+       ↓
+Job Added to Queue
+       ↓
+User Gets Response
+       ↓
+Salesforce Executes Job Later
+```
+
+---
+
+### Why Use Asynchronous Processing?
+
+1. Improve user experience.
+2. Handle large volumes of data.
+3. Perform external API callouts.
+4. Avoid governor limit issues.
+5. Execute long-running operations without blocking users.
+
+---
+
+### Types of Asynchronous Apex
+
+- 1. Future Methods
+- 2. Queueable Apex
+- 3. Batch Apex
+- 4. Scheduled Apex
+
+---
+
+### Comparison
+
+| Feature                         | Future  | Queueable | Batch     | Scheduled           |
+| ------------------------------- | ------- | --------- | --------- | ------------------- |
+| Async                           | ✅       | ✅         | ✅         | ✅                   |
+| Supports Callouts               | ✅       | ✅         | ✅         | ✅                   |
+| Supports sObjects               | ❌       | ✅         | ✅         | ✅                   |
+| Job Chaining                    | ❌       | ✅         | Limited   | Via Batch/Queueable |
+| Large Data Volume               | ❌       | ❌         | ✅         | ❌                   |
+| Job Monitoring                  | Limited | Good      | Excellent | Good                |
+| Recommended for New Development | ❌       | ✅         | ✅         | ✅                   |
+
+---
+
+## Real-World Examples
+
+#### Future Method
+
+Send data to an external API after Account creation.
+
+#### Queueable Apex
+
+Process Opportunity records and then trigger another job for notifications.
+
+#### Batch Apex
+
+Update 500,000 Account records during a data migration.
+
+#### Scheduled Apex
+
+Run a cleanup job every night at 2 AM.
+
 
 ## Future Method in apex
 A **Future Method** is an **asynchronous Apex method** that runs in the background, separate from the current transaction. It is used when you don't need the user to wait for the processing to complete.
@@ -1567,6 +1618,151 @@ Check scheduled jobs
 
 #### IQ:Object which stores all such info: 
 Ans: "CronTrigger"
+
+
+
+## Governor Limits
+
+**Governor Limits are restrictions imposed by Salesforce on Apex code to prevent a single user or process from consuming too many system resources.**
+
+Since Salesforce is a **multi-tenant platform** (many companies share the same Salesforce infrastructure), Governor Limits ensure that one organization's code does not negatively impact others.
+
+### Real-Life Example
+
+Imagine a building with 100 apartments sharing:
+
+* Water supply 🚰
+* Electricity ⚡
+* Internet 🌐
+
+If one apartment uses all the resources, others will suffer.
+
+Similarly, Salesforce applies Governor Limits so that one customer's code cannot consume all the server resources.
+
+### Common Governor Limits
+
+| Limit               | Value                         |
+| ------------------- | ----------------------------- |
+| SOQL Queries        | 100 (Sync), 200 (Async)       |
+| DML Statements      | 150                           |
+| CPU Time            | 10 sec (Sync), 60 sec (Async) |
+| Heap Size           | 6 MB (Sync), 12 MB (Async)    |
+| Callouts            | 100                           |
+| Future Method Calls | 50                            |
+
+#### Follow-up Question: "What happens if a Governor Limit is exceeded?"
+
+**Answer:**
+
+> Salesforce throws a `System.LimitException`, and the entire transaction is rolled back.
+
+Example:
+
+```text
+System.LimitException: Too many SOQL queries: 101
+```
+
+### Apex Governor Limits (Most Frequently Asked in Interviews)
+
+| Governor Limit                             | Synchronous        | Asynchronous (Future, Queueable, Batch) |
+| ------------------------------------------ | ------------------ | --------------------------------------- |
+| SOQL Queries                               | 100                | 200                                     |
+| Records Retrieved by SOQL                  | 50,000             | 50,000                                  |
+| DML Statements                             | 150                | 150                                     |
+| Records Processed by DML                   | 10,000             | 10,000                                  |
+| CPU Time Limit                             | 10 Seconds         | 60 Seconds                              |
+| Heap Size                                  | 6 MB               | 12 MB                                   |
+| Callouts (HTTP/Web Service)                | 100                | 100                                     |
+| Maximum Future Method Calls                | 50 per transaction | N/A                                     |
+| Queueable Jobs Added                       | 50 per transaction | 1 from another Queueable                |
+| Batch Apex Execute Scope                   | N/A                | Up to 2,000 records                     |
+| Batch Jobs Queued/Active                   | N/A                | 5 Active/Queued                         |
+| Email Invocations                          | 10                 | 10                                      |
+| SendEmail Messages                         | 10 per transaction | 10 per transaction                      |
+| Maximum QueryLocator Records               | 10,000             | 50 Million (Batch Apex)                 |
+| Maximum Stack Depth for Recursive Triggers | 16                 | 16                                      |
+
+---
+
+## Limits Related to Batch Apex
+
+| Limit                    | Value      |
+| ------------------------ | ---------- |
+| Batch Size Default       | 200        |
+| Batch Size Maximum       | 2,000      |
+| Records via QueryLocator | 50 Million |
+| Concurrent Batch Jobs    | 5          |
+| Batch Jobs in Flex Queue | 100        |
+
+---
+
+## Limits Related to Future Methods
+
+| Limit                        | Value                |
+| ---------------------------- | -------------------- |
+| Future Calls per Transaction | 50                   |
+| Parameters                   | Primitive Types Only |
+| Return Type                  | Void Only            |
+| Chaining                     | Not Supported        |
+
+---
+
+## Limits Related to Queueable Apex
+
+| Limit                          | Value                              |
+| ------------------------------ | ---------------------------------- |
+| Queueable Jobs per Transaction | 50                                 |
+| Queueable Chaining             | Supported                          |
+| Maximum Chain Depth            | Unlimited (practical limits apply) |
+| Job ID Available               | Yes                                |
+
+---
+
+## Limits Related to Triggers
+
+| Limit                | Value       |
+| -------------------- | ----------- |
+| Trigger Batch Size   | 200 Records |
+| Total SOQL Queries   | 100         |
+| Total DML Statements | 150         |
+| Total CPU Time       | 10 Seconds  |
+
+---
+
+## Interview-Favorite Limits (Must Remember)
+
+| Question                               | Answer                        |
+| -------------------------------------- | ----------------------------- |
+| Maximum SOQL Queries in a Transaction? | 100 (Sync), 200 (Async)       |
+| Maximum DML Statements?                | 150                           |
+| Maximum Records Retrieved by SOQL?     | 50,000                        |
+| Maximum Future Calls?                  | 50                            |
+| Maximum Callouts?                      | 100                           |
+| CPU Time Limit?                        | 10 sec (Sync), 60 sec (Async) |
+| Heap Size?                             | 6 MB (Sync), 12 MB (Async)    |
+| Trigger Batch Size?                    | 200 Records                   |
+| QueryLocator Limit in Batch Apex?      | 50 Million Records            |
+| Concurrent Batch Jobs?                 | 5                             |
+
+---
+
+### Senior Developer Interview Tip
+
+If asked **"Which governor limits do you check most often while coding?"**, mention:
+
+1. SOQL Queries (100/200)
+2. DML Statements (150)
+3. CPU Time (10s/60s)
+4. Heap Size (6MB/12MB)
+5. Future Calls (50)
+6. Callouts (100)
+7. Records Retrieved by SOQL (50,000)
+
+These are the limits most commonly responsible for production failures and are frequently discussed in Salesforce developer interviews.
+
+
+
+
 
 ## Integration in Salesforce
 **Integration Methods**
