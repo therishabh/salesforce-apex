@@ -1381,6 +1381,44 @@ public class SyncAccountWithSAP {
 ## Queueable Apex:
 Queueable Apex is an asynchronous Apex mechanism that executes jobs in the background and provides additional features such as job monitoring, job chaining, and support for complex data types.
 
+### Introduction 
+
+* Queueable apex is also part of Async apex and we can create any apex class as a queueable class by implementing the **System.Queueable interface**
+	* must need to implement **execute(QueueableContext context)** - Heart of Queueable Method
+* The Queueable interface lets us add the jobs in the queue and lets them monitor.
+* **System.enqueueJob** method is used to add a job in Queue and returns an Id to Monitor the Job.
+* Queueable Job can accept both primitive and non-primitive data types as input.
+* We can chain multiple Queueable Jobs by invoking another Queueable Job from the running Queueable Job and this is helpful when the outcome for 1 job is the input of another job.
+* We can call future methods from Salesforce Queueable Apex
+
+---
+
+### Queueable vs Future
+
+| Future                                                                   | Queueable                                                                |
+| ------------------------------------------------------------------------ | ------------------------------------------------------------------------ |
+| Future is a Method                                                       | Queueable is Apex Class                                                  |
+| Can not accept the non-primitive data types                              | Can accept both primitive and Non Primitive data types                   |
+| Can not call the future method from the future method                    | The Future method can be called from Queueable apex and vice versa       |
+| We can not track the future method                                       | We can easily monitor the jobs                                           |
+| Method chaining is not possible                                          | Method/Job chaining is possible                                          |
+| Possibility of Data loss in case of passing the non-primitive data types | Possibility of Data loss in case of passing the non-primitive data types |
+
+---
+
+### Queueable Apex Limits
+
+* You can add up to **50 jobs** to the queue with **System.enqueueJob** in a single transaction.
+* There is no depth limit for chaining the job which means we can chain as many jobs as we want.
+  * Id jobId = System.enqueueJob(manager, 2);
+    * Id jobId = System.enqueueJob(manager, 2)
+      * Id jobId = System.enqueueJob(manager, 2)
+        * Id jobId = System.enqueueJob(manager, 2)
+          * Id jobId = System.enqueueJob(manager, 2)
+* For the developer edition, the max depth for the chaining job is **5**.
+  * **FATAL_ERROR System.AsyncException: Maximum stack depth has been reached.**
+* When calling/chaining jobs with **System.enqueueJob** method, you can add only one job from a parent job.
+
 ### Example
 
 #### Example 1
@@ -1406,6 +1444,7 @@ public class AsyncContactManager implements System.Queueable {
     }
 
 }
+```
 
 #### Execution Step
 To run the `AsyncContactManager` class asynchronously, you can use the `System.enqueueJob` method. 
@@ -1452,6 +1491,26 @@ public class ContactCreationQueueable implements Queueable {
 trigger AccountTriggerForContacts on Account (after insert) {
     if(Trigger.isAfter && Trigger.isInsert){
        System.enqueueJob(new ContactCreationQueueable(Trigger.New)); //Trigger.new has list of accounts that are inserted
+    }
+}
+```
+
+#### Example: 3 (Queueable with Callout)
+
+If calling external APIs:
+
+```apex
+public class IntegrationQueueable implements System.Queueable, Database.AllowsCallouts {
+
+    public void execute(System.QueueableContext context) {
+
+        HttpRequest req = new HttpRequest();
+        req.setEndpoint('https://api.example.com');
+        req.setMethod('GET');
+
+        Http http = new Http();
+        HttpResponse response = http.send(req);
+
     }
 }
 ```
