@@ -1515,6 +1515,68 @@ public class IntegrationQueueable implements System.Queueable, Database.AllowsCa
 }
 ```
 
+> Salesforce me **Queueable Apex** me delay add karne ke liye `System.enqueueJob()` ka overloaded method use kar sakte ho.
+
+### Syntax
+
+```apex
+Id jobId = System.enqueueJob(new MyQueueable(), delayInMinutes);
+```
+
+### Example
+
+```apex
+public class MyQueueable implements Queueable {
+
+    public void execute(QueueableContext context) {
+        System.debug('Queueable Executed');
+    }
+}
+```
+
+Execute after 5 minutes:
+
+```apex
+Id jobId = System.enqueueJob(
+    new MyQueueable(),
+    5
+);
+```
+
+---
+
+### Delay Limits
+
+| Parameter     | Value      |
+| ------------- | ---------- |
+| Minimum Delay | 0 Minutes  |
+| Maximum Delay | 10 Minutes |
+
+Examples:
+
+```apex
+System.enqueueJob(new MyQueueable(), 1);
+System.enqueueJob(new MyQueueable(), 5);
+System.enqueueJob(new MyQueueable(), 10);
+```
+
+---
+
+### Interview Point
+
+**Q: How can you delay execution of a Queueable Job?**
+
+**Answer:**
+
+> Salesforce provides an overloaded version of `System.enqueueJob()` that accepts a delay parameter in minutes. The delay can be specified from 0 to 10 minutes.
+
+```apex
+System.enqueueJob(new MyQueueable(), 5);
+```
+
+This schedules the Queueable job to start approximately 5 minutes later.
+
+---
 > Salesforce me **executed asynchronous jobs** ki information dekhne ke liye sabse commonly used object **`AsyncApexJob`** hai.
 
 **AsyncApexJob Object store karta hai:**
