@@ -1123,17 +1123,42 @@ https://developer.salesforce.com/docs/atlas.en-us.salesforce_app_limits_cheatshe
 - Persistence
 - Dequeue
 
-### Future Method in apex
-- Future Apex runs process in a separate thread, at a later time when system resources become available.
-- Use @future annotation to create future methods.
-- In Synchronous processing, all method calls are made from the same thread and no additional processing can occur until the process is complete.
-- Whereas in future method, methods runs asynchronously in its own thread.
-- This unblocks users from performing other operations.
-- Provides higher governor & execution limits for processing.
-- future method never returns anything so we have to use **static void** keyword when declaring future method.
-- You can perform mixed DML use future method.
+## Future Method in apex
+A **Future Method** is an **asynchronous Apex method** that runs in the background, separate from the current transaction. It is used when you don't need the user to wait for the processing to complete.
+
+Future methods are annotated with `@future`.
+
+### Syntax
+
+```apex
+public class AccountService {
+
+    @future
+    public static void updateAccounts(Set<Id> accountIds) {
+        List<Account> accounts = [
+            SELECT Id, Description
+            FROM Account
+            WHERE Id IN :accountIds
+        ];
+
+        for (Account acc : accounts) {
+            acc.Description = 'Updated by Future Method';
+        }
+
+        update accounts;
+    }
+}
+```
+
+### Why Use Future Methods?
+
+* Execute long-running operations in the background.
+* Make callouts to external systems asynchronously (`@future(callout=true)`).
+* Avoid delaying the user's transaction.
+* Help handle certain Mixed DML scenarios.
 
 **Mixed DML**
+
 There are two types of objects in Salesforce.
 1) Set Up Objects: Setup objects are the sObjects that affect the user's access to records in the organization. Eg - User, Profile, Permission Set etc.
 
@@ -1142,23 +1167,46 @@ There are two types of objects in Salesforce.
 - This restriction exists because some sObjects affect the user's record access in the org. You must insert or update these types of sObjects in a different transaction to prevent operations from happening with incorrect access-level permissions.
 - For example, you can't update an account and a user role in a single transaction.
 
-**Disadvantages of Future Method :**
-- Chaining is not possible so you cannot call a future from another future or batch apex like it is not guaranteed that method will execute in same order as they called.If you want that go for Queueable.
-- In a single request. You can make only 50 future calls.
-- Cannot Monitor: Method always be used static & void so you cannot return job ID then how can you monitor.
-- You cannot call future method using batch but you can call batch using future method.
+### Limitations of Future Methods in Salesforce
 
-**Syntax**
-```js
-global class FutureClass
-{
-    @future
-    public static void myFutureMethod()
-    {   
-         // Perform some operations
-    }
-}
-```
+1. **Must be Static**
+
+   * Future methods can only be declared as `static`.
+
+2. **Can Only Accept Primitive Parameters**
+
+   * Supports primitives (`String`, `Integer`, `Boolean`, `Id`, etc.) and collections of primitives.
+   * Cannot pass sObjects or custom Apex objects as parameters.
+
+3. **Cannot Return a Value**
+
+   * Future methods must have a `void` return type.
+
+4. **Execution Order Is Not Guaranteed**
+
+   * Multiple future methods may execute in any order.
+
+5. **Cannot Call a Future Method from Another Future Method**
+
+   * Future method chaining is not supported.
+
+6. **Limited to 50 Future Calls per Transaction**
+
+   * Exceeding this limit results in a `System.LimitException`.
+
+7. **Limited Monitoring and Tracking**
+
+   * No direct Job ID is returned for easy tracking.
+   * Monitoring capabilities are more limited compared to Queueable Apex.
+
+8. **Cannot Handle Complex Object Passing**
+   * Since only primitive types are allowed, records must be queried again inside the future method.
+
+9. **May Not Execute Immediately**
+
+   * Execution depends on system resources and queue availability, so there can be delays.
+
+10. **You can not call future method using batch but you can call batch using future method**
 
 **Example**
 ```js
@@ -1189,11 +1237,6 @@ public class CreateAccountAndUser {
     }
 }
 ```
-
-**Things to Remember**
-- It can happen that future methods are running in different order as they are called.
-- You cannot call a future method from another.
-- There is a limit of 50 future calls per Apex invocation. There is an additional limit on the number of calls in a 24-hour period.
 
 **Connect salesforce org with external system like SAP by using future method**
 ```apex
@@ -1282,7 +1325,7 @@ public class SyncAccountWithSAP {
 
 ```
 
-### Batch Apex
+## Batch Apex
 1) When you are dealing with big data(millions of records) that can exceed normal processing limits then you use Batch there.
 2) Batch is most advanced in Asynchronous Apex.
 3) In Batch Apex, you can process records asynchronously in batches.
