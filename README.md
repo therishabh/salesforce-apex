@@ -1135,10 +1135,10 @@ Salesforce Executes Job Later
 
 ### Types of Asynchronous Apex
 
-- 1. Future Methods
-- 2. Queueable Apex
-- 3. Batch Apex
-- 4. Scheduled Apex
+1. Future Methods
+2. Queueable Apex
+3. Batch Apex
+4. Scheduled Apex
 
 ---
 
@@ -1158,19 +1158,19 @@ Salesforce Executes Job Later
 
 ### Real-World Examples
 
-#### Future Method
+**Future Method**
 
 Send data to an external API after Account creation.
 
-#### Queueable Apex
+**Queueable Apex**
 
 Process Opportunity records and then trigger another job for notifications.
 
-#### Batch Apex
+**Batch Apex**
 
 Update 500,000 Account records during a data migration.
 
-#### Scheduled Apex
+**Scheduled Apex**
 
 Run a cleanup job every night at 2 AM.
 
