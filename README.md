@@ -1672,7 +1672,7 @@ Instead of processing all records in one transaction, Salesforce processes them 
 **Advantages/Features of Batch Apex:**
 - In finish method you can invoke another batch.
 - When 1 record in a batch fails, that whole batch will be rolled back, but other batches will not be affected.
-- Batch apex can make callouts to external systems by using Database.AllowsCallouts interface.
+- Batch apex can make callouts to external systems by using **Database.AllowsCallouts** interface.
 - You can track the state of batch execution by using Database.stateful interface.
 - You can schedule batch apex class by implementing Schedulable interface.
 
@@ -1727,34 +1727,45 @@ ContactBatch con = new ContactBatch();
 Database.executeBatch(con, 10);
 ```
 
-Q. : How to check failed records in batchable apex?</br>
-A.</br>
-first of all you need to make your batch class stateful using Database.Stateful so replace your first line with</br></br>
-
-```public class SimpleBatch implements Database.Batchable<sObject>,Database.Stateful{```
-
-A global variable required which will maintain failed record.
-
-```global List<String> exception_List;```
-
-Use Database.update method instead of update with allOrNothing = false parameter which will return how many records has passed and failed in update call.
-
-```Database.SaveResult[] SaveResultList = Database.update(objsToUpdate,false);```
-
-You will iterate saveResultList and you will add failed records in exception_list
+**Q.: How to check failed records in batchable apex?** </br>
+A. First of all you need to make your batch class stateful using Database.Stateful so replace your first line with</br></br>
 
 ```apex
-for(integer i = 0; i < objsToUpdate.size(); i++) {
-        String msg=''; 
-        If(!SaveResultList[i].isSuccess()) {
-                msg += userList.get(i).id + '\n'+'Error: "';        
-                for(Database.Error err: SaveResultList[i].getErrors()){  
-                        msg += err.getmessage()+'"\n\n';
-                } 
-        }
-        if(msg!='')
-                exception_List.add(msg);
-} 
+public class SimpleBatch implements Database.Batchable<sObject>,Database.Stateful {
+
+	// A global variable required which will maintain failed record.
+	global List<String> exception_List;
+
+	global void execute(Database.BatchableContext bc, List<Account> scope) {
+
+		// Use Database.update method instead of update with allOrNothing = false parameter which will return how many records has passed and failed in update call.
+		Database.SaveResult[] results = Database.update(scope, false);
+		// The false parameter means: Partial Success Allowed
+		// If one record fails:
+			// - Other records continue processing.
+			// - Failed record information becomes available.
+
+		for(Integer i=0; i < results.size(); i++){
+	
+	        if(!results[i].isSuccess()){
+	
+	            for(Database.Error err :
+	                results[i].getErrors()){
+	
+	                System.debug(
+	                    'Failed Record Id: ' +
+	                    scope[i].Id
+	                );
+	
+	                System.debug(
+	                    'Error: ' +
+	                    err.getMessage()
+	                );
+	            }
+	        }
+	    }
+	}
+}
 ```
 
 You can use this exception_list in execute method to send in your final email.
