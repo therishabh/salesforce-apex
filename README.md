@@ -1649,26 +1649,24 @@ Yahan jo data dikhta hai wo primarily **AsyncApexJob** object se aata hai.
 
 ---
 
-
-
-
-
-
 ## Batch Apex
-1) When you are dealing with big data(millions of records) that can exceed normal processing limits then you use Batch there.
-2) Batch is most advanced in Asynchronous Apex.
-3) In Batch Apex, you can process records asynchronously in batches.
-4) Default batch size is 200.
-5) Maximum Batch size is 2000.
-6) Implements Database.Batchable interface.
-7) If you are using Database.QueryLocator it can retrieves 50 million records from Database while Database. Query retrieves 50 k records.
+**Batch Apex** is an asynchronous Apex framework used to process **large volumes of records || 50 Million records** by breaking them into smaller chunks (batches).
+
+Instead of processing all records in one transaction, Salesforce processes them in multiple transactions, which helps avoid governor limits.
+-  Default batch size is 200.
+-  Maximum Batch size is 2000.
+-  Implements **Database.Batchable<sObject>** interface.
+-  You are using Database.QueryLocator it can retrieves 50 million records from Database while Database.Query retrieves 50 k records.
 
 **Database.Batchable interface gives three methods -**</br>
+
 **1. start (one time run) -** This method collects all the records or objects to be passed to **execute** method for further processing.</br>
-**2. execute (running depends on number of jobs) -** </br>
-    - This method executes the functionality or run the process.</br>
-    - execute method takes Database.BatchableContext(collects the records or object).</br>
-    - A list of object (List‹sobject>).</br>
+
+**2. execute (running depends on number of jobs) -**</br>
+- This method executes the functionality or run the process.
+- execute method takes Database.BatchableContext(collects the records or object).
+- A list of object (List<sobject>)
+  
 **3. finish(one time run) -** Used to execute post processing operations. (eg : sending an email).</br>
 
 **Advantages/Features of Batch Apex:**
