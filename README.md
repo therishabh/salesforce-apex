@@ -1727,7 +1727,7 @@ ContactBatch con = new ContactBatch();
 Database.executeBatch(con, 10);
 ```
 
-**Q.: How to check failed records in batchable apex?** </br>
+#### Q: How to check failed records in batchable apex?
 A. First of all you need to make your batch class stateful using Database.Stateful so replace your first line with</br></br>
 
 ```apex
@@ -1772,7 +1772,7 @@ You can use this exception_list in execute method to send in your final email.
 
 #### Q: Can we call a batch class from another ?
 Ans : Yes</br></br>
-How ?</br>
+**How ?** </br>
 In finish method</br>
 
 #### Q. Can we call a batch class from trigger ?
@@ -1786,7 +1786,7 @@ Ans. Global
 Ans. Database.Batchable
 
 #### Q: What is QueryLocator?
-Ans. The way we have data type like integer, string; same way we have "Database.QueryLocator" which contains large number of records, like a container/pot.</br></br>
+Ans. The way we have data type like integer, string; same way we have **"Database.QueryLocator"** which contains large number of records, like a container/pot.</br></br>
 And this is return type of start() function.
 
 #### Q. How we are going to call the query? Normal way?
@@ -1807,13 +1807,151 @@ Make it like this:<br/>
 <br/>
 `global class AccountTaxUpdate implements Database.Batchable<sObject>, Database.Stateful{`
 
-#### IQ:TCS, India :  what can be another return type of Start function ?
+#### IQ:TCS :  what can be another return type of Start function ?
 Ans. Iterator (we dont use this in max cases) (just memorize for interview)
 
 #### Q: How many parallel batch apex can be called in one org?
 Ans. 5 (that's why we should not call any batch apex from Trigger)
 
+#### Example complete Batch Apex with Callout
 
+```apex
+global class GSTVerificationBatch implements Database.Batchable<SObject>,
+                                             Database.AllowsCallouts,
+                                             Database.Stateful {
+
+    global Integer totalProcessed = 0;
+    global Integer successCount = 0;
+    global Integer failureCount = 0;
+    global List<String> failedRecords = new List<String>();
+
+    // Fetch records to process
+    global Database.QueryLocator start(Database.BatchableContext bc) {
+
+        return Database.getQueryLocator([
+            SELECT Id, Name, GST_Number__c, GST_Status__c
+            FROM Account
+            WHERE GST_Number__c != null
+        ]);
+    }
+
+    // Process records batch by batch
+    global void execute(Database.BatchableContext bc, List<Account> scope) {
+
+        Http http = new Http();
+        List<Account> accountsToUpdate = new List<Account>();
+
+        for(Account acc : scope) {
+
+            try {
+
+                HttpRequest req = new HttpRequest();
+                req.setEndpoint('https://api.company.com/gst/verify');
+                req.setMethod('POST');
+                req.setHeader('Content-Type', 'application/json');
+                req.setTimeout(120000);
+
+                req.setBody(
+                    '{"gstNumber":"' + acc.GST_Number__c + '"}'
+                );
+
+                HttpResponse response = http.send(req);
+
+                if(response.getStatusCode() == 200) {
+
+                    acc.GST_Status__c = 'Verified';
+                    acc.GST_Response__c = response.getBody();
+                    successCount++;
+
+                } else {
+
+                    acc.GST_Status__c = 'Verification Failed';
+                    failureCount++;
+
+                    failedRecords.add(
+                        acc.Id + ' -> API Error : ' +
+                        response.getStatus()
+                    );
+                }
+
+                accountsToUpdate.add(acc);
+
+            } catch(Exception ex) {
+
+                failureCount++;
+
+                failedRecords.add(
+                    acc.Id + ' -> Exception : ' +
+                    ex.getMessage()
+                );
+            }
+        }
+
+        if(!accountsToUpdate.isEmpty()) {
+
+            Database.SaveResult[] results =
+                Database.update(accountsToUpdate, false);
+
+            for(Integer i = 0; i < results.size(); i++) {
+
+                if(!results[i].isSuccess()) {
+
+                    for(Database.Error err :
+                        results[i].getErrors()) {
+
+                        failedRecords.add(
+                            accountsToUpdate[i].Id +
+                            ' -> DML Error : ' +
+                            err.getMessage()
+                        );
+
+                        failureCount++;
+                    }
+                }
+            }
+        }
+
+        totalProcessed += scope.size();
+    }
+
+    // Runs once after all batches complete
+    global void finish(Database.BatchableContext bc) {
+
+        AsyncApexJob job = [
+            SELECT Id, Status, NumberOfErrors,
+                   JobItemsProcessed, TotalJobItems
+            FROM AsyncApexJob
+            WHERE Id = :bc.getJobId()
+        ];
+
+        String emailBody =
+            'Batch Job Completed\n\n' +
+            'Total Processed: ' + totalProcessed +
+            '\nSuccess Count: ' + successCount +
+            '\nFailure Count: ' + failureCount +
+            '\nJob Status: ' + job.Status +
+            '\n\nFailed Records:\n' +
+            String.join(failedRecords, '\n');
+
+        Messaging.SingleEmailMessage mail =
+            new Messaging.SingleEmailMessage();
+
+        mail.setToAddresses(
+            new String[]{'admin@company.com'}
+        );
+
+        mail.setSubject(
+            'GST Verification Batch Result'
+        );
+
+        mail.setPlainTextBody(emailBody);
+
+        Messaging.sendEmail(
+            new Messaging.SingleEmailMessage[]{mail}
+        );
+    }
+}
+```
 
 
 ### Scheduled Apex
