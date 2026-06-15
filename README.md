@@ -2859,62 +2859,181 @@ Then, we can use Salesforce_Images to refer to the static resource.
 ## Generate PDF in Salesforce (Download or Send Email)
 
 https://arrify.com/generate-pdf-in-salesforce/
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
 
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
 ## Security in Apex class
-When you are writing code in Apex, the security of your code is of utmost importance. You should ensure that your code meets the latest Security guidelines.
 
-### User Mode vs System Mode?
-User Mode is when apex code is running by taking the user’s permissions and sharing into consideration. Profile permissions, Field level permissions, and sharing rules are respected when code is running in user mode.<br/><br/>
-System Mode is when apex code is running without taking the user’s permissions and sharing into consideration. In system mode apex code has access to all objects, fields, and records and user’s sharing, FLS, and Profile permissions are not respected.
+### Question :  Agar kisi Apex class me `with sharing` use kiya gaya ho aur main ek SOQL query run karun jisme kuch aisi fields select kar raha hoon jin par mere paas field-level access (FLS) nahi hai, to kya query successfully run hogi? Maine query me `WITH USER_MODE` ya `WITH SECURITY_ENFORCED` jaisi koi security clause use nahi ki hai.
 
-> Note : Visualforce page always works in User Mode but APEX class by default works in God / System Mode
+Iska seedha aur saaf jawab hai: **Haan, aapki SOQL query bilkul run ho jayegi, aur usme koi error (Exception) nahi aayega.** Aap un fields ka data bhi dekh paoge jinpar aapko FLS (Field-Level Security) ki permission nahi hai.
+
+Chalo isko poori tarah samajhte hain ki aisa kyun hota hai aur Salesforce ke peeche ki kahani kya hai.
+
+---
+
+#### `with sharing` Kya Karta Hai Aur Kya Nahi Karta?
+
+Salesforce mein `with sharing` aur FLS (Field/Object permissions) do alag-alag suraksha kavach (security layers) hain.
+
+1. **`with sharing` (Record-Level Security):** Ye sirf aur sirf **Sharing Rules, OWD (Organization-Wide Defaults), aur Role Hierarchy** ko enforce karta hai. Yani, ye ye tay karta hai ki aapko kaunse *records* (rows) dikhne chahiye.
+2. **Object aur Field Permissions (CRUD/FLS):** Ye aapke Profile aur Permission Sets se tay hota hai ki aapko kaunse *objects* ya *fields* (columns) dikhne chahiye.
+
+> 💡 **Sabse zaroori baat:** Apex code by default **System Mode** mein run hota hai. Iska matlab hai ki Apex ke paas bypass karne ki taqat hoti hai user ke CRUD aur FLS ko. Jab aap class ke aage `with sharing` likhte hain, toh aap Salesforce ko sirf **Record-Level Security** check karne ko bol rahe hain, **Field-Level Security** nahi.
+
+---
+
+#### Aapke Scenario Ka Breakdown
+
+Agar aapne query mein `with USER_MODE` ya `WITH SECURITY_ENFORCED` nahi lagaya hai, toh ye hota hai:
+
+| Security Type | Kya Check Hoga? | Result |
+| --- | --- | --- |
+| **Record Level (Sharing)** | Haan, kyunki `with sharing` use kiya hai. | Aapko sirf wahi records milenge jinka access aapke paas hai. |
+| **Field Level (FLS)** | **Nahi**, kyunki Apex bypass kar deta hai. | Query bina kisi rukawat (error) ke chalegi aur un fields ka data bhi nikal legi jinki permission user ko nahi hai. |
+
+---
+
+#### Ek Chhota Sa Example
+
+Maan lo ek Object hai `Employee__g` aur usme ek field hai `Salary__c`. Ek user hai "Rahul" jiske paas `Salary__c` field ka access **nahi** hai (FLS hidden hai).
 
 ```apex
-public ******* class MyClass {
-	//some code
-｝
-***** = we can use "with sharing" or "without sharing"
-```
-
-- without sharing => GOD / System Mode
-- with sharing => User Mode
-
-> If we dont write anything before "class" keyword, then also by default "without sharing" format will start
-> If we dont want to allow APEX class behave like above scenario and we want to make that class more secure, then we need to use "with sharing" keyword.
-
-Question : If by default keyword will be "without sharing" then why SF gave us that keyword?
-Answer : We dont need "without sharing" keyword when we have standalone APEX class (one APEX class), but definitely we need "without sharing" keyword when we make class to class calls.
-
-```apex
-// Suppose, we have 2 below classes:
-public with sharing class ClassA{
-	// some code
-	FunctionA () {
-		// some code
-		// ClassB.FunctionB() ;
-	}
-｝
-
-public class ClassB {
-	// some code
-	FunctionB() {
-		// This function contains a very general code which needs to be executed for all users, without checking any access
-		// That's why developer of class B did not write any keyword for class B
-	}
+public with sharing class EmployeeController {
+    public static List<Employee__c> getEmployees() {
+        // Rahul ke paas Salary__c ka access nahi hai, fir bhi ye query pass ho jayegi!
+        return [SELECT Name, Salary__c FROM Employee__c]; 
+    }
 }
+
 ```
+
+**Iska Result:** Rahul jab is method ko run karega, toh query chalegi, aur use `Salary__c` ka data dikh jayega (agar use record ka access hai). Salesforce yahan koi error nahi dega.
+
+---
+
+#### Agar Aapko FLS Enforce Karna Ho Toh?
+
+Agar aap chahte ho ki agar user ke paas field ki permission nahi hai toh query error de ya field bypass ho jaye, toh aapke paas do naye tarike hain (jo aapne mention bhi kiye):
+
+##### 1. `WITH SECURITY_ENFORCED` (Purana/Standard Tarika)
+
+Agar query mein kisi field ka access nahi hai, toh ye **System.QueryException** throw kar dega (poori query fail ho jayegi).
+
+```apex
+// Agar Salary__c ka access nahi hai, toh ye line exception throw karegi
+List<Employee__c> list = [SELECT Name, Salary__c FROM Employee__c WITH SECURITY_ENFORCED];
+
+```
+
+##### 2. `WITH USER_MODE` (Naya aur Recommended Tarika)
+
+Ye Salesforce ka standard naya tarika hai jo CRUD aur FLS dono ko query level par hi enforce kar deta hai.
+
+```apex
+// Ye bhi exception throw karega agar permission nahi hai
+List<Employee__c> list = [SELECT Name, Salary__c FROM Employee__c WITH USER_MODE];
+
+```
+
+### Question:  Ek aur doubt hai: Agar main SOQL query me `WITH USER_MODE` use karta hoon, lekin Apex class par `with sharing` ya `inherited sharing` kuch bhi define nahi kiya gaya hai, to kya record-level security (sharing rules) bhi automatically apply ho jayegi? Kya sirf `WITH USER_MODE` lagane se object permissions, field permissions aur record-level access teeno enforce hote hain, ya record-level security ke liye alag se `with sharing` ki bhi zarurat padti hai? Kripya is behavior ko thoda detail me explain karein.
+
+Iska jawab hai: **Haan, bilkul! Agar aap class level par `with sharing` nahi likhte hain, lekin apni SOQL query mein `WITH USER_MODE` laga dete hain, toh record-level security (Sharing Rules) automatic apply ho jayegi.**
+
+Asal mein, `WITH USER_MODE` akela hi itna taqatwar hai ki ye ek hi jhatke mein teenon layers ko check kar leta hai: **CRUD (Object Access), FLS (Field Access), aur Sharing Rules (Record Access).**
+
+Chalo isko poori detail mein aur deep chal kar samajhte hain ki aisa kyun hota hai.
+
+---
+
+#### 1. `WITH USER_MODE` Ka Asli Matlab Kya Hai?
+
+Salesforce mein jab aap kisi query ke aage `WITH USER_MODE` likhte hain, toh aap Salesforce se bol rahe hain: *"Bhai, is specific query ke liye system mode bhool jao. Isko bilkul waise hi chalao jaise ye kisi standard user ke screen par chal rahi ho."*
+
+Jab aap `WITH USER_MODE` lagate hain, toh database engine ye 3 cheezein check karta hai:
+
+1. **Sharing Rules (Record-Level):** Kya user ko is record ka access hai? (OWD, Sharing Rules, Role Hierarchy check hoti hai).
+2. **CRUD (Object-Level):** Kya user ke paas is Object (jaise Account ya Contact) ko Read karne ki permission hai?
+3. **FLS (Field-Level):** Kya user ke paas query mein likhi hui har ek field ko dekhne ki permission hai?
+
+Agar in teeno mein se ek bhi cheez fail hui, toh Salesforce query ko rok dega.
+
+---
+
+#### 2. Scenario Comparison (Class Level vs Query Level)
+
+Aapke scenario ko achhe se samajhne ke liye in do alag-alag tarikon ko dekhte hain:
+
+##### Case A: Class Level par `with sharing` lagana
+
+```apex
+public with sharing class MyClass {
+    public static List<Account> getAccounts() {
+        return [SELECT Name, AnnualRevenue FROM Account];
+    }
+}
+
+```
+
+* **Sharing:** Apply hoga (User ko sirf wahi records milenge jinka access hai).
+* **CRUD/FLS:** Apply **NAHI** hoga (User ke paas `AnnualRevenue` field ka access na bhi ho, toh bhi data dikhega).
+
+##### Case B: Class Level par kuch nahi, lekin Query mein `WITH USER_MODE` (Aapka Scenario)
+
+```apex
+public class MyClass { // Omitted 'with sharing' or implicitly 'without sharing'
+    public static List<Account> getAccounts() {
+        return [SELECT Name, AnnualRevenue FROM Account WITH USER_MODE];
+    }
+}
+
+```
+
+* **Sharing:** Apply **HOGA** (Kyunki `WITH USER_MODE` record access ko enforce karta hai).
+* **CRUD/FLS:** Apply **HOGA** (Kyunki `WITH USER_MODE` field aur object permissions ko bhi check karta hai).
+
+> ⚠️ **Yahan ek bada twist hai:** Case B mein agar user ke paas `AnnualRevenue` field ki permission **nahi** hui, toh ye query seedhe ek Exception throw karegi (`System.QueryException: Insufficient permissions...`).
+
+---
+
+#### 3. Ek Zaroori Sawaal: Agar Class `without sharing` ho aur Query `WITH USER_MODE` ho, toh kya hoga?
+
+Maan lo aapne class ke aage jaan-bujhkar `without sharing` likh diya, lekin query ke andar `WITH USER_MODE` daal diya:
+
+```apex
+public without sharing class MyClass {
+    public static List<Account> getAccounts() {
+        return [SELECT Name FROM Account WITH USER_MODE];
+    }
+}
+
+```
+
+Is situation mein **Query Jeet Jayegi (Query Level Wins)**. Class level par bhale hi `without sharing` likha ho (jo sharing rules ko bypass karne ko kehta hai), lekin query ke andar ka `WITH USER_MODE` usko override kar dega, aur records par **Sharing Rules apply ho jayenge**.
+
+---
+
+#### 4. Interview/Exam Point of View Se Notes
+
+Agar aapko isko yaad rakhna ho ya kisi ko samjhana ho, toh ye points dhyan mein rakhein:
+
+* `WITH USER_MODE` is a **Query-Level Directive**. Ye us specific query ko poori tarah se context-aware (user context) bana deta hai.
+* Ye class-level ke keywords (`with sharing` / `without sharing`) ko **override** kar deta hai sirf us query ke execution ke liye.
+* Salesforce ab officially `WITH USER_MODE` ko hi recommended best practice maanta hai, kyunki ye code ko secure banata hai aur aapko har field ke liye `Schema.sObjectType.Account.fields.Name.isAccessible()` jaisa lamba-lamba code nahi likhna padta.
+
+**Aasan shabdon mein:** `WITH USER_MODE` lagane ke baad aapko class level par `with sharing` likhne ki zaroorat nahi hai record security ke liye, kyunki query khud hi sharing rules ko handle kar legi.
+
+----
+----
+----
+----
+----
+----
+
+
+
+
+
+
+
 
 ## Send Email in Salesforce with Apex Method
 
