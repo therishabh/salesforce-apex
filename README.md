@@ -2862,6 +2862,90 @@ https://arrify.com/generate-pdf-in-salesforce/
 
 ## Security in Apex class
 
+### Question
+
+**Agar Apex class mein `with sharing` use kiya gaya ho aur SOQL query mein aisi fields select ki gayi ho jin par user ka FLS access nahi hai, aur query mein `WITH USER_MODE` ya `WITH SECURITY_ENFORCED` use nahi kiya gaya ho, to kya query run hogi?**
+
+### Answer
+
+**Haan. Query successfully run hogi.**
+
+`with sharing` sirf **record-level security** (Sharing Rules, OWD, Role Hierarchy) enforce karta hai. Ye **Field-Level Security (FLS)** ya **Object Permissions (CRUD)** ko enforce nahi karta.
+
+Apex by default **System Mode** mein run hota hai, isliye user ke paas kisi field ka access na hone par bhi Apex us field ka data query kar sakta hai.
+
+```apex
+public with sharing class EmployeeController {
+    public static List<Employee__c> getEmployees() {
+        return [
+            SELECT Name, Salary__c
+            FROM Employee__c
+        ];
+    }
+}
+```
+
+Agar user ke paas `Salary__c` field ka access nahi hai, tab bhi query run ho jayegi aur Apex data retrieve kar lega.
+
+---
+
+### Question
+
+**Agar class par `with sharing` ya `inherited sharing` define na ho, lekin SOQL query mein `WITH USER_MODE` use kiya gaya ho, to kya sharing rules bhi apply hongi?**
+
+### Answer
+
+**Haan. `WITH USER_MODE` CRUD, FLS aur Record-Level Sharing teeno ko enforce karta hai.**
+
+```apex
+public class AccountService {
+
+    public static List<Account> getAccounts() {
+        return [
+            SELECT Name, AnnualRevenue
+            FROM Account
+            WITH USER_MODE
+        ];
+    }
+}
+```
+
+`WITH USER_MODE` lagane par Salesforce query ko running user ke context mein execute karta hai. Isliye:
+
+* Object permission check hoti hai.
+* Field permission check hoti hai.
+* Sharing Rules bhi apply hote hain.
+
+Agar user ke paas kisi field ya object ka access nahi hai, to query exception throw karegi.
+
+#### Key Point
+
+`with sharing` sirf **record-level security** enforce karta hai.
+
+`WITH USER_MODE` **record-level security + CRUD + FLS** teeno enforce karta hai, isliye modern Apex development mein ye recommended approach maana jata hai.
+
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ### Question :  Agar kisi Apex class me `with sharing` use kiya gaya ho aur main ek SOQL query run karun jisme kuch aisi fields select kar raha hoon jin par mere paas field-level access (FLS) nahi hai, to kya query successfully run hogi? Maine query me `WITH USER_MODE` ya `WITH SECURITY_ENFORCED` jaisi koi security clause use nahi ki hai.
 
 Iska seedha aur saaf jawab hai: **Haan, aapki SOQL query bilkul run ho jayegi, aur usme koi error (Exception) nahi aayega.** Aap un fields ka data bhi dekh paoge jinpar aapko FLS (Field-Level Security) ki permission nahi hai.
